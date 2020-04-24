@@ -148,32 +148,32 @@
         <StackLayout   class="form window" height = "3300px">
            
             <Label class="boxlabel"   text="Ship Name"  textWrap="true"></Label>
-           <TextField  class="input input-border" hint="Ship Name" [(ngModel)]="ShipName" editable="true" ></TextField>
+           <TextField  class="input input-border" hint="Ship Name" [(ngModel)]="ShipName" editable="false" ></TextField>
    
         
    
            <Label  class="boxlabel" style="text-align: center;" text="Ship Address 1" textWrap="true"></Label>
-           <TextField   class="input input-border"  hint="Ship Address 1" [(ngModel)]="ShipAddress1" editable="true" ></TextField>
+           <TextField   class="input input-border"  hint="Ship Address 1" [(ngModel)]="ShipAddress1" editable="false" ></TextField>
    
            <Label  class="boxlabel"  text="Ship Address 2" textWrap="true"></Label>
-           <TextField   class="input input-border" hint="Ship Address 2" [(ngModel)]="ShipAddress2" editable="true" ></TextField>
+           <TextField   class="input input-border" hint="Ship Address 2" [(ngModel)]="ShipAddress2" editable="false" ></TextField>
 
            <Label  class="boxlabel"  text="Ship Address 3" textWrap="true"></Label>
-           <TextField   class="input input-border" hint="Ship Address 3" [(ngModel)]="ShipAddress3" editable="true" ></TextField>
+           <TextField   class="input input-border" hint="Ship Address 3" [(ngModel)]="ShipAddress3" editable="false" ></TextField>
            
            <Label  class="boxlabel"  text="Ship Address 4" textWrap="true"></Label>
-           <TextField   class="input input-border" hint="Ship Address 4" [(ngModel)]="ShipAddress4" editable="true" ></TextField>
+           <TextField   class="input input-border" hint="Ship Address 4" [(ngModel)]="ShipAddress4" editable="false" ></TextField>
 
            <Label   class="boxlabel"  text="Ship Address 5" textWrap="true"></Label>
-           <TextField  (focus)="onFocus($event)"  class="input input-border" hint="Ship Address 5" [(ngModel)]="ShipAddress5" editable="true" ></TextField>
+           <TextField  (focus)="onFocus($event)"  class="input input-border" hint="Ship Address 5" [(ngModel)]="ShipAddress5" editable="false" ></TextField>
 
 
 
            <Label  class="boxlabel"  text="Ship City" textWrap="true"></Label>
-           <TextField   class="input input-border" hint="Ship City" [(ngModel)]="ShipCity" editable="true" ></TextField>
+           <TextField   class="input input-border" hint="Ship City" [(ngModel)]="ShipCity" editable="false" ></TextField>
 
            <Label  class="boxlabel"  text="Ship Postcode" textWrap="true"></Label>
-           <TextField   class="input input-border" hint="Ship Postcode" [(ngModel)]="ShipPostCode" editable="true" ></TextField>
+           <TextField   class="input input-border" hint="Ship Postcode" [(ngModel)]="ShipPostCode" editable="false" ></TextField>
 
          
            <Button row="3" col = "0"  colSpan="2" class="btn btn-primary btn-active"   style="background-color:green;color: white;" text="Confirm" (tap)="hideDeliveryAddress()"></Button>
