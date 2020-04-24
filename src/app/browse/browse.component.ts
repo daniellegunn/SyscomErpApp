@@ -410,7 +410,51 @@ public hideOrderSummary(){
 
 }
 
-public  deleteOrderLine(){// Deletes Line then changes all line numbers after it by - 1
+public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line numbers after it by - 1
+  console.log(LineNumber);
+  if ((this.OrderItemList.length == 0 || this.OrderItemList.length == 1)  && LineNumber == 1){ //Code resets line number 1
+    this.OrderItemList=[];
+        this.ItemCode = "";
+        this.Quantity = "1";
+         this.Price = null;
+        this.Currency = "";
+
+        this.Attribute1= []
+        this. Attribute1Setcodes =[]
+        this. selectedAtt1Index= null;
+        this.SelectedAttribute1 = undefined;
+        
+        this. Attribute2 = []
+        this. Attribute2Setcodes= []
+        this. selectedAtt2Index= null;
+        this.SelectedAttribute2 = undefined;
+  
+       this. SelectedGenericItemCode= ""
+       this.selectedGenericIndex = null;
+
+        this.LineNumber = 1;
+        this.previousLineEnabled = false;
+        this.minusQtyEnabled = false;
+
+
+        return;
+  }
+
+  this.OrderItemList.splice(LineNumber - 1,1);
+
+  this.OrderItemList.forEach(element => {
+    if(element.LineNumber > LineNumber){ //Bigger item numbers need their Line numbers reduced
+    element.LineNumber = element.LineNumber - 1;
+    }
+
+    if(this.LineNumber == this.OrderItemList.length ){
+      this.nextLineEnabled = false;
+     }
+
+    
+  });
+
+  this.showOrderLine(LineNumber);
 
 
 }
