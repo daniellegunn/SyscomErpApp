@@ -441,10 +441,8 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
   }
  //Need to get rid of Attribute lists as well as the OrderItemList record
   this.OrderItemList.splice(LineNumber - 1,1);
-  this.Attribute1.splice(LineNumber - 1,1);
-  this.Attribute1Setcodes.splice(LineNumber - 1,1);
-  this.Attribute2.splice(LineNumber - 1,1);
-  this.Attribute2Setcodes.splice(LineNumber - 1,1);
+  this.Attribute1List.splice(LineNumber - 1,1);
+  this.Attribute2List.splice(LineNumber - 1,1);
 
 
   this.OrderItemList.forEach(element => {
@@ -458,9 +456,12 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
 
     
   });
-
+  if(LineNumber > this.OrderItemList.length){
+    this.showOrderLine(LineNumber - 1);
+  }
+  else{
   this.showOrderLine(LineNumber);
-
+  }
 
 }
 
@@ -561,7 +562,8 @@ this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex
     
     this.ItemCode =  this.OrderItemList[LineNumber - 1].ItemCode;
     this.Quantity = this.OrderItemList[LineNumber - 1 ].Quantity;
-    
+    this.LineNumber =  this.OrderItemList[LineNumber - 1].LineNumber;
+
     this.Price  =    this.OrderItemList[LineNumber - 1].Price; 
     this.Currency =  this.OrderItemList[LineNumber - 1].Currency;
 
@@ -572,9 +574,9 @@ this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex
     this.Attribute2   = this.Attribute2List[LineNumber - 1 ].SetCodeDescription;
     this.Attribute2Setcodes  = this.Attribute2List[LineNumber - 1 ].SetCode;
 
-    this.selectedGenericIndex = this.OrderItemList[this.LineNumber - 1 ].GenericItemIndex;
-    this.selectedAtt1Index = this.OrderItemList[this.LineNumber - 1 ].Attribute1Index;
-    this.selectedAtt2Index = this.OrderItemList[this.LineNumber - 1 ].Attribute2Index;
+    this.selectedGenericIndex = this.OrderItemList[LineNumber - 1 ].GenericItemIndex;
+    this.selectedAtt1Index = this.OrderItemList[LineNumber - 1 ].Attribute1Index;
+    this.selectedAtt2Index = this.OrderItemList[LineNumber - 1 ].Attribute2Index;
    
  
 
