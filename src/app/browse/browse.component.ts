@@ -439,15 +439,20 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
 
         return;
   }
-
+ //Need to get rid of Attribute lists as well as the OrderItemList record
   this.OrderItemList.splice(LineNumber - 1,1);
+  this.Attribute1.splice(LineNumber - 1,1);
+  this.Attribute1Setcodes.splice(LineNumber - 1,1);
+  this.Attribute2.splice(LineNumber - 1,1);
+  this.Attribute2Setcodes.splice(LineNumber - 1,1);
+
 
   this.OrderItemList.forEach(element => {
     if(element.LineNumber > LineNumber){ //Bigger item numbers need their Line numbers reduced
     element.LineNumber = element.LineNumber - 1;
     }
 
-    if(this.LineNumber == this.OrderItemList.length ){
+    if(this.LineNumber == this.OrderItemList.length ){ // This would be line 1
       this.nextLineEnabled = false;
      }
 
