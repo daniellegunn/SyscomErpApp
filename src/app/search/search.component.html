@@ -1,0 +1,79 @@
+<ActionBar class="action-bar">
+    <Label class="action-bar-title" text="Stock Enquiry"></Label>
+</ActionBar>
+
+<StackLayout class="page page-content" >
+    
+    <StackLayout class="form window">
+        <Label class="boxlabel" text="Item Code" textWrap="true"></Label>
+        <TextField class="input input-border"  hint="ItemCode" [(ngModel)]="ItemCode" editable="true" ></TextField>
+ 
+
+        <Label class="boxlabel" text="Warehouse Code (optional) " textWrap="true"></Label>
+        <TextField class="input input-border"  hint="WarehouseCode" [(ngModel)]="WarehouseCode" editable="true" ></TextField>
+        <Button class="btn btn-primary btn-active" text="Submit" (tap)="submit()"></Button>
+        <Label row="1" class="text-center " [text]="message" verticalAligment="center" colSpan="2" textWrap="true"></Label>
+      </StackLayout>
+      <ActivityIndicator [style.visibility]="LoadingVisbilty" busy="true"></ActivityIndicator>
+
+      <ScrollView orientation="horizontal">
+         <RadListView [items]="ItemClassStock" style="width: 100%;">
+          
+             <ng-template   let-item="item">
+                <GridLayout  columns="110,*,*,*" rows="*,*,*,*" style="width: 100%">
+                    <Label row="0" col="0" style="margin: 2;" text="Storage"></Label>
+                     <Label  (tap)="onTap($event)" [index]= "item.iIndex"  style="color: white;background-color: rgb(19, 88, 5); margin: 5;" row="1" col="0" [text]="item.Storage"></Label>
+
+                         <Label row="0" col="1" style="margin: 2;" text="On Hand"></Label>
+                         <Label (tap)="onTap($event)" [index]= "item.iIndex" style="color: white;background-color: rgb(16, 28, 136); margin: 5;" row="1" col="1" [text]="item.QuantityOnHand"></Label>
+
+                         <Label row="0" col="2" style="margin: 2;" text="On PPS"></Label>
+                         <Label (tap)="onTap($event)" [index]= "item.iIndex" style="color: white;background-color: #e00505; margin: 5;" row="1" col="2" [text]="item.QuantityOnPps"></Label>
+                         
+                         <Label row="0" col="3" style="margin: 2;" text="On Alloc"></Label>
+                         <Label (tap)="onTap($event)"  [index]= "item.iIndex" style="color: white;background-color: #a74107; margin: 5;" row="1" col="3" [text]="item.QuantityAlloc"></Label>
+
+
+
+                         
+
+                     </GridLayout>
+               </ng-template>
+          
+          </RadListView>
+
+
+          
+        </ScrollView>
+        
+       
+        <ScrollView orientation="horizontal">
+            <RadListView [items]="ItemStock" style="width: 100%;">
+             
+                <ng-template   let-item="item">
+                   <GridLayout  columns="100,*,*,*" rows="*,*,*,*" style="width: 100%">
+                       <Label row="0" col="0" style="margin: 4;" text="Warehouse"></Label>
+                        <Label (tap)="onItemStockTap($event)" [index]= "item.iIndex"    style="color: white;background-color: rgb(19, 88, 5); margin: 5;" row="1" col="0" [text]="item.WarehouseCode"></Label>
+   
+                            <Label row="0" col="1" style="margin: 2;" text="On Hand"></Label>
+                            <Label (tap)="onItemStockTap($event)" [index]= "item.iIndex"  style="color: white;background-color: rgb(16, 28, 136); margin: 5;" row="1" col="1" [text]="item.cQuantityOnHand"></Label>
+   
+                            <Label row="0" col="2" style="margin: 2;" text="On PPS"></Label>
+                            <Label (tap)="onItemStockTap($event)" [index]= "item.iIndex"   style="color: white;background-color: #e00505; margin: 5;" row="1" col="2" [text]="item.cQuantityOnPps"></Label>
+                            
+                            <Label row="0" col="3" style="margin: 2;" text="On Alloc"></Label>
+                            <Label (tap)="onItemStockTap($event)" [index]= "item.iIndex"  style="color: white;background-color: #a74107; margin: 5;" row="1" col="3" [text]="item.cQuantityAlloc"></Label>
+   
+   
+   
+                            
+   
+                        </GridLayout>
+                  </ng-template>
+             
+             </RadListView>
+           </ScrollView>  
+           <Label row="0" class="text-center " text="ERROR: " [visibility]="isErrorVisible ? 'visible' : 'collapsed'"
+           colSpan="2" textWrap="true"></Label>
+       <Label row="1" class="text-center " [text]="errormessage" verticalAligment="center" colSpan="2" textWrap="true"></Label>
+</StackLayout>

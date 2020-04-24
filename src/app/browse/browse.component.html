@@ -1,0 +1,232 @@
+<ActionBar class="action-bar">
+    <Label class="action-bar-title" text="Sales Order Entry"></Label>
+</ActionBar>
+
+<StackLayout class="form" sdkExampleTitle sdkToggleNavButton>
+    <StackLayout class="page page-content">
+    <StackLayout [style.visibility]="OrderVisbilty" class=" form window m-t-9 m-b-5">
+
+        <Label class="boxlabel" text="Customer Code" textWrap="true"></Label>
+    <!--    <TextField class="input input-border m-t-9 m-b-5" hint="Customer Code" [(ngModel)]="CustomerCode" editable="true" ></TextField> -->
+    
+    <DropDown
+    class="input input-border m-t-9 m-b-5"
+    backroundColor="red"
+    itemsTextAlignment="center"
+    [items]="CustomerCodes"
+    [(ngModel)]="selectedCustomerIndex"
+    (selectedIndexChanged)="onCustomerCodeChange($event)"
+    (opened)="onCustomerOpen()"
+    (closed)="onclose()"
+    hint = "Select Customer Code"
+ 
+    ></DropDown>
+
+
+        <Label class="boxlabel" text="Customer Purchase Order" textWrap="true"></Label>
+        <TextField class="input input-border" hint="Customer Purchase Order" [(ngModel)]="CustomerPurchaseOrder" editable="true" ></TextField>
+
+
+     <!--   <Label class="boxlabel" text="Warehouse Code" textWrap="true"></Label>
+        <TextField class="input input-border" hint="Warehouse Code" [(ngModel)]="WarehouseCode" editable="true" ></TextField> -->
+
+
+        <Button  class="btn btn-primary btn-purple btn-active" [isEnabled]="orderLinesEnabled"    text="Show Order Lines" (tap)="showOrderLines()"></Button>
+
+        <Button  class="btn btn-primary btn-sky btn-active"  [isEnabled]="deliveryAddressEnabled"   text="Change Delivery Address" (tap)="showDeliveryAddress()"></Button>
+      
+        <Button   colSpan="2" class="btn btn-primary btn-forest btn-active" [isEnabled]="summaryEnabled"       text="Show Order Summary " (tap)="showOrderSummary()"></Button>
+
+         
+        
+
+        
+
+    </StackLayout>
+    <ScrollView (scroll)="onScroll($event)" [style.visibility]="ItemVisbilty"  [scrollY] ="scrollYPos" height = "4000px" > // ITEM START
+    <StackLayout > 
+        <StackLayout  class=" form window m-t-9 m-b-5">
+         <Label  class="boxlabel" text="Line Number" textWrap="true"></Label>
+        <TextField   class="input input-border" hint="" [(ngModel)]="LineNumber" editable="false" ></TextField>
+
+        <Label  class="boxlabel"  text="Generic Item Code" textWrap="true"></Label>
+      <!--  <TextField   class="input input-border" hint="Item Code" [(ngModel)]="ItemCode" editable="true" ></TextField> -->
+      <DropDown
+      class="input input-border"
+      backroundColor="red"
+      itemsTextAlignment="center"
+      [items]="GenericItems"
+      [(ngModel)]="selectedGenericIndex"
+
+      (selectedIndexChanged)="onchange($event)"
+      (opened)="onopen()"
+      (closed)="onclose()"
+      hint = "Select Item code"
+      ></DropDown>
+        
+
+     
+           
+   
+        
+         
+        </StackLayout> 
+     <StackLayout  >
+     <GridLayout   rows="auto,auto" columns="auto,*">
+
+        <DropDown
+        class="input input-border"
+        backroundColor="red"
+        itemsTextAlignment="center"
+        [items]="Attribute1"
+        [(ngModel)]="selectedAtt1Index"
+        (selectedIndexChanged)="onAttribute1change($event)"
+        (opened)="onopen()"
+        (closed)="onclose()"
+        hint = "Select Size"
+        row="1" col = "0"
+        ></DropDown>
+
+
+
+        <DropDown
+        class="input input-border"
+        backroundColor="red"
+        itemsTextAlignment="center"
+        [items]="Attribute2"
+        [(ngModel)]="selectedAtt2Index"
+        (selectedIndexChanged)="onAttribute2change($event)"
+        (opened)="onopen()"
+        (closed)="onclose()"
+        hint = "Select Colour"
+        row="1" col = "1"
+        ></DropDown>
+
+
+
+       </GridLayout>  
+    </StackLayout>
+
+
+     <GridLayout    rows="20,50,20,50" columns="*,*,*">
+       
+        <Label row="0"  col = "1"  class="boxlabel"  text="Quantity" textWrap="true"></Label>
+
+        <Button row="1" col = "0" height = "100%" [isEnabled]="minusQtyEnabled"  text="&#xf068; " fontFamily="FontAwesome" class="btn btn-primary btn-active"  (tap)="minusQty()"></Button>
+    <TextField row = "1" col = "1" class="input input-border" keyboardType ="number" hint="Quantity" [(ngModel)]="Quantity" editable="true" ></TextField>
+    <Button row="1" col = "2" text="&#xf067; " fontFamily="FontAwesome" height = "100%" class="btn btn-primary btn-active"  (tap)="addQty()"> </Button>
+
+    <Label row="2"  col = "0"  class="boxlabel"  text="Price" textWrap="true"></Label>
+    <TextField row = "3" col = "0" class="input input-border" keyboardType ="number" hint="Price" [(ngModel)]="Price" editable="false" ></TextField>
+
+
+    <Label row="2"  col = "1"  class="boxlabel"  text="Currency" textWrap="true"></Label>
+    <TextField row = "3" col = "1" colspan= "2" class="input input-border" keyboardType ="number" hint="Currency" [(ngModel)]="Currency" editable="false" ></TextField>
+
+
+       </GridLayout>  
+
+        
+        <GridLayout    rows="auto, auto, auto,auto,auto,auto,auto" columns="*,*">
+         
+
+        <Button row="0" col = "0"   colSpan="2" class="btn btn-primary btn-forest btn-active "    text="Add New Order Line" (tap)="addOrderLine()"> </Button>
+
+
+        <Button row="1" col = "0" class="btn btn-primary btn-active" text="Previous Line" [isEnabled]="previousLineEnabled" (tap)="previousOrderLine()"></Button>
+        <Button row="1" col = "1"  class="btn btn-primary btn-active" text="Next Line" [isEnabled]="nextLineEnabled" text="Next Line" (tap)="nextOrderLine()"></Button>
+        <Button row="2"  col = "0" class="btn btn-primary btn-ruby btn-active "  text="Reset Lines" (tap)="resetLines()"></Button>
+        <Button row="2"  col = "1" class="btn btn-primary btn-forest btn-active "  text="Confirm" (tap)="hideOrderLines()"></Button>
+        <Label row="3" style="font-size: 20%;" colSpan = "2" class="text-center " [text]="message" verticalAligment="center" colSpan="2" textWrap="true"></Label>
+
+
+
+        </GridLayout> 
+    </StackLayout>  //ITEM END
+    </ScrollView> //ITEM End
+         <ScrollView (scroll)="onScroll($event)" [style.visibility]="AddressVisbilty"  [scrollY] ="scrollYPos" height = "3300px" > // Delivery Address START
+        <StackLayout   class="form window" height = "3300px">
+           
+            <Label class="boxlabel"   text="Ship Name"  textWrap="true"></Label>
+           <TextField  class="input input-border" hint="Ship Name" [(ngModel)]="ShipName" editable="true" ></TextField>
+   
+        
+   
+           <Label  class="boxlabel" style="text-align: center;" text="Ship Address 1" textWrap="true"></Label>
+           <TextField   class="input input-border"  hint="Ship Address 1" [(ngModel)]="ShipAddress1" editable="true" ></TextField>
+   
+           <Label  class="boxlabel"  text="Ship Address 2" textWrap="true"></Label>
+           <TextField   class="input input-border" hint="Ship Address 2" [(ngModel)]="ShipAddress2" editable="true" ></TextField>
+
+           <Label  class="boxlabel"  text="Ship Address 3" textWrap="true"></Label>
+           <TextField   class="input input-border" hint="Ship Address 3" [(ngModel)]="ShipAddress3" editable="true" ></TextField>
+           
+           <Label  class="boxlabel"  text="Ship Address 4" textWrap="true"></Label>
+           <TextField   class="input input-border" hint="Ship Address 4" [(ngModel)]="ShipAddress4" editable="true" ></TextField>
+
+           <Label   class="boxlabel"  text="Ship Address 5" textWrap="true"></Label>
+           <TextField  (focus)="onFocus($event)"  class="input input-border" hint="Ship Address 5" [(ngModel)]="ShipAddress5" editable="true" ></TextField>
+
+
+
+           <Label  class="boxlabel"  text="Ship City" textWrap="true"></Label>
+           <TextField   class="input input-border" hint="Ship City" [(ngModel)]="ShipCity" editable="true" ></TextField>
+
+           <Label  class="boxlabel"  text="Ship Postcode" textWrap="true"></Label>
+           <TextField   class="input input-border" hint="Ship Postcode" [(ngModel)]="ShipPostCode" editable="true" ></TextField>
+
+         
+           <Button row="3" col = "0"  colSpan="2" class="btn btn-primary btn-active"   style="background-color:green;color: white;" text="Confirm" (tap)="hideDeliveryAddress()"></Button>
+   
+   
+   
+           </StackLayout> 
+        </ScrollView> > // Delivery Address END
+    <StackLayout  [style.visibility]="SummaryVisbilty" > // Summary  start
+        <RadListView  [style.visibility]="SummaryVisbilty"  isUserInteractionEnabled ="false" [items]="OrderItemList" height="360" >
+          
+            <ng-template   let-item="item">
+       
+                <GridLayout  columns="170,*" rows="*,*,*,*,*" style="padding:20;width: 100%;font-size: 20px;">
+            <Label class="cell" row="0" col="0" text="Line Number:"></Label>
+              <Label class="cell" row="0" col="1"  [text]="item.LineNumber"></Label>
+        
+              
+
+              <Label class="cell" row="1" col="0" text="Item Code:"></Label>
+              <Label class="cell" row="1" col="1" [text]="item.ItemCode"></Label>
+
+              <Label class="cell"   row="2" col="0"  text="Quantity:"></Label>
+              <Label class="cell"  row="2" col="1"   textWrap="true" [text]="item.Quantity"></Label>
+
+              
+              <Label class="cell"   row="3" col="0"  text="Price:"></Label>
+              <Label class="cell"  row="3" col="1"   textWrap="true" [text]="item.Price"></Label>
+
+              <Label class="cell"   row="4" col="0"  text="Currency:"></Label>
+              <Label class="cell"  row="4" col="1"   textWrap="true" [text]="item.Currency"></Label>
+
+              
+
+              
+           </GridLayout>
+
+           </ng-template>
+
+        </RadListView>
+        <Label class="cell"   text="Total Price:"></Label>
+        <Label class="cell"   [text]="TotalPrice"></Label>
+
+        <Button   class="btn btn-primary btn-active"   style="background-color:red;color: white;" text="Back" (tap)="hideOrderSummary()"></Button>
+        <Button row="3"  colSpan="2"  class="btn btn-primary  btn-forest btn-active" text="Submit Order" (tap)="submit()"></Button>
+    </StackLayout>  // Summary  END
+
+   
+    <GridLayout class=" p-5 m-5" rows="*, *" columns="*" borderRadius="1">
+    
+        <Label row="1" class="text-center " [text]="message" verticalAligment="center" colSpan="2" textWrap="true"></Label> 
+        //Was used for ERROR MESSAGES. ERROR MESSAGES now display in alert boxes currently.
+    </GridLayout>
+
+ </StackLayout>
+</StackLayout>

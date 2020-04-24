@@ -1,0 +1,120 @@
+<ActionBar class="action-bar">
+    <Label class="action-bar-title" text="Order Enquiry"></Label>
+</ActionBar>
+
+<StackLayout class="page page-content">
+    
+    <StackLayout class="form window">
+        <Label [style.visibility]="OrderNumberSearch" class="boxlabel" text="Order Number" textWrap="true"></Label>
+        <TextField [style.visibility]="OrderNumberSearch" keyboardType ="number" class="input input-border"  hint="OrderNumber" [(ngModel)]="OrderNumber" editable="true" ></TextField>
+        
+      
+        <Label class="boxlabel" [style.visibility]="CustomerCodeSearch" text="Customer Code" textWrap="true"></Label>
+        <TextField class="input input-border"  hint="CustomerCode" [(ngModel)]="CustomerCode" [style.visibility]="CustomerCodeSearch" ></TextField>
+         
+        <GridLayout rows="auto" columns="*,*">
+        <Label row="0" col="0" class="label" text="Search via Customer Code:" textWrap="true"></Label>
+         <Switch row="0" col="1" checked="false" (checkedChange)="onCheckedChange($event)"></Switch>
+        </GridLayout>
+
+         <Button class="btn btn-primary" text="Submit" (tap)="submit()"></Button>
+       
+
+        <Label row="1" class="text-center " [style.visibility]="MessageVisbilty" [text]="message" verticalAligment="center" colSpan="2" textWrap="true"></Label>
+     
+     </StackLayout>
+
+     
+      <ActivityIndicator [style.visibility]="LoadingVisbilty" busy="true"></ActivityIndicator>
+
+      
+      
+      <Label row="1" class="text-center " [text]="errormessage" verticalAligment="center" colSpan="2" textWrap="true"></Label>
+      <RadListView [style.visibility]="OrderVisbilty" [items]="OrderRecordList" height="600" >
+          
+        <ng-template   let-item="item">
+           <GridLayout  columns="200,200,200,200" rows="*,*,*,*" style="width: 100%;font-size: 20px;">
+               <Label class="cell"  row="0" col="0"  text="Order Number:"></Label>
+                <Label class="cell"  (tap)="onOrderNumberTap($event)"   row="0" col="1" [text]="item.OrderNumber"></Label>
+
+                <Label   Label class="cell"  row="1" col="0"  text="Order Status:"></Label>
+                <Label class="cell"   row="1" col="1" [text]="item.OrderStatus"></Label>
+                <Label   row="2" col="0"  text=""></Label>
+           
+    
+                </GridLayout>
+          </ng-template>
+     
+     </RadListView>
+
+     <RadListView  isUserInteractionEnabled ="false" [items]="OrderRecord" height="80" >
+          
+      <ng-template   let-item="item">
+         <GridLayout  columns="170,*" rows="*,*,*,*" style="padding:20;width: 100%;font-size: 20px;">
+             <Label class="cell"  row="0" col="0"  text="Order Number:"></Label>
+              <Label class="cell"  row="0" col="1" [text]="item.OrderNumber"></Label>
+
+              <Label   Label class="cell"  row="1" col="0"  text="PO Number:"></Label>
+              <Label class="cell"   row="1" col="1" [text]="item.CustomerPurchaseOrder"></Label>
+         
+  
+              </GridLayout>
+        </ng-template>
+   
+   </RadListView>
+
+
+     <RadListView [items]="OrderLineRecord" height="600"  verticalAligment="left" > 
+          
+        
+        <ng-template   let-item="item">
+            <GridLayout  columns="auto,*" rows="*,*,*,*,*,*,*,*,*,*,*,*, *,*,*" style="padding:20;width: 100%;font-size: 20px;">
+            
+
+              <Label class="cell" row="0" col="0" text="Line Number:"></Label>
+                <Label class="cell" row="0" col="1"  [text]="item.LineNumber"></Label>
+          
+                
+
+                <Label class="cell" row="1" col="0" text="Item Code:"></Label>
+                <Label class="cell" row="1" col="1" [text]="item.ItemCode"></Label>
+
+                <Label class="cell"   row="2" col="0"  text="Description:"></Label >
+                <Label style="width: 50%;" class="cell"  row="2" col="1"   textWrap="true" [text]="item.Description"></Label>
+
+                <Label class="cell" row="3" col="0"  text="UomCode:"></Label>
+                <Label class="cell" row="3" col="1" [text]="item.UomCode"></Label>
+
+                <Label class="cell" row="4" col="0"  text="Gross Price:"></Label>
+                <Label class="cell" row="4" col="1" [text]="item.GrossPrice"></Label>
+
+                <Label class="cell" row="5" col="0"  text="Net Price:"></Label>
+                <Label class="cell" row="5" col="1" [text]="item.NetPrice"></Label>
+
+                <Label class="cell" row="6" col="0"  text="Warehouse Code:"></Label>
+                <Label class="cell" row="6" col="1" [text]="item.WarehouseCode"></Label>
+             
+                <Label  class="cell" row="7" col="0"  text="Quantity Ordered:"></Label>
+                <Label class="cell" row="7" col="1" [text]="item.QuantityOpenOrdered"></Label>
+             
+                <Label class="cell" row="8" col="0"  text="Quantity Allocated:"></Label>
+                <Label class="cell" row="8" col="1" [text]="item.QuantityAllocated"></Label>
+          
+                <Label class="cell" row="9" col="0"  text="Quantity On Pps:"></Label>
+                <Label class="cell" row="9" col="1" [text]="item.QuantityOnPps"></Label>
+             
+                <Label class="cell" row="10" col="0"  text="Quantity Reserved:"></Label>
+                <Label class="cell" row="10" col="1" [text]="item.QuantityReserved"></Label>
+             
+                <Label class="cell" row="11" col="0"  text="Request Date:"></Label>
+                <Label class="cell" row="11" col="1" [text]="item.RequestDate"></Label>
+             
+                <Label class="cell" row="12" col="0"  text="Wo Number:"></Label>
+                <Label class="cell" row="12" col="1" [text]="item.WoNumber"></Label>
+       
+        </GridLayout>
+          </ng-template>
+        
+     </RadListView>
+      
+    </StackLayout>
