@@ -410,6 +410,11 @@ public hideOrderSummary(){
 
 }
 
+public  deleteOrderLine(){// Deletes Line then changes all line numbers after it by - 1
+
+
+}
+
     public addOrderLine(){ // Code for Adding order line if the length is at max then current  record hasnt been added neds to be pushed in
       this.message = "";
 
