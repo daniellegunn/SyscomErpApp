@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit   } from "@angular/core";
 import { MyHttpPostService , OrderPackageRequest , OrderItemList ,
    GenericItemPostService,Attribute1, Attribute2,
-   Attribute1ItemPostService ,Attribute2ItemPostService , DeliveryAddressPostService ,ItemDetailsPostService, AdditionalChargesPostService} from "~/app/browse/browse.service";
+   Attribute1ItemPostService ,Attribute2ItemPostService , DeliveryAddressPostService ,ItemDetailsPostService, AdditionalChargesPostService, AddChargesClass} from "~/app/browse/browse.service";
 import {NgForm} from '@angular/forms';
 import { getInterpolationArgsLength } from "@angular/compiler/src/render3/view/util";
 import { TextField } from "tns-core-modules/ui/text-field";
@@ -34,8 +34,9 @@ export class BrowseComponent implements OnInit     {
     public Quantity: string = "1";
     public OrderPackageRequest: Array<OrderPackageRequest>;
     public OrderItemList: Array<OrderItemList>;
+    public AddChargesList: Array<AddChargesClass>;
     public message: string = "";
-    
+   
     public selectedAtt1Index:number;
     public GenericItems:Array <string>;
     public selectedGenericIndex:number;
@@ -83,6 +84,11 @@ export class BrowseComponent implements OnInit     {
   public nextLineEnabled:boolean = false;
   public previousLineEnabled:boolean = false;
   public selectedIndex:number;
+
+  //public AddChargeCode:string;
+  //public AddChargeValue:string;
+  //public AddChargeDesc:string;
+  AddCharges:Array<AddChargesClass> = [];
 
   public orderLinesEnabled:boolean = false;
   public deliveryAddressEnabled:boolean = false;
@@ -165,19 +171,23 @@ public onCustomerCodeChange(args:SelectedIndexChangedEventData){
        
  .subscribe(response => { 
 console.log(response);
-//this.ShipName = response.body.ttDeliveryDefault[0].ShipName;
-//this.ShipAddress1 = response.body.ttDeliveryDefault[0].ShipAddress1;
-//this.ShipAddress2 = response.body.ttDeliveryDefault[0].ShipAddress2;
-//this.ShipAddress3 = response.body.ttDeliveryDefault[0].ShipAddress3;
-//this.ShipAddress4 = response.body.ttDeliveryDefault[0].ShipAddress4;
-//this.ShipAddress5 = response.body.ttDeliveryDefault[0].ShipAddress5;
-//this.ShipCity = response.body.ttDeliveryDefault[0].ShipCity;
-//this.ShipPostCode = response.body.ttDeliveryDefault[0].ShipPostCode;
+//this.AddChargeCode = response.body.ttAddCharge[0].addchargecode;
+//this.AddChargeValue = response.body.ttAddCharge[0].addvalue;
+//this.AddChargeDesc = response.body.ttAddCharge[0].chargedesc;
 
+this.AddCharges = [];
+this.AddCharges = response.body.ttAddCharge.map(item => new AddChargesClass(
+  item.iindex,
+  item.AddChargeCode,
+  item.AddChargeValue,
+  item.AddChargeDesc));
+  console.log(this.AddCharges);
  });
- this.orderLinesEnabled = true;
-  this.deliveryAddressEnabled = true;
-  this.AddChargesEnabled = true;
+
+
+this.orderLinesEnabled = true;
+this.deliveryAddressEnabled = true;
+this.AddChargesEnabled = true;
 
 }
 
@@ -790,6 +800,7 @@ this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex
             WarehouseCode: this.WarehouseCode,
             CustomerPurchaseOrder: this.CustomerPurchaseOrder,
             OrderItemList: this.OrderItemList,
+            AddChargesList:this.AddCharges,
            ShipName: this.ShipName,
            ShipAddress1: this.ShipAddress1,
            ShipAddress2: this.ShipAddress2,

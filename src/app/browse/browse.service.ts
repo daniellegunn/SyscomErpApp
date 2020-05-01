@@ -9,6 +9,7 @@ export class OrderPackageRequest{
   public WarehouseCode: string;
   public CustomerPurchaseOrder :string;
   public OrderItemList : Array<OrderItemList>;
+  public AddChargesList : Array<AddChargesClass>;  
   public ShipName:string;
   public ShipAddress1:string;
   public ShipAddress2:string;
@@ -62,6 +63,12 @@ export class Attribute2 {
    ) { }
 }
 
+export class AddChargesClass {
+  constructor( public iindex: number,
+     public AddChargeCode: string,
+     public AddChargeValue: string,
+     public AddChargeDesc: string) { }
+}
 
 
 export class GenericItemPostService { //Request for the List Of Generic Items on the current InEntity
@@ -274,7 +281,7 @@ export class ItemDetailsPostService { //Gets Item record for the selected Item. 
       }),
       observe: 'response'
     };
-        
+      
         let data: HttpParams = new HttpParams();
         data  = data.append('pcArEntity', body.ArEntity);
         data  = data.append('pcInEntity', body.InEntity);
@@ -288,8 +295,7 @@ export class ItemDetailsPostService { //Gets Item record for the selected Item. 
         this.testdata =  this.http.post(this.serverUrl,   data , httpOptions );
         //console.log(this.testdata);
         return this.testdata;
-      
-     
+
   }
 
   

@@ -183,9 +183,25 @@
    
            </StackLayout> 
         </ScrollView> > // Delivery Address END
-
+ 
         <ScrollView (scroll)="onScroll($event)" [style.visibility]="ChargeVisbilty"  [scrollY] ="scrollYPos" height = "3300px" > // AddCharge Start START
-            <StackLayout   class="form window" height = "3300px">
+            <RadListView [items]="AddCharges" style="width: 100%;">
+                <ng-template   let-item="item">
+                   <GridLayout  columns="100,*,*,*" rows="*,*,*,*" style="width: 100%">
+                       <Label row="0" col="0" style="margin: 4;" text="Add Charge"></Label>
+                        <Label [index]= "item.iindex" style="margin: 5;"  row="1" col="0" [text]="item.AddChargeCode"></Label>
+                
+                           <Label row="0" col="1" style="margin: 2;" text="Charge Value"></Label>
+                            <Label [index]= "item.iindex" style="margin: 5;"  row="1" col="1" [text]="item.AddChargeValue"></Label>
+                          
+                            <Label row="0" col="2" style="margin: 2;" text="Charge Desc"></Label>
+                            <Label [index]= "item.iindex" style="margin: 5;"  row="1" col="2" [text]="item.AddChargeDesc"></Label>
+
+                        </GridLayout>
+                  </ng-template>
+             
+             </RadListView>
+            <!-- <StackLayout   class="form window" height = "3300px">
                
             <Label class="boxlabel"   text="Add Charge Code"  textWrap="true"></Label>
                <TextField  class="input input-border" hint="Add Charge Cod" [(ngModel)]="AddChargeCode" editable="false" ></TextField>
@@ -198,7 +214,7 @@
 
                <Button row="3" col = "0"  colSpan="2" class="btn btn-primary btn-active"   style="background-color:green;color: white;" text="Confirm" (tap)="hideDeliveryAddress()"></Button>
        
-               </StackLayout> 
+               </StackLayout> -->
             </ScrollView> > // AddCharges End       
         
     <StackLayout  [style.visibility]="SummaryVisbilty" > // Summary  start
