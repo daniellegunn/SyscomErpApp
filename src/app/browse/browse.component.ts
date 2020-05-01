@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit   } from "@angular/core";
 import { MyHttpPostService , OrderPackageRequest , OrderItemList ,
    GenericItemPostService,Attribute1, Attribute2,
-   Attribute1ItemPostService ,Attribute2ItemPostService , DeliveryAddressPostService ,ItemDetailsPostService} from "~/app/browse/browse.service";
+   Attribute1ItemPostService ,Attribute2ItemPostService , DeliveryAddressPostService ,ItemDetailsPostService, AdditionalChargesPostService} from "~/app/browse/browse.service";
 import {NgForm} from '@angular/forms';
 import { getInterpolationArgsLength } from "@angular/compiler/src/render3/view/util";
 import { TextField } from "tns-core-modules/ui/text-field";
@@ -20,7 +20,8 @@ import { SelectedIndexChangedEventData } from "nativescript-drop-down";
       Attribute1ItemPostService,
       Attribute2ItemPostService,
       DeliveryAddressPostService,
-      ItemDetailsPostService
+      ItemDetailsPostService,
+      AdditionalChargesPostService
       ]
 })
 export class BrowseComponent implements OnInit     {
@@ -86,12 +87,14 @@ export class BrowseComponent implements OnInit     {
   public orderLinesEnabled:boolean = false;
   public deliveryAddressEnabled:boolean = false;
   public summaryEnabled:boolean = false;
-
+  public AddChargesEnabled:boolean = false;
+  
 
     public AddressVisbilty:string = "collapse";
     public ItemVisbilty:string = "collapse";
     public OrderVisbilty:string = "visible";
     public SummaryVisbilty:String = "collapse";
+    public ChargeVisbilty:String = "collapse";
     public scrollYPos: number;
     constructor(private myPostService: MyHttpPostService,
       private GenericItemPostService: GenericItemPostService,
@@ -99,9 +102,8 @@ export class BrowseComponent implements OnInit     {
       private Attribute2ItemPostService:Attribute2ItemPostService,
       private DeliveryAddressPostService:DeliveryAddressPostService,
       private ItemDetailsPostService:ItemDetailsPostService,
+      private AdditionalChargesPostService:AdditionalChargesPostService,
       private appComponent: AppComponent) { }
-    
-
   
 
     ngOnInit(): void {
@@ -140,8 +142,6 @@ public onCustomerCodeChange(args:SelectedIndexChangedEventData){
   console.log("Customer Code is: " + this.CustomerCode );
 
   this.DeliveryAddressPostService
-
-        
   .postData({CustomerCode: this.CustomerCode})
        
              .subscribe(response => { 
@@ -155,15 +155,29 @@ public onCustomerCodeChange(args:SelectedIndexChangedEventData){
           this.ShipCity = response.body.ttDeliveryDefault[0].ShipCity;
           this.ShipPostCode = response.body.ttDeliveryDefault[0].ShipPostCode;
 
-
-
-
-
-
              });
              this.orderLinesEnabled = true;
               this.deliveryAddressEnabled = true;
+              this.AddChargesEnabled = true;
 
+ this.AdditionalChargesPostService
+ .postData({CustomerCode: this.CustomerCode})
+       
+ .subscribe(response => { 
+console.log(response);
+//this.ShipName = response.body.ttDeliveryDefault[0].ShipName;
+//this.ShipAddress1 = response.body.ttDeliveryDefault[0].ShipAddress1;
+//this.ShipAddress2 = response.body.ttDeliveryDefault[0].ShipAddress2;
+//this.ShipAddress3 = response.body.ttDeliveryDefault[0].ShipAddress3;
+//this.ShipAddress4 = response.body.ttDeliveryDefault[0].ShipAddress4;
+//this.ShipAddress5 = response.body.ttDeliveryDefault[0].ShipAddress5;
+//this.ShipCity = response.body.ttDeliveryDefault[0].ShipCity;
+//this.ShipPostCode = response.body.ttDeliveryDefault[0].ShipPostCode;
+
+ });
+ this.orderLinesEnabled = true;
+  this.deliveryAddressEnabled = true;
+  this.AddChargesEnabled = true;
 
 }
 
@@ -366,6 +380,7 @@ return;
 
     this.ItemVisbilty = "visible";
     this.OrderVisbilty = "collapse";
+    this.ChargeVisbilty = "collapse";
     this.message = "";
 
 
@@ -377,11 +392,22 @@ public showDeliveryAddress(){
               }
     this.AddressVisbilty = "visible";
     this.OrderVisbilty = "collapse";
+    this.ChargeVisbilty = "collapse";
 }
 
 public hideDeliveryAddress(){
     this.AddressVisbilty = "collapse";
     this.OrderVisbilty = "visible";
+    this.ChargeVisbilty = "collapse";
+}
+
+public showAddCharges(){
+  if(this.CustomerCode == ""){
+   alert("Please enter a Customer Code");
+              }
+    this.ChargeVisbilty = "visible";
+    this.OrderVisbilty = "collapse";
+    this.AddressVisbilty = "collapse";
 }
 
 public showOrderSummary(){
@@ -401,7 +427,7 @@ public showOrderSummary(){
         });
   this.OrderVisbilty = "collapse";
   this.SummaryVisbilty   ="visible";
-
+  this.ChargeVisbilty = "collapse";
 }
 
 public hideOrderSummary(){
@@ -609,6 +635,7 @@ this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex
         this.orderLinesEnabled = false;
         this.deliveryAddressEnabled = false;
         this.summaryEnabled = false;
+        this.AddChargesEnabled = false;
 
 
 
@@ -722,6 +749,8 @@ this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex
         this.previousLineEnabled = true;
     }
 
+
+
    public minusQty(){ // Code for minus button on the Quanity 
    
 
@@ -730,6 +759,10 @@ this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex
     if (Number(this.Quantity) == 1 ){
       this.minusQtyEnabled = false
     }
+   }
+
+   public checkqty() {
+    alert(this.Quantity);
    }
 
    public addQty(){ // Code for + button on the Quanity 

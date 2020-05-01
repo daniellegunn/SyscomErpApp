@@ -227,6 +227,39 @@ export class DeliveryAddressPostService { //Gets the default address for the cur
  
 }
 
+export class AdditionalChargesPostService { //Gets the default address for the current selected customer. Needs to be ran everytime the customer is changed
+  private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/AdditionalCharges";
+  private response;
+  private testdata;
+
+  constructor(private http: HttpClient) { }
+
+  postData(body: any) {
+    const httpOptions: { headers; observe; } = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/x-www-form-urlencoded'
+      }),
+      observe: 'response'
+    };
+        
+        let data: HttpParams = new HttpParams();
+        data  = data.append('pcCustomerCode', body.CustomerCode);
+     
+      //console.log(data);
+      
+     // console.log(httpOptions);
+        this.testdata =  this.http.post(this.serverUrl,   data , httpOptions );
+        console.log(this.testdata);
+        return this.testdata;
+      
+     
+  }
+
+  
+ 
+}
+
+
 export class ItemDetailsPostService { //Gets Item record for the selected Item. Is used for Price1 and CurrencyCode currently which doesnt come from the Item table 
   private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/getItemDetails";
   private response;
@@ -247,10 +280,8 @@ export class ItemDetailsPostService { //Gets Item record for the selected Item. 
         data  = data.append('pcInEntity', body.InEntity);
         data  = data.append('pcItemCode', body.ItemCode);
         data  = data.append('pcCustomerCode', body.CustomerCode);
+   
 
-
-
-     
       //console.log(data);
       
      // console.log(httpOptions);

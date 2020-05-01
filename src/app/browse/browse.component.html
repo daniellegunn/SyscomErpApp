@@ -27,7 +27,7 @@
         <TextField class="input input-border" hint="Customer Purchase Order" [(ngModel)]="CustomerPurchaseOrder" editable="true" ></TextField>
 
 
-     <!--   <Label class="boxlabel" text="Warehouse Code" textWrap="true"></Label>
+       <!-- <Label class="boxlabel" text="Warehouse Code" textWrap="true"></Label>
         <TextField class="input input-border" hint="Warehouse Code" [(ngModel)]="WarehouseCode" editable="true" ></TextField> -->
 
 
@@ -35,10 +35,10 @@
 
         <Button  class="btn btn-primary btn-sky btn-active"  [isEnabled]="deliveryAddressEnabled"   text="Change Delivery Address" (tap)="showDeliveryAddress()"></Button>
       
-        <Button   colSpan="2" class="btn btn-primary btn-forest btn-active" [isEnabled]="summaryEnabled"       text="Show Order Summary " (tap)="showOrderSummary()"></Button>
+        <Button  class="btn btn-primary btn-sky btn-active"  [isEnabled]="AddChargesEnabled"   text="Change Additional Charges" (tap)="showAddCharges()"></Button>
 
-         
-        
+        <Button   colSpan="2" class="btn btn-primary btn-forest btn-active" [isEnabled]="summaryEnabled"       text="Show Order Summary " (tap)="showOrderSummary()"></Button>
+       
 
         
 
@@ -113,7 +113,7 @@
         <Label row="0"  col = "1"  class="boxlabel"  text="Quantity" textWrap="true"></Label>
 
         <Button row="1" col = "0" height = "100%" [isEnabled]="minusQtyEnabled"  text="&#xf068; " fontFamily="FontAwesome" class="btn btn-primary btn-active"  (tap)="minusQty()"></Button>
-    <TextField row = "1" col = "1" class="input input-border" keyboardType ="number" hint="Quantity" [(ngModel)]="Quantity" editable="true" ></TextField>
+    <TextField row = "1" col = "1" class="input input-border" keyboardType ="number" hint="Quantity" [(ngModel)]="Quantity" editable="true" ) ></TextField>
     <Button row="1" col = "2" text="&#xf067; " fontFamily="FontAwesome" height = "100%" class="btn btn-primary btn-active"  (tap)="addQty()"> </Button>
 
     <Label row="2"  col = "0"  class="boxlabel"  text="Price" textWrap="true"></Label>
@@ -144,7 +144,8 @@
         </GridLayout> 
     </StackLayout>  //ITEM END
     </ScrollView> //ITEM End
-         <ScrollView (scroll)="onScroll($event)" [style.visibility]="AddressVisbilty"  [scrollY] ="scrollYPos" height = "3300px" > // Delivery Address START
+        
+    <ScrollView (scroll)="onScroll($event)" [style.visibility]="AddressVisbilty"  [scrollY] ="scrollYPos" height = "3300px" > // Delivery Address START
         <StackLayout   class="form window" height = "3300px">
            
             <Label class="boxlabel"   text="Ship Name"  textWrap="true"></Label>
@@ -182,6 +183,24 @@
    
            </StackLayout> 
         </ScrollView> > // Delivery Address END
+
+        <ScrollView (scroll)="onScroll($event)" [style.visibility]="ChargeVisbilty"  [scrollY] ="scrollYPos" height = "3300px" > // AddCharge Start START
+            <StackLayout   class="form window" height = "3300px">
+               
+            <Label class="boxlabel"   text="Add Charge Code"  textWrap="true"></Label>
+               <TextField  class="input input-border" hint="Add Charge Cod" [(ngModel)]="AddChargeCode" editable="false" ></TextField>
+       
+               <Label  class="boxlabel" style="text-align: center;" text="Charge Value" textWrap="true"></Label>
+               <TextField   class="input input-border"  hint="Charge Value" [(ngModel)]="AddChargeValue" editable="false" ></TextField>
+       
+               <Label  class="boxlabel"  text="Charge Description" textWrap="true"></Label>
+               <TextField   class="input input-border" hint="Charge Description" [(ngModel)]="AddChargeDesc" editable="false" ></TextField>
+
+               <Button row="3" col = "0"  colSpan="2" class="btn btn-primary btn-active"   style="background-color:green;color: white;" text="Confirm" (tap)="hideDeliveryAddress()"></Button>
+       
+               </StackLayout> 
+            </ScrollView> > // AddCharges End       
+        
     <StackLayout  [style.visibility]="SummaryVisbilty" > // Summary  start
         <RadListView  [style.visibility]="SummaryVisbilty"  isUserInteractionEnabled ="false" [items]="OrderItemList" height="360" >
           
