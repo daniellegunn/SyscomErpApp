@@ -190,10 +190,10 @@
                    <GridLayout  columns="100,*,*,*" rows="*,*,*,*" style="width: 100%">
                        <Label row="0" col="0" style="margin: 4;" text="Add Charge"></Label>
                       
-                        <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="0" [text]="item.AddChargeCode" editable="true" ></TextField>
+                        <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="0" [text]="item.AddChargeCode" editable="false" ></TextField>
 
                            <Label row="0" col="1" style="margin: 2;" text="Charge Value"></Label>
-                            <TextField [index]= "item.iIndex" style="margin: 5;"  row="1" col="1" [text]="item.AddChargeValue" editable="true" ></TextField>
+                            <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="1" [text]="item.AddChargeValue" editable="true" keyboardType ="number" (returnPress)="onReturnPressChargeValue"></TextField>
 
                             <Label row="0" col="2" style="margin: 2;" text="Charge Desc"></Label>
                             <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="2" [text]="item.AddChargeDesc" editable="false" ></TextField>
@@ -207,6 +207,8 @@
              </RadListView>
              <Button row="3" col = "0"  colSpan="2" class="btn btn-primary btn-active"   style="background-color:green;color: white;" text="Confirm" (tap)="hideAddCharges()"></Button>
              
+             <Label row="4" col="0" style="margin: 2;" text="Select a charge code to add "></Label>
+
              <DropDown
              class="input input-border m-t-9 m-b-5"
              backroundColor="red"
@@ -219,11 +221,13 @@
              hint = "Select Charge Code"
              ></DropDown>
 
-             <Button row="5" col = "0"  colSpan="2" class="btn btn-primary btn-active"   style="background-color:green;color: white;" text="Add Charge Code" (tap)="AddAddCharge()"></Button>
+            <!-- <Button row="5" col = "0"  colSpan="2" class="btn btn-primary btn-active"   style="background-color:green;color: white;" text="Add Charge Code" (tap)="AddAddCharge()"></Button>-->
 
         </StackLayout> > // AddCharges End       
         
-    <StackLayout  [style.visibility]="SummaryVisbilty" > // Summary  start
+        <ScrollView (scroll)="onScroll($event)" [style.visibility]="SummaryVisbilty"  [scrollY] ="scrollYPos" height = "3300px" > // sumaary START
+            <StackLayout   class="form window" height = "3300px">
+  <!--  <StackLayout  [style.visibility]="SummaryVisbilty" > // Summary  start-->
         <RadListView  [style.visibility]="SummaryVisbilty"  isUserInteractionEnabled ="false" [items]="OrderItemList" height="360" >
           
             <ng-template   let-item="item">
@@ -267,7 +271,8 @@
 
         <Button   class="btn btn-primary btn-active"   style="background-color:red;color: white;" text="Back" (tap)="hideOrderSummary()"></Button>
         <Button row="3"  colSpan="2"  class="btn btn-primary  btn-forest btn-active" text="Submit Order" (tap)="submit()"></Button>
-    </StackLayout>  // Summary  END
+            </StackLayout>    
+    </ScrollView>  // Summary  END
 
    
     <GridLayout class=" p-5 m-5" rows="*, *" columns="*" borderRadius="1">

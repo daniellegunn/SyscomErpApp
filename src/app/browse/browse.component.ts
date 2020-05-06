@@ -11,6 +11,7 @@ import { AppComponent } from '~/app/app.component';
 import { ScrollView, ScrollEventData } from "tns-core-modules/ui/scroll-view";
 import { SelectedIndexChangedEventData } from "nativescript-drop-down";
 import * as dialogs from "tns-core-modules/ui/dialogs";
+//import {ui/core/view};
 
 @Component({
     moduleId: module.id,
@@ -43,7 +44,8 @@ export class BrowseComponent implements OnInit     {
     public selectedAtt1Index:number;
     public GenericItems:Array <string>;
     public selectedGenericIndex:number;
-   
+
+    public _chargevalue = "";
     public MaxOrderLine:number = 1;
     public RestRequest: String;
     public isItemVisible: boolean = false;
@@ -78,6 +80,7 @@ export class BrowseComponent implements OnInit     {
   public TotalPrice:number = 0;
   public OpenValue:number = 0;
   public TotalVat:number = 0;
+  public AddChargesIndex:number = 0;
 
   public ShipName:string;
   public ShipAddress1:string;
@@ -441,7 +444,7 @@ public showAddCharges(){
    
 
       dialogs.confirm("Do you want to recalculate the additional charges?").then(result => {
-        console.log("Dialog result: " + result);
+       
         if (result == true){
           this.AddChargeRecalc = true;
           this.AdditionalChargesPostService
@@ -457,8 +460,8 @@ public showAddCharges(){
            item.iIndex,
            item.AddChargeCode,
            item.AddChargeValue,
-           item.AddChargeDesc));
-           console.log(this.AddCharges);    
+           item.AddChargeDesc)); 
+          
           });      
         }
         else {}
@@ -510,7 +513,7 @@ public hideOrderSummary(){
 }
 
 public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line numbers after it by - 1
-  console.log(LineNumber);
+  
   if ((this.OrderItemList.length == 0 || this.OrderItemList.length == 1)  && LineNumber == 1){ //Code resets line number 1
     this.OrderItemList=[];
         this.ItemCode = "";
@@ -857,7 +860,6 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
     .postData({ArEntity: this.appComponent.ArEntity})
           
     .subscribe(response => { 
-      console.log(response);
 
       this.AdditionalCharges = response.body.gttAdditionalChargeV1.map(item => new String(
         item.ChargeCode
@@ -877,9 +879,49 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
     .subscribe(response => { 
       console.log(response);
 
+      if(this.AddCharges.length == 0){}
+      else {
+      this.AddCharges.forEach(element => {
+        this.AddChargesIndex = this.AddChargesIndex + 1;  
+      });
+    }       
 
-   
-    });
+      this.AddCharges.push({iIndex: this.AddChargesIndex, 
+                            AddChargeCode: this.AdditionalCharges[args.newIndex], 
+                            AddChargeValue: response.body.ttChargeValue[0].Amount, 
+                            AddChargeDesc: "cardesc" });
+
+      });
+
+  }
+
+  public onReturnPressChargeValue(args){
+
+   /* var view = require("ui/core/view");
+
+var page = args.object;
+var textfield= view.getViewById(page, "textfieldID");
+
+console.log(textfield);*/
+
+    /*console.log(this._chargevalue);
+    //console.log((BrowseComponent.getElementById("chargevalue") as HTMLInputElement).value);
+    
+    //var view = require("ui/core/view");
+    //var textfield= view.getViewById(BrowseComponent, "chargevalue");
+    // console.log(textfield);
+    this.AddCharges.forEach(element => {
+
+      if (element.AddChargeCode === LineNumber) {
+        //this.items.push(element);
+        //alert(this.items);
+        //element.AddChargeValue = "30";
+        console.log("found");
+    }
+
+      //this.AddChargesIndex = this.AddChargesIndex + 1;  
+    });*/
+
 
   }
 
