@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit   } from "@angular/core";
 import { MyHttpPostService , OrderPackageRequest , OrderItemList ,
    GenericItemPostService,Attribute1, Attribute2,
-   Attribute1ItemPostService ,Attribute2ItemPostService , DeliveryAddressPostService ,ItemDetailsPostService, AdditionalChargesPostService, AddChargesClass} from "~/app/browse/browse.service";
+   Attribute1ItemPostService ,Attribute2ItemPostService , DeliveryAddressPostService ,ItemDetailsPostService, AdditionalChargesPostService, AddChargesClass,AdditionalChargeCodePostService,AdditionalChargeValuePostService} from "~/app/browse/browse.service";
 import {NgForm} from '@angular/forms';
 import { getInterpolationArgsLength } from "@angular/compiler/src/render3/view/util";
 import { TextField } from "tns-core-modules/ui/text-field";
@@ -10,6 +10,7 @@ import { Message } from "@angular/compiler/src/i18n/i18n_ast";
 import { AppComponent } from '~/app/app.component';
 import { ScrollView, ScrollEventData } from "tns-core-modules/ui/scroll-view";
 import { SelectedIndexChangedEventData } from "nativescript-drop-down";
+import * as dialogs from "tns-core-modules/ui/dialogs";
 
 @Component({
     moduleId: module.id,
@@ -21,7 +22,9 @@ import { SelectedIndexChangedEventData } from "nativescript-drop-down";
       Attribute2ItemPostService,
       DeliveryAddressPostService,
       ItemDetailsPostService,
-      AdditionalChargesPostService
+      AdditionalChargesPostService,
+      AdditionalChargeCodePostService,
+      AdditionalChargeValuePostService
       ]
 })
 export class BrowseComponent implements OnInit     {
@@ -42,10 +45,11 @@ export class BrowseComponent implements OnInit     {
     public selectedGenericIndex:number;
    
     public MaxOrderLine:number = 1;
-  public RestRequest: String;
+    public RestRequest: String;
     public isItemVisible: boolean = false;
     public CustomerCodes:Array<string> = [];
     public selectedCustomerIndex:number;
+    public AdditionalCharges:Array<string> = [];
 
     public Attribute1:Array<string> =[];
     public Attribute1Setcodes:Array<string> = [];
@@ -69,8 +73,11 @@ export class BrowseComponent implements OnInit     {
    public SelectedGenericItemCode:string;
 
   public Price:number;
+  public VatAmount:number;
   public Currency:string;
   public TotalPrice:number = 0;
+  public OpenValue:number = 0;
+  public TotalVat:number = 0;
 
   public ShipName:string;
   public ShipAddress1:string;
@@ -84,7 +91,8 @@ export class BrowseComponent implements OnInit     {
   public nextLineEnabled:boolean = false;
   public previousLineEnabled:boolean = false;
   public selectedIndex:number;
-
+  public CustomerPoMand:string = "";
+  public result:boolean = false;
   //public AddChargeCode:string;
   //public AddChargeValue:string;
   //public AddChargeDesc:string;
@@ -94,7 +102,8 @@ export class BrowseComponent implements OnInit     {
   public deliveryAddressEnabled:boolean = false;
   public summaryEnabled:boolean = false;
   public AddChargesEnabled:boolean = false;
-  
+  public AddChargeRecalc:boolean = false;
+  public iRowNum:number = 0;
 
     public AddressVisbilty:string = "collapse";
     public ItemVisbilty:string = "collapse";
@@ -109,6 +118,8 @@ export class BrowseComponent implements OnInit     {
       private DeliveryAddressPostService:DeliveryAddressPostService,
       private ItemDetailsPostService:ItemDetailsPostService,
       private AdditionalChargesPostService:AdditionalChargesPostService,
+      private AdditionalChargeCodePostService:AdditionalChargeCodePostService,
+      private AdditionalChargeValuePostService:AdditionalChargeValuePostService,
       private appComponent: AppComponent) { }
   
 
@@ -145,45 +156,43 @@ public onCustomerOpen(){ //Sets the customer code dropdown which is grabbed from
 public onCustomerCodeChange(args:SelectedIndexChangedEventData){
   this.CustomerCode = this.CustomerCodes[args.newIndex];
   //This.CustomerCode is the variable that is sent on the OrderPackage request. Must Update this value
-  console.log("Customer Code is: " + this.CustomerCode );
+  //console.log("Customer Code is: " + this.CustomerCode );
 
   this.DeliveryAddressPostService
-  .postData({CustomerCode: this.CustomerCode})
+  .postData({CustomerCode: this.CustomerCode, ArEntity: this.appComponent.ArEntity})
        
              .subscribe(response => { 
-            console.log(response);
+            //console.log(response);
             this.ShipName = response.body.ttDeliveryDefault[0].ShipName;
-          this.ShipAddress1 = response.body.ttDeliveryDefault[0].ShipAddress1;
-          this.ShipAddress2 = response.body.ttDeliveryDefault[0].ShipAddress2;
-          this.ShipAddress3 = response.body.ttDeliveryDefault[0].ShipAddress3;
-          this.ShipAddress4 = response.body.ttDeliveryDefault[0].ShipAddress4;
-          this.ShipAddress5 = response.body.ttDeliveryDefault[0].ShipAddress5;
-          this.ShipCity = response.body.ttDeliveryDefault[0].ShipCity;
-          this.ShipPostCode = response.body.ttDeliveryDefault[0].ShipPostCode;
+            this.ShipAddress1 = response.body.ttDeliveryDefault[0].ShipAddress1;
+            this.ShipAddress2 = response.body.ttDeliveryDefault[0].ShipAddress2;
+            this.ShipAddress3 = response.body.ttDeliveryDefault[0].ShipAddress3;
+            this.ShipAddress4 = response.body.ttDeliveryDefault[0].ShipAddress4;
+            this.ShipAddress5 = response.body.ttDeliveryDefault[0].ShipAddress5;
+            this.ShipCity = response.body.ttDeliveryDefault[0].ShipCity;
+            this.ShipPostCode = response.body.ttDeliveryDefault[0].ShipPostCode;
+            this.CustomerPoMand = response.body.ttDeliveryDefault[0].PoMand;        
 
              });
              this.orderLinesEnabled = true;
-              this.deliveryAddressEnabled = true;
-              this.AddChargesEnabled = true;
+             this.deliveryAddressEnabled = true;
+             this.AddChargesEnabled = true;
 
  this.AdditionalChargesPostService
- .postData({CustomerCode: this.CustomerCode})
+ .postData({ArEntity: this.appComponent.ArEntity,
+            InEntity: this.appComponent.InEntity,
+            CustomerCode: this.CustomerCode,
+            OrderValue: this.OpenValue})
        
  .subscribe(response => { 
-console.log(response);
-//this.AddChargeCode = response.body.ttAddCharge[0].addchargecode;
-//this.AddChargeValue = response.body.ttAddCharge[0].addvalue;
-//this.AddChargeDesc = response.body.ttAddCharge[0].chargedesc;
 
 this.AddCharges = [];
 this.AddCharges = response.body.ttAddCharge.map(item => new AddChargesClass(
-  item.iindex,
+  item.iIndex,
   item.AddChargeCode,
   item.AddChargeValue,
   item.AddChargeDesc));
-  console.log(this.AddCharges);
  });
-
 
 this.orderLinesEnabled = true;
 this.deliveryAddressEnabled = true;
@@ -192,8 +201,8 @@ this.AddChargesEnabled = true;
 }
 
 public onchange(args: SelectedIndexChangedEventData) { // On change of Generic Item fetch Attributes(Only Supports 2)
-  console.log(`Drop Down selected index changed from ${args.oldIndex} to ${args.newIndex}`);
-  console.log("Drop Down text " + this.GenericItems[args.newIndex]);
+  //console.log(`Drop Down selected index changed from ${args.oldIndex} to ${args.newIndex}`);
+  //console.log("Drop Down text " + this.GenericItems[args.newIndex]);
    this.SelectedGenericItemCode = this.GenericItems[args.newIndex];
   this.Attribute1ItemPostService
   .postData({InEntity: this.appComponent.InEntity,
@@ -222,7 +231,7 @@ public onchange(args: SelectedIndexChangedEventData) { // On change of Generic I
 
 
 
-console.log(response);
+//console.log(response);
 
   });
   this.Attribute2ItemPostService
@@ -252,7 +261,7 @@ console.log(response);
 
 
 
-console.log(response);
+//console.log(response);
 
   });
 
@@ -277,6 +286,7 @@ public onAttribute1change(event: SelectedIndexChangedEventData) {  // On change 
 
 
     this.Price = response.body.ttItem[0].Price1;
+    this.VatAmount = response.body.ttItem[0].vatamount;
     this.Currency = response.body.ttItem[0].CurrencyCode;
 
    console.log(response);
@@ -304,6 +314,7 @@ public onAttribute2change(event: SelectedIndexChangedEventData) { // On change o
   .subscribe(response => { 
 
     this.Price = response.body.ttItem[0].Price1;
+    this.VatAmount = response.body.ttItem[0].vatamount;
     this.Currency = response.body.ttItem[0].CurrencyCode;
 
    console.log(response);
@@ -335,11 +346,15 @@ public onclose() {
         return;
        }
 
-       if (!this.CustomerPurchaseOrder){
-        alert("Please Enter a Po Number");
-        this.isItemVisible = false;
-        return;
-       }
+       //only do this if po is mandatory
+       
+       if (this.CustomerPoMand == "yes") {
+        if (!this.CustomerPurchaseOrder){
+          alert("Please Enter a Po Number");
+          this.isItemVisible = false;
+          return;
+        }
+      }
   
 
        this.OrderVisbilty = "visible";
@@ -415,8 +430,51 @@ public showAddCharges(){
   if(this.CustomerCode == ""){
    alert("Please enter a Customer Code");
               }
+            
+              if(this.OrderItemList.length == 0){}
+              else {
+              this.OrderItemList.forEach(element => {
+                this.OpenValue = this.OpenValue + (Number(element.Price) * Number(element.Quantity));  
+              }); 
+            }      
+    //ask if they want to recalculate the add charges like order entry
+   
+
+      dialogs.confirm("Do you want to recalculate the additional charges?").then(result => {
+        console.log("Dialog result: " + result);
+        if (result == true){
+          this.AddChargeRecalc = true;
+          this.AdditionalChargesPostService
+          .postData({ArEntity: this.appComponent.ArEntity,
+                    InEntity: this.appComponent.InEntity,
+                    CustomerCode: this.CustomerCode,
+                    OpenValue: this.OpenValue})
+                
+          .subscribe(response => { 
+         
+         this.AddCharges = [];
+         this.AddCharges = response.body.ttAddCharge.map(item => new AddChargesClass(
+           item.iIndex,
+           item.AddChargeCode,
+           item.AddChargeValue,
+           item.AddChargeDesc));
+           console.log(this.AddCharges);    
+          });      
+        }
+        else {}
+    });  
+
     this.ChargeVisbilty = "visible";
     this.OrderVisbilty = "collapse";
+    this.AddressVisbilty = "collapse";
+}
+
+public hideAddCharges(){
+  if(this.CustomerCode == ""){
+   alert("Please enter a Customer Code");
+              }
+    this.ChargeVisbilty = "collapse";
+    this.OrderVisbilty = "visible";
     this.AddressVisbilty = "collapse";
 }
 
@@ -432,8 +490,13 @@ public showOrderSummary(){
         this.TotalPrice = 0;
         
         this.OrderItemList.forEach(element => {
-          this.TotalPrice = this.TotalPrice + (Number(element.Price) * Number(element.Quantity));
-          
+
+          this.OpenValue = this.OpenValue + (Number(element.Price) * Number(element.Quantity));
+          this.TotalVat = this.TotalVat + (Number(element.VatAmount) * Number(element.Quantity));
+
+          //this.TotalPrice = this.TotalPrice + (Number(element.Price) * Number(element.Quantity));
+          this.TotalPrice = this.TotalPrice + (Number(element.Price) + Number(element.VatAmount)) * Number(element.Quantity);   
+                 
         });
   this.OrderVisbilty = "collapse";
   this.SummaryVisbilty   ="visible";
@@ -507,7 +570,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
         if (this.OrderItemList.length == (this.LineNumber - 1)) {
         this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
           InEntity: this.appComponent.InEntity,   GenericItemIndex: this.selectedGenericIndex,
-           Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index,Price:this.Price,Currency:this.Currency
+           Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index,Price:this.Price,Currency:this.Currency,VatAmount:this.VatAmount
    }) ;         
         this.Attribute1List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute1,SetCode:this.Attribute1Setcodes})
         this.Attribute2List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute2,SetCode:this.Attribute2Setcodes})
@@ -550,7 +613,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
         if (this.OrderItemList.length == (this.LineNumber - 1) ) {
         this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
           InEntity: this.appComponent.InEntity, GenericItemIndex: this.selectedGenericIndex,
-          Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index, Price:this.Price, Currency:this.Currency}) ;       
+          Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index, Price:this.Price, Currency:this.Currency,VatAmount:this.VatAmount}) ;       
           
           this.Attribute1List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute1,SetCode:this.Attribute1Setcodes})
           this.Attribute2List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute2,SetCode:this.Attribute2Setcodes})
@@ -569,11 +632,10 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
 
   public updateOrderLine(LineNumber:number){ //Index is always LineNumber - 1 as 0 is a element for the first line 1. Not like Progress starts at 0.
 
-    
-
     this.OrderItemList[LineNumber - 1].ItemCode = this.ItemCode  ;
     this.OrderItemList[LineNumber - 1].Quantity = this.Quantity;    
     this.OrderItemList[LineNumber - 1].Price = this.Price  ;
+    this.OrderItemList[LineNumber - 1].VatAmount = this.VatAmount;
     this.OrderItemList[LineNumber - 1].Currency = this.Currency;    
 
     this.Attribute1List[LineNumber - 1].SetCodeDescription = this.Attribute1 ;
@@ -582,14 +644,9 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
     this.Attribute2List[LineNumber - 1].SetCodeDescription = this.Attribute2 ;
     this.Attribute2List[LineNumber - 1].SetCode = this.Attribute2Setcodes ;
 
-    
-    
-this.OrderItemList[LineNumber - 1].Attribute1Index =   this.selectedAtt1Index;
-this.OrderItemList[LineNumber - 1].Attribute2Index = this.selectedAtt2Index ;
-this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex;
-
-
-
+    this.OrderItemList[LineNumber - 1].Attribute1Index =   this.selectedAtt1Index;
+    this.OrderItemList[LineNumber - 1].Attribute2Index = this.selectedAtt2Index ;
+    this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex;
 
   }
 
@@ -688,7 +745,7 @@ this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex
         if (this.OrderItemList.length  == (this.LineNumber - 1) && this.OrderItemList.length != 0 ) {
             this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
               InEntity: this.appComponent.InEntity,GenericItemIndex: this.selectedGenericIndex,
-              Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index, Price:this.Price,Currency:this.Currency}) ;
+              Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index, Price:this.Price,Currency:this.Currency,VatAmount:this.VatAmount}) ;
               
               this.Attribute1List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute1,SetCode:this.Attribute1Setcodes});
               this.Attribute2List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute2,SetCode:this.Attribute2Setcodes});
@@ -784,6 +841,47 @@ this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex
     this.Quantity = String(Number(this.Quantity) + 1);
     this.minusQtyEnabled = true
    }
+
+   public deleteChargeCode(LineNumber:string) {
+  
+      const filteredElement = this.AddCharges.find(el => el.AddChargeCode === LineNumber)
+      this.iRowNum = this.AddCharges.indexOf(filteredElement);
+    
+      this.AddCharges.splice(this.iRowNum,1);
+
+   }
+
+   public AddChargeCodes() {
+
+    this.AdditionalChargeCodePostService
+    .postData({ArEntity: this.appComponent.ArEntity})
+          
+    .subscribe(response => { 
+      console.log(response);
+
+      this.AdditionalCharges = response.body.gttAdditionalChargeV1.map(item => new String(
+        item.ChargeCode
+      ));          
+   
+    });
+  
+  }
+
+  public GetChargeValue(args: SelectedIndexChangedEventData){
+
+    this.AdditionalChargeValuePostService
+    .postData({ArEntity: this.appComponent.ArEntity,
+              ChargeCode: this.AdditionalCharges[args.newIndex],
+              OpenValue: this.OpenValue})
+          
+    .subscribe(response => { 
+      console.log(response);
+
+
+   
+    });
+
+  }
 
     private makePostRequest() { // The main request which sumbits the Order
 

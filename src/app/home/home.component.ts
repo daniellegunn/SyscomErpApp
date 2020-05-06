@@ -126,7 +126,7 @@ export class HomeComponent implements OnInit {
          this.appComponent.CustomerCodes = response.body.ttCustomer.map(item => new String(
               item.CustomerCode
         ));
-        console.log(  this.appComponent.CustomerCodes);
+        //console.log(  this.appComponent.CustomerCodes);
 
     });
     }

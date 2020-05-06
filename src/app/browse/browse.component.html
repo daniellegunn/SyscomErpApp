@@ -183,39 +183,45 @@
    
            </StackLayout> 
         </ScrollView> > // Delivery Address END
- 
-        <ScrollView (scroll)="onScroll($event)" [style.visibility]="ChargeVisbilty"  [scrollY] ="scrollYPos" height = "3300px" > // AddCharge Start START
+
+        <StackLayout  [style.visibility]="ChargeVisbilty" > // Add Charges
             <RadListView [items]="AddCharges" style="width: 100%;">
                 <ng-template   let-item="item">
                    <GridLayout  columns="100,*,*,*" rows="*,*,*,*" style="width: 100%">
                        <Label row="0" col="0" style="margin: 4;" text="Add Charge"></Label>
-                        <Label [index]= "item.iindex" style="margin: 5;"  row="1" col="0" [text]="item.AddChargeCode"></Label>
-                
+                      
+                        <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="0" [text]="item.AddChargeCode" editable="true" ></TextField>
+
                            <Label row="0" col="1" style="margin: 2;" text="Charge Value"></Label>
-                            <Label [index]= "item.iindex" style="margin: 5;"  row="1" col="1" [text]="item.AddChargeValue"></Label>
-                          
+                            <TextField [index]= "item.iIndex" style="margin: 5;"  row="1" col="1" [text]="item.AddChargeValue" editable="true" ></TextField>
+
                             <Label row="0" col="2" style="margin: 2;" text="Charge Desc"></Label>
-                            <Label [index]= "item.iindex" style="margin: 5;"  row="1" col="2" [text]="item.AddChargeDesc"></Label>
+                            <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="2" [text]="item.AddChargeDesc" editable="false" ></TextField>
+                            <Button row="1" col = "3"  colSpan="1" [index]= "item.iIndex" class="btn btn-primary btn-active"   style="background-color:red;color: white;" text="Delete" (tap)="deleteChargeCode(item.AddChargeCode)"></Button>
 
                         </GridLayout>
-                  </ng-template>
-             
-             </RadListView>
-            <!-- <StackLayout   class="form window" height = "3300px">
-               
-            <Label class="boxlabel"   text="Add Charge Code"  textWrap="true"></Label>
-               <TextField  class="input input-border" hint="Add Charge Cod" [(ngModel)]="AddChargeCode" editable="false" ></TextField>
-       
-               <Label  class="boxlabel" style="text-align: center;" text="Charge Value" textWrap="true"></Label>
-               <TextField   class="input input-border"  hint="Charge Value" [(ngModel)]="AddChargeValue" editable="false" ></TextField>
-       
-               <Label  class="boxlabel"  text="Charge Description" textWrap="true"></Label>
-               <TextField   class="input input-border" hint="Charge Description" [(ngModel)]="AddChargeDesc" editable="false" ></TextField>
 
-               <Button row="3" col = "0"  colSpan="2" class="btn btn-primary btn-active"   style="background-color:green;color: white;" text="Confirm" (tap)="hideDeliveryAddress()"></Button>
-       
-               </StackLayout> -->
-            </ScrollView> > // AddCharges End       
+                                        
+                  </ng-template>
+
+             </RadListView>
+             <Button row="3" col = "0"  colSpan="2" class="btn btn-primary btn-active"   style="background-color:green;color: white;" text="Confirm" (tap)="hideAddCharges()"></Button>
+             
+             <DropDown
+             class="input input-border m-t-9 m-b-5"
+             backroundColor="red"
+             itemsTextAlignment="center"
+             [items]="AdditionalCharges"
+             [(ngModel)]="selectedCustomerIndex"
+             (selectedIndexChanged)="GetChargeValue($event)"
+             (opened)="AddChargeCodes()"
+             (closed)="onclose()"
+             hint = "Select Charge Code"
+             ></DropDown>
+
+             <Button row="5" col = "0"  colSpan="2" class="btn btn-primary btn-active"   style="background-color:green;color: white;" text="Add Charge Code" (tap)="AddAddCharge()"></Button>
+
+        </StackLayout> > // AddCharges End       
         
     <StackLayout  [style.visibility]="SummaryVisbilty" > // Summary  start
         <RadListView  [style.visibility]="SummaryVisbilty"  isUserInteractionEnabled ="false" [items]="OrderItemList" height="360" >
@@ -250,8 +256,14 @@
            </ng-template>
 
         </RadListView>
+        <Label class="cell"   text="Open Value:"></Label>
+        <Label class="cell"   [text]="OpenValue"></Label>
+
+        <Label class="cell"   text="Total Vat:"></Label>
+        <Label class="cell"   [text]="TotalVat"></Label>
+        
         <Label class="cell"   text="Total Price:"></Label>
-        <Label class="cell"   [text]="TotalPrice"></Label>
+        <Label class="cell"   [text]="TotalPrice"></Label>        
 
         <Button   class="btn btn-primary btn-active"   style="background-color:red;color: white;" text="Back" (tap)="hideOrderSummary()"></Button>
         <Button row="3"  colSpan="2"  class="btn btn-primary  btn-forest btn-active" text="Submit Order" (tap)="submit()"></Button>
