@@ -81,6 +81,7 @@ export class BrowseComponent implements OnInit     {
   public OpenValue:number = 0;
   public TotalVat:number = 0;
   public AddChargesIndex:number = 0;
+  public TotalAddCharges:number = 0;
 
   public ShipName:string;
   public ShipAddress1:string;
@@ -273,7 +274,7 @@ public onchange(args: SelectedIndexChangedEventData) { // On change of Generic I
 }
 
 public onAttribute1change(event: SelectedIndexChangedEventData) {  // On change of Attribute: Build Item Code and check for price if full item is entered 
-  console.log("Drop Down setcode: " + this.Attribute1Setcodes[event.newIndex]);
+  //console.log("Drop Down setcode: " + this.Attribute1Setcodes[event.newIndex]);
 
 
   this.selectedAtt1Index = event.newIndex;
@@ -301,7 +302,7 @@ public onAttribute1change(event: SelectedIndexChangedEventData) {  // On change 
 }
 
 public onAttribute2change(event: SelectedIndexChangedEventData) { // On change of Attribute: Build Item Code and check for price if full item is entered
-  console.log("Drop Down setcode: " + this.Attribute2Setcodes[event.newIndex]);
+  //console.log("Drop Down setcode: " + this.Attribute2Setcodes[event.newIndex]);
 
 
   this.selectedAtt2Index = event.newIndex;
@@ -332,11 +333,11 @@ public onAttribute2change(event: SelectedIndexChangedEventData) { // On change o
 
 
 public onopen() {
-  console.log("Drop Down opened.");
+ // console.log("Drop Down opened.");
 }
 
 public onclose() {
-  console.log("Drop Down closed.");
+ // console.log("Drop Down closed.");
 }
 
 
@@ -491,6 +492,9 @@ public showOrderSummary(){
         }
         
         this.TotalPrice = 0;
+        this.OpenValue = 0;
+        this.TotalVat = 0;
+        this.TotalAddCharges = 0;
         
         this.OrderItemList.forEach(element => {
 
@@ -501,6 +505,15 @@ public showOrderSummary(){
           this.TotalPrice = this.TotalPrice + (Number(element.Price) + Number(element.VatAmount)) * Number(element.Quantity);   
                  
         });
+
+        this.AddCharges.forEach(element => {
+
+          this.TotalAddCharges = this.TotalAddCharges +  (Number(element.AddChargeValue));
+
+        });
+
+        this.TotalPrice  = this.TotalPrice  + this.TotalAddCharges;
+
   this.OrderVisbilty = "collapse";
   this.SummaryVisbilty   ="visible";
   this.ChargeVisbilty = "collapse";
