@@ -1,6 +1,18 @@
-<ActionBar class="action-bar">
+<!--<ActionBar class="action-bar">
+    <Image class="img-circle m-b-10 Syscom-Plc-logo-small" src="~/images/Syscom-Plc-logo.jpg" width="150"  loadMode="async"> </Image>
+
     <Label class="action-bar-title" text="Sales Order Entry"></Label>
-</ActionBar>
+</ActionBar>-->
+
+<ActionBar class="action-bar" title="test" style="color: white; background-color: grey;">
+    <StackLayout orientation="horizontal"
+      ios:horizontalAlignment="center"
+      android:horizontalAlignment="center">
+      <Image src="~/images/SyscomIcon.png" width="20" height="20" class="action-image" ></Image>
+      <Label text=" Sales Order Entry " class="action-bar-title"></Label> 
+      <Image src="~/images/castlelogo.png" width="20" height="20" class="action-image" ></Image>
+    </StackLayout>
+  </ActionBar>
 
 <StackLayout class="form" sdkExampleTitle sdkToggleNavButton>
     <StackLayout class="page page-content">
@@ -38,9 +50,7 @@
         <Button  class="btn btn-primary btn-sky btn-active"  [isEnabled]="AddChargesEnabled"   text="Change Additional Charges" (tap)="showAddCharges()"></Button>
 
         <Button   colSpan="2" class="btn btn-primary btn-forest btn-active" [isEnabled]="summaryEnabled"       text="Show Order Summary " (tap)="showOrderSummary()"></Button>
-       
 
-        
 
     </StackLayout>
     <ScrollView (scroll)="onScroll($event)" [style.visibility]="ItemVisbilty"  [scrollY] ="scrollYPos" height = "4000px" > // ITEM START
@@ -77,7 +87,7 @@
         (selectedIndexChanged)="onAttribute1change($event)"
         (opened)="onopen()"
         (closed)="onclose()"
-        hint = "Select Size"
+        hint = "Select Colour"
         row="1" col = "0"
         ></DropDown>
 
@@ -92,7 +102,7 @@
         (selectedIndexChanged)="onAttribute2change($event)"
         (opened)="onopen()"
         (closed)="onclose()"
-        hint = "Select Colour"
+        hint = "Select Size"
         row="1" col = "1"
         ></DropDown>
 

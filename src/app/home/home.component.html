@@ -1,14 +1,14 @@
 
 <ActionBar class="action-bar">
-    <Label class="action-bar-title" text="Syscom ERP Home"></Label>
+    <Label class="action-bar-title" text="SyscomERP"></Label>
 </ActionBar>
 
 <StackLayout class="page page-content home-page window"  >
 
             <StackLayout class="form"  >
         
-        <Image class="img-circle m-b-10 Syscom-Plc-logo" src="~/images/Syscom-Plc-logo.png" width="150"  loadMode="async"> </Image>
-        <label class="boxlabel" text= "Order Entry/Enquiry App" ></label>
+        <Image class="img-circle m-b-10 Syscom-Plc-logo" src="~/images/Syscom-Plc-logo.jpg" width="150"  loadMode="async"> </Image>
+       <!-- <label class="boxlabel" text= "Order Entry/Enquiry App" ></label>-->
         <TextField [editable]= "UserNotLoggedIn"  class=" input input-border m-t-9 m-b-5 " hint="Username" [(ngModel)]="Username" text="{{ UserFieldValue }}" ></TextField>
         
         <TextField [style.visibility]="PasswordVisbilty"  secure="true" class="input input-border m-t-9 m-b-5" (returnPress)="submit()"  hint="Password" [(ngModel)]="Password" text="{{ PasswordFieldValue }}"></TextField>

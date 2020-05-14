@@ -40,6 +40,7 @@ export class BrowseComponent implements OnInit     {
     public OrderItemList: Array<OrderItemList>;
     public AddChargesList: Array<AddChargesClass>;
     public message: string = "";
+    public hintforfirst: string = "";
    
     public selectedAtt1Index:number;
     public GenericItems:Array <string>;
@@ -214,27 +215,16 @@ public onchange(args: SelectedIndexChangedEventData) { // On change of Generic I
        
   .subscribe(response => { 
 
-  
+
    this.Attribute1 = response.body.ttAttribute.map(item => new String(
      item.SetCodeDescription
+   ))
      
-     ))
-     
-   
-
-
      this.Attribute1Setcodes = response.body.ttAttribute.map(item => new String(
       item.SetCode
-      
       ))
 
-      
-
-
       this.selectedAtt1Index = null;
-
-
-
 //console.log(response);
 
   });
@@ -249,23 +239,12 @@ public onchange(args: SelectedIndexChangedEventData) { // On change of Generic I
      item.SetCodeDescription
      
      ))
-     
-  
-     
 
-     this.Attribute2Setcodes = response.body.ttAttribute.map(item => new String(
+  this.Attribute2Setcodes = response.body.ttAttribute.map(item => new String(
       item.SetCode
       
       ))
-
-      
-
-
       this.selectedAtt2Index = null;
-
-
-
-//console.log(response);
 
   });
 
@@ -293,7 +272,7 @@ public onAttribute1change(event: SelectedIndexChangedEventData) {  // On change 
     this.VatAmount = response.body.ttItem[0].vatamount;
     this.Currency = response.body.ttItem[0].CurrencyCode;
 
-   console.log(response);
+   //console.log(response);
 
    });
 
@@ -321,7 +300,7 @@ public onAttribute2change(event: SelectedIndexChangedEventData) { // On change o
     this.VatAmount = response.body.ttItem[0].vatamount;
     this.Currency = response.body.ttItem[0].CurrencyCode;
 
-   console.log(response);
+   //console.log(response);
 
    });
 
@@ -403,7 +382,7 @@ return;
                 
                 ))
 
-         console.log(response);
+        // console.log(response);
 
              });
 
@@ -687,10 +666,6 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
     this.selectedAtt1Index = this.OrderItemList[LineNumber - 1 ].Attribute1Index;
     this.selectedAtt2Index = this.OrderItemList[LineNumber - 1 ].Attribute2Index;
    
- 
-
-
-
   }
 
     public reset(){ //Mass reset is currently triggred on Order Submit  
@@ -890,7 +865,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
               OpenValue: this.OpenValue})
           
     .subscribe(response => { 
-      console.log(response);
+      //console.log(response);
 
       if(this.AddCharges.length == 0){}
       else {
@@ -982,6 +957,8 @@ console.log(textfield);*/
                 }        else{ 
 
                   alert("Order has been submitted!");
+
+                 // alert("Order has been submitted! Your order reference is " + response.body.dsOrderPackageRequest.OrderPackageRequest[0].EdiSeq);
                // console.log(response.body.EdiSalesOrder);
                // this.JsonFormat(response.body.data);
     

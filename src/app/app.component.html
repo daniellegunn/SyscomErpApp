@@ -1,4 +1,4 @@
-<BottomNavigation  class="bottom-nav">
+<BottomNavigation  class="bottom-nav" >
     <TabStrip id="Navbar"   [style.visibility]="Navvisible" >
         <!--
             Besides the approach demonstrated below there is alternative shorthand syntax for setting TabStripItem title and icon:
@@ -34,6 +34,17 @@
             <Image src="font://&#xf217;" class="fa t-36"></Image>
         </TabStripItem>
 
+        <TabStripItem>
+            <Label text="app"></Label>
+            <Image src="font://&#xf217;" class="fa t-36"></Image>
+        </TabStripItem>              
+
+        <TabStripItem>
+            <Label text="another"></Label>
+            <Image src="font://&#xf217;" class="fa t-36"></Image>
+        </TabStripItem>     
+            
+
     </TabStrip>
 
     <TabContentItem>
@@ -51,4 +62,13 @@
     <TabContentItem>
         <page-router-outlet name="enquiryTab"></page-router-outlet>
     </TabContentItem>
+
+    <TabContentItem>
+        <page-router-outlet name="app"></page-router-outlet>
+    </TabContentItem>    
+
+    <TabContentItem>
+        <page-router-outlet name="another"></page-router-outlet>
+    </TabContentItem>       
+
 </BottomNavigation>
