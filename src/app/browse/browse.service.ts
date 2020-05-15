@@ -34,6 +34,8 @@ export class OrderItemList{
   public Price:number;
   public Currency:string;
   public VatAmount:number;
+  public GrossPrice:number;
+  public NetPrice:number;
 
 
   

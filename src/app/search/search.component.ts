@@ -33,6 +33,7 @@ export class SearchComponent implements OnInit {
     public isErrorVisible = false;
     public errormessage: string;
     public index : number;
+    public imagesrc: string;
 
    
     onTap(args) {
@@ -139,7 +140,8 @@ export class SearchComponent implements OnInit {
                    item.QuantityOriginal,
                    item.Cost));
                // console.log(this.ItemClassStock);
-           
+               //this.imagesrc = data.body.ttItemClassStockData[0].cmedia);
+               this.imagesrc = "~/images/option.jpg";
                 //console.log(this.JsonFormat(response.ttItemStockData));
                 this.LoadingVisbilty  = "collapse";
                 this.errormessage = "";

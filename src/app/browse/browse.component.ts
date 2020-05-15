@@ -76,6 +76,8 @@ export class BrowseComponent implements OnInit     {
    public SelectedGenericItemCode:string;
 
   public Price:number;
+  public GrossPrice:number;
+  public NetPrice:number;
   public VatAmount:number;
   public Currency:string;
   public TotalPrice:number = 0;
@@ -271,8 +273,10 @@ public onAttribute1change(event: SelectedIndexChangedEventData) {  // On change 
     this.Price = response.body.ttItem[0].Price1;
     this.VatAmount = response.body.ttItem[0].vatamount;
     this.Currency = response.body.ttItem[0].CurrencyCode;
+    this.NetPrice = response.body.ttItem[0].NetPrice;
+    this.GrossPrice = response.body.ttItem[0].GrossPrice;
 
-   //console.log(response);
+
 
    });
 
@@ -299,8 +303,11 @@ public onAttribute2change(event: SelectedIndexChangedEventData) { // On change o
     this.Price = response.body.ttItem[0].Price1;
     this.VatAmount = response.body.ttItem[0].vatamount;
     this.Currency = response.body.ttItem[0].CurrencyCode;
+    this.NetPrice = response.body.ttItem[0].NetPrice;
+    this.GrossPrice = response.body.ttItem[0].GrossPrice;
 
-   //console.log(response);
+   //console.log("gross" + response.body.ttItem[0].GrossPrice);
+   //console.log("net" + response.body.ttItem[0].NetPrice);
 
    });
 
@@ -328,8 +335,6 @@ public onclose() {
         this.isItemVisible = false;
         return;
        }
-
-       //only do this if po is mandatory
        
        if (this.CustomerPoMand == "yes") {
         if (!this.CustomerPurchaseOrder){
@@ -339,12 +344,9 @@ public onclose() {
         }
       }
   
-
        this.OrderVisbilty = "visible";
        this.SummaryVisbilty   ="collapse";
       
-   
-
         this.makePostRequest();
     }
 
@@ -565,7 +567,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
         if (this.OrderItemList.length == (this.LineNumber - 1)) {
         this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
           InEntity: this.appComponent.InEntity,   GenericItemIndex: this.selectedGenericIndex,
-           Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index,Price:this.Price,Currency:this.Currency,VatAmount:this.VatAmount
+           Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index,Price:this.Price,Currency:this.Currency,VatAmount:this.VatAmount,GrossPrice:this.GrossPrice,NetPrice:this.NetPrice
    }) ;         
         this.Attribute1List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute1,SetCode:this.Attribute1Setcodes})
         this.Attribute2List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute2,SetCode:this.Attribute2Setcodes})
@@ -608,7 +610,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
         if (this.OrderItemList.length == (this.LineNumber - 1) ) {
         this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
           InEntity: this.appComponent.InEntity, GenericItemIndex: this.selectedGenericIndex,
-          Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index, Price:this.Price, Currency:this.Currency,VatAmount:this.VatAmount}) ;       
+          Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index, Price:this.Price, Currency:this.Currency,VatAmount:this.VatAmount,GrossPrice:this.GrossPrice,NetPrice:this.NetPrice}) ;       
           
           this.Attribute1List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute1,SetCode:this.Attribute1Setcodes})
           this.Attribute2List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute2,SetCode:this.Attribute2Setcodes})
@@ -736,7 +738,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
         if (this.OrderItemList.length  == (this.LineNumber - 1) && this.OrderItemList.length != 0 ) {
             this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
               InEntity: this.appComponent.InEntity,GenericItemIndex: this.selectedGenericIndex,
-              Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index, Price:this.Price,Currency:this.Currency,VatAmount:this.VatAmount}) ;
+              Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index, Price:this.Price,Currency:this.Currency,VatAmount:this.VatAmount,GrossPrice:this.GrossPrice,NetPrice:this.NetPrice}) ;
               
               this.Attribute1List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute1,SetCode:this.Attribute1Setcodes});
               this.Attribute2List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute2,SetCode:this.Attribute2Setcodes});

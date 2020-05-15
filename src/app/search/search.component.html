@@ -5,15 +5,23 @@
 <StackLayout class="page page-content" >
     
     <StackLayout class="form window">
-        <Label class="boxlabel" text="Item Code" textWrap="true"></Label>
-        <TextField class="input input-border"  hint="ItemCode" [(ngModel)]="ItemCode" editable="true" ></TextField>
- 
+        <!--<Label class="boxlabel" text="Item Code" textWrap="true"></Label>-->
+        <TextField class="input input-border"  hint="ItemCode" [(ngModel)]="ItemCode" editable="true" width="50%" style="margin-left: -50px;" ></TextField>
+        <Image src="{{ imagesrc }}" width="30" height="30" class="action-image" ></Image>
+           <!-- <Image src="~/images/castlelogo.png" width="20" height="20" class="action-image" ></Image>-->
 
-        <Label class="boxlabel" text="Warehouse Code (optional) " textWrap="true"></Label>
-        <TextField class="input input-border"  hint="WarehouseCode" [(ngModel)]="WarehouseCode" editable="true" ></TextField>
+        <!--<Label class="boxlabel" text="Warehouse Code (optional) " textWrap="true"></Label>-->
+        <TextField class="input input-border"  hint="WarehouseCode(optional)" [(ngModel)]="WarehouseCode" editable="true" ></TextField>
+        
+        
         <Button class="btn btn-primary btn-active" text="Submit" (tap)="submit()"></Button>
         <Label row="1" class="text-center " [text]="message" verticalAligment="center" colSpan="2" textWrap="true"></Label>
-      </StackLayout>
+        
+ 
+    </StackLayout>
+
+      
+
       <ActivityIndicator [style.visibility]="LoadingVisbilty" busy="true"></ActivityIndicator>
 
       <ScrollView orientation="horizontal">
