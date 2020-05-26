@@ -28,7 +28,7 @@ export class ItemStock {
      public cDespatchNoteQty: string) { }
 }
 export class MyHttpPostService {
-    private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/StockEnquiry";
+    private serverUrl;
     private response;
     private testdata;
 
@@ -49,7 +49,7 @@ export class MyHttpPostService {
       // console.log(body.WarehouseCode);
         //console.log(data);
         if (body.WarehouseCode == undefined || body.WarehouseCode == ""){
-          this.serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/WarehouseEnquiry"
+          this.serverUrl = body.url + "/ErpApp/rest/ErpApp/WarehouseEnquiry";
           let data: HttpParams = new HttpParams();
 
           data  = data.append('pcInEntity', body.InEntity);
@@ -60,11 +60,12 @@ export class MyHttpPostService {
         }
        // console.log(httpOptions);
        else{
-        this.serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/StockEnquiry";
+        this.serverUrl;
         let data: HttpParams = new HttpParams();
         data  = data.append('pcInEntity', body.InEntity);
         data = data.append('pcItemCode', body.ItemCode);
         data = data.append('pcWarehouseCode', body.WarehouseCode);
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/StockEnquiry";
           this.testdata =  this.http.post(this.serverUrl,   data , httpOptions )  ;
          
           return this.testdata;

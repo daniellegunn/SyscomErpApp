@@ -53,15 +53,12 @@ export class ItemStock {
      public cDespatchNoteQty: string) { }
 }
 export class MyHttpPostService {
-    private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/OrderEnquiry";
+    private serverUrl;
     private response;
     private testdata;
     private OrderDetailsData;
 
     constructor(private http: HttpClient) { }
-
-   
- 
 
     postData(body: any) {
         const httpOptions: { headers; observe; } = {
@@ -74,11 +71,12 @@ export class MyHttpPostService {
          
       // console.log(body.WarehouseCode);
         //console.log(data)
-        this.serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/OrderEnquiry";
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/OrderEnquiry";
         let OrderData: HttpParams = new HttpParams();
         OrderData  = OrderData.append('pcArEntity', body.ArEntity);
         OrderData = OrderData.append('piOrderNumber', body.OrderNumber);
         
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getGenericAttribute2";
           this.OrderDetailsData =  this.http.post(this.serverUrl,   OrderData , httpOptions );
          
           //console.log(this.OrderDetailsData);
@@ -101,10 +99,10 @@ export class MyHttpPostService {
     // console.log(body.WarehouseCode);
       //console.log(data)
       let data: HttpParams = new HttpParams();
-      this.serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/CustomerOrderEnquiry";
+      this.serverUrl;
       data  = data.append('pcArEntity', body.ArEntity);
       data = data.append('pcCustomerCode', body.CustomerCode);
-      
+      this.serverUrl = body.url + "/ErpApp/rest/ErpApp/CustomerOrderEnquiry";
         this.testdata =  this.http.post(this.serverUrl,   data , httpOptions )  ;
        
 

@@ -166,7 +166,9 @@ public onCustomerCodeChange(args:SelectedIndexChangedEventData){
   //console.log("Customer Code is: " + this.CustomerCode );
 
   this.DeliveryAddressPostService
-  .postData({CustomerCode: this.CustomerCode, ArEntity: this.appComponent.ArEntity})
+  .postData({CustomerCode: this.CustomerCode, 
+    ArEntity: this.appComponent.ArEntity,
+  url:this.appComponent.cUrl})
        
              .subscribe(response => { 
             //console.log(response);
@@ -189,7 +191,8 @@ public onCustomerCodeChange(args:SelectedIndexChangedEventData){
  .postData({ArEntity: this.appComponent.ArEntity,
             InEntity: this.appComponent.InEntity,
             CustomerCode: this.CustomerCode,
-            OrderValue: this.OpenValue})
+            OrderValue: this.OpenValue,
+            url:this.appComponent.cUrl})
        
  .subscribe(response => { 
 
@@ -213,7 +216,8 @@ public onchange(args: SelectedIndexChangedEventData) { // On change of Generic I
    this.SelectedGenericItemCode = this.GenericItems[args.newIndex];
   this.Attribute1ItemPostService
   .postData({InEntity: this.appComponent.InEntity,
-             GenericItemCode: this.GenericItems[args.newIndex]})
+             GenericItemCode: this.GenericItems[args.newIndex],
+             url:this.appComponent.cUrl})
        
   .subscribe(response => { 
 
@@ -232,7 +236,8 @@ public onchange(args: SelectedIndexChangedEventData) { // On change of Generic I
   });
   this.Attribute2ItemPostService
   .postData({InEntity: this.appComponent.InEntity,
-             GenericItemCode: this.GenericItems[args.newIndex]})
+             GenericItemCode: this.GenericItems[args.newIndex],
+             url:this.appComponent.cUrl})
        
   .subscribe(response => { 
  
@@ -266,7 +271,11 @@ public onAttribute1change(event: SelectedIndexChangedEventData) {  // On change 
       
   this.ItemDetailsPostService
         
-  .postData({InEntity: this.appComponent.InEntity,ArEntity:this.appComponent.ArEntity,ItemCode:this.ItemCode,CustomerCode:this.CustomerCode})
+  .postData({InEntity: this.appComponent.InEntity,
+    ArEntity:this.appComponent.ArEntity,
+    ItemCode:this.ItemCode,
+    CustomerCode:this.CustomerCode,
+    url:this.appComponent.cUrl})
   .subscribe(response => { 
 
 
@@ -297,7 +306,11 @@ public onAttribute2change(event: SelectedIndexChangedEventData) { // On change o
       
   this.ItemDetailsPostService
         
-  .postData({InEntity: this.appComponent.InEntity,ArEntity:this.appComponent.ArEntity,ItemCode:this.ItemCode,CustomerCode:this.CustomerCode})
+  .postData({InEntity: this.appComponent.InEntity,
+    ArEntity:this.appComponent.ArEntity,
+    ItemCode:this.ItemCode,
+    CustomerCode:this.CustomerCode,
+    url:this.appComponent.cUrl})
   .subscribe(response => { 
 
     this.Price = response.body.ttItem[0].Price1;
@@ -315,8 +328,6 @@ public onAttribute2change(event: SelectedIndexChangedEventData) { // On change o
    }
 
 }
-
-
 
 public onopen() {
  // console.log("Drop Down opened.");
@@ -375,7 +386,8 @@ return;
 
   this.GenericItemPostService
         
-  .postData({InEntity: this.appComponent.InEntity})
+  .postData({InEntity: this.appComponent.InEntity,
+          url:this.appComponent.cUrl})
        
              .subscribe(response => { 
 
@@ -433,7 +445,8 @@ public showAddCharges(){
           .postData({ArEntity: this.appComponent.ArEntity,
                     InEntity: this.appComponent.InEntity,
                     CustomerCode: this.CustomerCode,
-                    OpenValue: this.OpenValue})
+                    OpenValue: this.OpenValue,
+                    url:this.appComponent.cUrl})
                 
           .subscribe(response => { 
          
@@ -847,7 +860,8 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
    public AddChargeCodes() {
 
     this.AdditionalChargeCodePostService
-    .postData({ArEntity: this.appComponent.ArEntity})
+    .postData({ArEntity: this.appComponent.ArEntity,
+      url:this.appComponent.cUrl})
           
     .subscribe(response => { 
 
@@ -864,7 +878,8 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
     this.AdditionalChargeValuePostService
     .postData({ArEntity: this.appComponent.ArEntity,
               ChargeCode: this.AdditionalCharges[args.newIndex],
-              OpenValue: this.OpenValue})
+              OpenValue: this.OpenValue,
+              url:this.appComponent.cUrl})
           
     .subscribe(response => { 
       //console.log(response);
@@ -944,9 +959,9 @@ console.log(textfield);*/
 
         this.myPostService
                         
-
             .postData({ //Data is posted as JSON data so the input param on the backend doesnt need to change if more fields are to be added
-                       OrderPackageRequest:this.OrderPackageRequest}
+                       OrderPackageRequest:this.OrderPackageRequest,
+                      url:this.appComponent.cUrl}
                      )
              
             .subscribe(response => {

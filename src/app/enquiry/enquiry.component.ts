@@ -134,7 +134,8 @@ export class EnquiryComponent implements OnInit {
         this.myPostService
         
             .postData({ArEntity: this.appComponent.ArEntity,
-                       OrderNumber: this.OrderNumber})
+                       OrderNumber: this.OrderNumber,
+                      url:this.appComponent.cUrl})
                  
 
             .subscribe(data => {
@@ -198,7 +199,8 @@ export class EnquiryComponent implements OnInit {
       this.myPostService
       
           .postCustomerData({ArEntity: this.appComponent.ArEntity,
-                            CustomerCode: this.CustomerCode})
+                            CustomerCode: this.CustomerCode,
+                            url:this.appComponent.cUrl})
                
 
           .subscribe(data => {

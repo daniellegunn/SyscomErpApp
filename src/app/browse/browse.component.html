@@ -137,8 +137,8 @@
         <Button row="0" col = "0"   colSpan="2" class="btn btn-primary btn-forest btn-active "    text="Add New Order Line" (tap)="addOrderLine()"> </Button>
 
 
-        <Button row="1" col = "0" class="btn btn-primary btn-active" text="Previous Line" [isEnabled]="previousLineEnabled" (tap)="previousOrderLine()"></Button>
-        <Button row="1" col = "1"  class="btn btn-primary btn-active" text="Next Line" [isEnabled]="nextLineEnabled" text="Next Line" (tap)="nextOrderLine()"></Button>
+        <!--<Button row="1" col = "0" class="btn btn-primary btn-active" text="Previous Line" [isEnabled]="previousLineEnabled" (tap)="previousOrderLine()"></Button>-->
+        <!--<Button row="1" col = "1"  class="btn btn-primary btn-active" text="Next Line" [isEnabled]="nextLineEnabled" text="Next Line" (tap)="nextOrderLine()"></Button>-->
         <Button row="2"  col = "0" class="btn btn-primary btn-ruby btn-active "  text="Delete Order Line" (tap)="deleteOrderLine(LineNumber)"></Button>
         <Button row="2"  col = "1" class="btn btn-primary btn-forest btn-active "  text="Confirm" (tap)="hideOrderLines()"></Button>
         <Label row="3" style="font-size: 20%;" colSpan = "2" class="text-center " [text]="message" verticalAligment="center" colSpan="2" textWrap="true"></Label>

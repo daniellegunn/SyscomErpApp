@@ -114,7 +114,8 @@ export class SearchComponent implements OnInit {
         
             .postData({InEntity: this.appComponent.InEntity,
                       ItemCode: this.ItemCode,
-                        WarehouseCode: this.WarehouseCode})
+                        WarehouseCode: this.WarehouseCode,
+                        url:this.appComponent.cUrl})
                  
 
             .subscribe(data => {
@@ -166,7 +167,8 @@ export class SearchComponent implements OnInit {
                
             .postData({InEntity: this.appComponent.InEntity,
                       ItemCode: this.ItemCode,
-                        WarehouseCode: this.WarehouseCode})
+                        WarehouseCode: this.WarehouseCode,
+                        url:this.appComponent.cUrl})
             .subscribe(data => {
                // console.log(data.body.ttItemStockData);
                 //this.message = (<any>response).json.data;

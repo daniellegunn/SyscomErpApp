@@ -75,7 +75,7 @@ export class AddChargesClass {
 
 
 export class GenericItemPostService { //Request for the List Of Generic Items on the current InEntity
-    private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/getGenericItems";
+    private serverUrl;
     private response;
     private testdata;
 
@@ -91,7 +91,7 @@ export class GenericItemPostService { //Request for the List Of Generic Items on
           
           let data: HttpParams = new HttpParams();
           data  = data.append('pcInEntity', body.InEntity);
-          
+          this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getGenericItems";
        
         //console.log(data);
         
@@ -108,7 +108,7 @@ export class GenericItemPostService { //Request for the List Of Generic Items on
 }
 
 export class Attribute1ItemPostService { // Fetches Attribute 1 for selected Generic
-  private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/getGenericAttribute1";
+  private serverUrl;
   private response;
   private testdata;
 
@@ -125,7 +125,7 @@ export class Attribute1ItemPostService { // Fetches Attribute 1 for selected Gen
         let data: HttpParams = new HttpParams();
         data  = data.append('pcInEntity', body.InEntity);
         data  = data.append('pcGenericItemCode', body.GenericItemCode);
-     
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getGenericAttribute1";
       //console.log(data);
       
      // console.log(httpOptions);
@@ -141,7 +141,7 @@ export class Attribute1ItemPostService { // Fetches Attribute 1 for selected Gen
 }
 
 export class Attribute2ItemPostService { // Fetches Attribute 2 for selected Generic
-  private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/getGenericAttribute2";
+  private serverUrl;
   private response;
   private testdata;
 
@@ -158,7 +158,8 @@ export class Attribute2ItemPostService { // Fetches Attribute 2 for selected Gen
         let data: HttpParams = new HttpParams();
         data  = data.append('pcInEntity', body.InEntity);
         data  = data.append('pcGenericItemCode', body.GenericItemCode);
-     
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getGenericAttribute2";
+
       //console.log(data);
       
      // console.log(httpOptions);
@@ -174,7 +175,7 @@ export class Attribute2ItemPostService { // Fetches Attribute 2 for selected Gen
 }
 
 export class MyHttpPostService {  // Main Request. Submits the Order to EDI Entry if sucessful creates a .csv files
-  private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/OrderEntry";
+  private serverUrl;
   private response;
   private testdata;
 
@@ -192,7 +193,8 @@ export class MyHttpPostService {  // Main Request. Submits the Order to EDI Entr
         
      
       //console.log(data);
-      
+      this.serverUrl = data.url + "/ErpApp/rest/ErpApp/OrderEntry";
+
      // console.log(httpOptions);
         this.testdata =  this.http.post(this.serverUrl,   data , httpOptions )  ;
         //console.log(this.testdata);
@@ -206,7 +208,7 @@ export class MyHttpPostService {  // Main Request. Submits the Order to EDI Entr
 }
 
 export class DeliveryAddressPostService { //Gets the default address for the current selected customer. Needs to be ran everytime the customer is changed
-  private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/DeliveryAddressDefault";
+  private serverUrl;
   private response;
   private testdata;
 
@@ -223,7 +225,8 @@ export class DeliveryAddressPostService { //Gets the default address for the cur
         let data: HttpParams = new HttpParams();
         data  = data.append('pcCustomerCode', body.CustomerCode);
         data  = data.append('pcArEntity', body.ArEntity);
-     
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/DeliveryAddressDefault";
+
       //console.log(data);
       
      // console.log(httpOptions);
@@ -239,7 +242,7 @@ export class DeliveryAddressPostService { //Gets the default address for the cur
 }
 
 export class AdditionalChargesPostService { //Gets the default address for the current selected customer. Needs to be ran everytime the customer is changed
-  private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/AdditionalCharges";
+  private serverUrl;
   private response;
   private testdata;
 
@@ -263,7 +266,7 @@ export class AdditionalChargesPostService { //Gets the default address for the c
         data  = data.append('pcInEntity', body.InEntity);
         data  = data.append('pcCustomerCode', body.CustomerCode);
         data  = data.append('piOrderValue', body.OpenValue.toString());
-    
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/AdditionalCharges";
      // console.log(httpOptions);
         this.testdata =  this.http.post(this.serverUrl,   data , httpOptions );
         console.log(this.testdata);
@@ -274,7 +277,7 @@ export class AdditionalChargesPostService { //Gets the default address for the c
 }
 
 export class AdditionalChargeCodePostService { //Gets the default address for the current selected customer. Needs to be ran everytime the customer is changed
-  private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/AdditionalChargeCodes";
+  private serverUrl;
   private response;
   private testdata;
 
@@ -290,7 +293,7 @@ export class AdditionalChargeCodePostService { //Gets the default address for th
 
         let data: HttpParams = new HttpParams();
         data  = data.append('pcArEntity', body.ArEntity);
-    
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/AdditionalChargeCodes";
         this.testdata =  this.http.post(this.serverUrl,   data , httpOptions );
         console.log(this.testdata);
         return this.testdata;
@@ -300,7 +303,7 @@ export class AdditionalChargeCodePostService { //Gets the default address for th
 }
 
 export class AdditionalChargeValuePostService { //Gets the default address for the current selected customer. Needs to be ran everytime the customer is changed
-  private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/GetChargeValue";
+  private serverUrl;
   private response;
   private testdata;
 
@@ -323,7 +326,7 @@ export class AdditionalChargeValuePostService { //Gets the default address for t
         data  = data.append('pcArEntity', body.ArEntity);
         data  = data.append('pcChargeCode', body.ChargeCode);
         data  = data.append('pdOrderValue', body.OpenValue.toString());
-    
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/GetChargeValue";
         this.testdata =  this.http.post(this.serverUrl,   data , httpOptions );
         console.log(this.testdata);
         return this.testdata;
@@ -332,7 +335,7 @@ export class AdditionalChargeValuePostService { //Gets the default address for t
 }
 
 export class ItemDetailsPostService { //Gets Item record for the selected Item. Is used for Price1 and CurrencyCode currently which doesnt come from the Item table 
-  private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/getItemDetails";
+  private serverUrl;
   private response;
   private testdata;
 
@@ -352,7 +355,7 @@ export class ItemDetailsPostService { //Gets Item record for the selected Item. 
         data  = data.append('pcItemCode', body.ItemCode);
         data  = data.append('pcCustomerCode', body.CustomerCode);
    
-
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getItemDetails";
       //console.log(data);
       
      // console.log(httpOptions);

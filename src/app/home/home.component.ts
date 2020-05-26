@@ -75,7 +75,7 @@ export class HomeComponent implements OnInit {
                     
 
 
-            .postData({Username: this.Username , Password : this.Password})
+            .postData({Username: this.Username , Password : this.Password,url:this.appComponent.cUrl})
              
             .subscribe(response => {
                
@@ -120,7 +120,7 @@ export class HomeComponent implements OnInit {
 
     private fetchCustomerCodes(){
         this.CustomerPostService
-        .postData({ArEntity: this.appComponent.ArEntity})
+        .postData({ArEntity: this.appComponent.ArEntity,url:this.appComponent.cUrl})
         .subscribe(response => {
   console.log(response);
          this.appComponent.CustomerCodes = response.body.ttCustomer.map(item => new String(

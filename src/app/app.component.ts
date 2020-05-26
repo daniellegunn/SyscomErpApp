@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
     iYear    ="";
     iPeriod  ="";
     CustomerCodes = [];
+    cUrl = "http://192.168.250.65:8980";
    
  
     constructor() {

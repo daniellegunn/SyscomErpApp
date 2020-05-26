@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders,HttpParams } from "@angular/common/http";
 
 @Injectable()
 export class MyHttpPostService {
-    private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/ErpAppLogin";
+    private serverUrl;
     private response;
     private testdata;
 
@@ -24,7 +24,7 @@ export class MyHttpPostService {
             data = data.append('Password', body.Password);
         
           
-         
+            this.serverUrl = body.url + "/ErpApp/rest/ErpApp/ErpAppLogin";
           
          
        // console.log(httpOptions);
@@ -39,7 +39,7 @@ export class MyHttpPostService {
 }
 
 export class CustomerPostService {
-    private serverUrl = "http://192.168.250.65:8980/ErpApp/rest/ErpApp/getCustomerCode";
+    private serverUrl;
     private response;
     private testdata;
 
@@ -56,10 +56,7 @@ export class CustomerPostService {
           
           let data: HttpParams = new HttpParams();
             data  =  data.append('pcArEntity', body.ArEntity);
-        
-          
-         
-          
+            this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getCustomerCode";
          
        // console.log(httpOptions);
           this.testdata =  this.http.post(this.serverUrl,data, httpOptions )  ;
