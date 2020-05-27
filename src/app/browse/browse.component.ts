@@ -338,7 +338,7 @@ public onclose() {
 }
 
 
-    public submit() { // Submit the Order checking all data is filled in before validation in backend
+public submit() { // Submit the Order checking all data is filled in before validation in backend
       utils.ad.dismissSoftInput();
 
        if (!this.CustomerCode){
@@ -359,7 +359,7 @@ public onclose() {
        this.SummaryVisbilty   ="collapse";
       
         this.makePostRequest();
-    }
+}
 
   public hideOrderLines(){ // Hides the Order Lines from view
     
@@ -377,41 +377,51 @@ public onclose() {
   }
 public showOrderLines(){ // Shows the Order Lines 
 
-if(this.CustomerCode == undefined){
-alert("Please enter a Customer code");
-return;
+  if(this.CustomerCode == undefined){
+    alert("Please enter a Customer code");
+    return;
+  }
 
-}
-
-
-  this.GenericItemPostService
-        
+  this.GenericItemPostService 
   .postData({InEntity: this.appComponent.InEntity,
-          url:this.appComponent.cUrl})
-       
-             .subscribe(response => { 
-
+            url:this.appComponent.cUrl
+  })
+  .subscribe(response => { 
               this.GenericItems = response.body.ttGenericItems.map(item => new String(
-                item.Itemcode
-                
-                ))
+              item.Itemcode
+            ))
 
-        // console.log(response);
-
-             });
+   });
 
     this.ItemVisbilty = "visible";
     this.OrderVisbilty = "collapse";
     this.ChargeVisbilty = "collapse";
     this.message = "";
 
+    this.LineNumber = this.OrderItemList.length + 1;
+    this.ItemCode = "";
+    this.Attribute1 = [];
+    this.SelectedAttribute1 = undefined;
+    this.Attribute2 = [];
+    this.SelectedAttribute2 = undefined;
+    this.selectedGenericIndex = null;
+
+    this.Quantity = "1";
+    this.Price = null;
+    this.Currency = "";
+  
+    this.AttributeVisbilty ="collapse";
+
+    this.previousLineEnabled = true;
+    this.nextLineEnabled = false;
+    this.minusQtyEnabled = false;
 
 }
 
 public showDeliveryAddress(){
   if(this.CustomerCode == ""){
    alert("Please enter a Customer Code");
-              }
+    }
     this.AddressVisbilty = "visible";
     this.OrderVisbilty = "collapse";
     this.ChargeVisbilty = "collapse";
@@ -522,29 +532,28 @@ public hideOrderSummary(){
 public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line numbers after it by - 1
   
   if ((this.OrderItemList.length == 0 || this.OrderItemList.length == 1)  && LineNumber == 1){ //Code resets line number 1
-    this.OrderItemList=[];
+        this.OrderItemList=[];
         this.ItemCode = "";
         this.Quantity = "1";
-         this.Price = null;
+        this.Price = null;
         this.Currency = "";
 
         this.Attribute1= []
-        this. Attribute1Setcodes =[]
-        this. selectedAtt1Index= null;
+        this.Attribute1Setcodes =[]
+        this.selectedAtt1Index= null;
         this.SelectedAttribute1 = undefined;
         
-        this. Attribute2 = []
-        this. Attribute2Setcodes= []
-        this. selectedAtt2Index= null;
+        this.Attribute2 = []
+        this.Attribute2Setcodes= []
+        this.selectedAtt2Index= null;
         this.SelectedAttribute2 = undefined;
   
-       this. SelectedGenericItemCode= ""
-       this.selectedGenericIndex = null;
+        this.SelectedGenericItemCode= ""
+        this.selectedGenericIndex = null;
 
-        this.LineNumber = 1;
+        //this.LineNumber = 1;
         this.previousLineEnabled = false;
         this.minusQtyEnabled = false;
-
 
         return;
   }
@@ -566,116 +575,116 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
     
   });
   if(LineNumber > this.OrderItemList.length){
-    this.showOrderLine(LineNumber - 1);
+    //this.showOrderLine(LineNumber - 1);
   }
   else{
-  this.showOrderLine(LineNumber);
+    //this.showOrderLine(LineNumber);
+    //this.showOrderLines();
   }
+
+  this.showOrderLines();
 
 }
 
-    public addOrderLine(){ // Code for Adding order line if the length is at max then current  record hasnt been added neds to be pushed in
-      this.message = "";
+  public addOrderLine(){ // Code for Adding order line if the length is at max then current  record hasnt been added neds to be pushed in
+    this.message = "";
 
-        if (this.OrderItemList.length == (this.LineNumber - 1)) {
-        this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
-          InEntity: this.appComponent.InEntity,   GenericItemIndex: this.selectedGenericIndex,
-           Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index,Price:this.Price,Currency:this.Currency,VatAmount:this.VatAmount,GrossPrice:this.GrossPrice,NetPrice:this.NetPrice
-   }) ;         
-        this.Attribute1List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute1,SetCode:this.Attribute1Setcodes})
-        this.Attribute2List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute2,SetCode:this.Attribute2Setcodes})
+      if (this.OrderItemList.length == (this.LineNumber - 1)) {
+      this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
+        InEntity: this.appComponent.InEntity,   GenericItemIndex: this.selectedGenericIndex,
+          Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index,Price:this.Price,Currency:this.Currency,VatAmount:this.VatAmount,GrossPrice:this.GrossPrice,NetPrice:this.NetPrice
+      }) ;         
+      this.Attribute1List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute1,SetCode:this.Attribute1Setcodes})
+      this.Attribute2List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute2,SetCode:this.Attribute2Setcodes})
+
+      this.LineNumber = this.OrderItemList.length + 1;
+      }
+      else{
+
+        this.updateOrderLine(this.LineNumber); // Record exists update the order line.
 
         this.LineNumber = this.OrderItemList.length + 1;
-        }
-        else{
 
-          this.updateOrderLine(this.LineNumber); // Record exists update the order line.
-
-
-            this.LineNumber = this.OrderItemList.length + 1;
-
-        }
-        
-        
-      // Reset everything for the new order line inculding the index's
-        this.ItemCode = "";
-        this.Attribute1 = [];
-        this.SelectedAttribute1 = undefined;
-        this.Attribute2 = [];
-        this.SelectedAttribute2 = undefined;
-        this.selectedGenericIndex = null;
-
-        this.Quantity = "1";
-        this.Price = null;
-        this.Currency = "";
-     
-        this.AttributeVisbilty ="collapse";
-
-        this.previousLineEnabled = true;
-        this.nextLineEnabled = false;
-        this.minusQtyEnabled = false;
-
-    }
-    
-    public submitOrderLine(){ //This will trigger on show  Order Summary as new line might not have been submitted (Look into moving it to hideOrderLines)
-      this.message = "";
-    if(this.ItemCode != "" && this.ItemCode != undefined){
-        if (this.OrderItemList.length == (this.LineNumber - 1) ) {
-        this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
-          InEntity: this.appComponent.InEntity, GenericItemIndex: this.selectedGenericIndex,
-          Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index, Price:this.Price, Currency:this.Currency,VatAmount:this.VatAmount,GrossPrice:this.GrossPrice,NetPrice:this.NetPrice}) ;       
-          
-          this.Attribute1List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute1,SetCode:this.Attribute1Setcodes})
-          this.Attribute2List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute2,SetCode:this.Attribute2Setcodes})
-        
-        }
-        else{
-            this.updateOrderLine(this.LineNumber);
-
-        }
-        
       }
+      
+      
+    // Reset everything for the new order line inculding the index's
+      this.ItemCode = "";
+      this.Attribute1 = [];
+      this.SelectedAttribute1 = undefined;
+      this.Attribute2 = [];
+      this.SelectedAttribute2 = undefined;
+      this.selectedGenericIndex = null;
 
-       
+      this.Quantity = "1";
+      this.Price = null;
+      this.Currency = "";
+    
+      this.AttributeVisbilty ="collapse";
+
+      this.previousLineEnabled = true;
+      this.nextLineEnabled = false;
+      this.minusQtyEnabled = false;
+
+  }
+  
+  public submitOrderLine(){ //This will trigger on show  Order Summary as new line might not have been submitted (Look into moving it to hideOrderLines)
+    this.message = "";
+  if(this.ItemCode != "" && this.ItemCode != undefined){
+      if (this.OrderItemList.length == (this.LineNumber - 1) ) {
+      this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
+        InEntity: this.appComponent.InEntity, GenericItemIndex: this.selectedGenericIndex,
+        Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index, Price:this.Price, Currency:this.Currency,VatAmount:this.VatAmount,GrossPrice:this.GrossPrice,NetPrice:this.NetPrice}) ;       
+        
+        this.Attribute1List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute1,SetCode:this.Attribute1Setcodes})
+        this.Attribute2List.push({LineNumber:this.LineNumber,SetCodeDescription:this.Attribute2,SetCode:this.Attribute2Setcodes})
+      
+      }
+      else{
+          this.updateOrderLine(this.LineNumber);
+
+      }
+      
     }
+
+      
+  }
    
 
   public updateOrderLine(LineNumber:number){ //Index is always LineNumber - 1 as 0 is a element for the first line 1. Not like Progress starts at 0.
 
-    this.OrderItemList[LineNumber - 1].ItemCode = this.ItemCode  ;
+    this.OrderItemList[LineNumber - 1].ItemCode = this.ItemCode;
     this.OrderItemList[LineNumber - 1].Quantity = this.Quantity;    
-    this.OrderItemList[LineNumber - 1].Price = this.Price  ;
+    this.OrderItemList[LineNumber - 1].Price = this.Price;
     this.OrderItemList[LineNumber - 1].VatAmount = this.VatAmount;
     this.OrderItemList[LineNumber - 1].Currency = this.Currency;    
 
-    this.Attribute1List[LineNumber - 1].SetCodeDescription = this.Attribute1 ;
-    this.Attribute1List[LineNumber - 1].SetCode = this.Attribute1Setcodes ;
+    this.Attribute1List[LineNumber - 1].SetCodeDescription = this.Attribute1;
+    this.Attribute1List[LineNumber - 1].SetCode = this.Attribute1Setcodes;
 
-    this.Attribute2List[LineNumber - 1].SetCodeDescription = this.Attribute2 ;
-    this.Attribute2List[LineNumber - 1].SetCode = this.Attribute2Setcodes ;
+    this.Attribute2List[LineNumber - 1].SetCodeDescription = this.Attribute2;
+    this.Attribute2List[LineNumber - 1].SetCode = this.Attribute2Setcodes;
 
-    this.OrderItemList[LineNumber - 1].Attribute1Index =   this.selectedAtt1Index;
-    this.OrderItemList[LineNumber - 1].Attribute2Index = this.selectedAtt2Index ;
-    this.OrderItemList[LineNumber - 1].GenericItemIndex =  this.selectedGenericIndex;
+    this.OrderItemList[LineNumber - 1].Attribute1Index = this.selectedAtt1Index;
+    this.OrderItemList[LineNumber - 1].Attribute2Index = this.selectedAtt2Index;
+    this.OrderItemList[LineNumber - 1].GenericItemIndex = this.selectedGenericIndex;
 
   }
 
   public showOrderLine(LineNumber:number){//Attribute Arrays need to be set with the list that relates to the order line..
 
-    
-    this.ItemCode =  this.OrderItemList[LineNumber - 1].ItemCode;
+    this.ItemCode = this.OrderItemList[LineNumber - 1].ItemCode;
     this.Quantity = this.OrderItemList[LineNumber - 1 ].Quantity;
-    this.LineNumber =  this.OrderItemList[LineNumber - 1].LineNumber;
+    this.LineNumber = this.OrderItemList[LineNumber - 1].LineNumber;
 
-    this.Price  =    this.OrderItemList[LineNumber - 1].Price; 
-    this.Currency =  this.OrderItemList[LineNumber - 1].Currency;
+    this.Price = this.OrderItemList[LineNumber - 1].Price; 
+    this.Currency = this.OrderItemList[LineNumber - 1].Currency;
 
-    
-    this.Attribute1   = this.Attribute1List[LineNumber - 1 ].SetCodeDescription;
-    this.Attribute1Setcodes  = this.Attribute1List[LineNumber - 1 ].SetCode;
+    this.Attribute1 = this.Attribute1List[LineNumber - 1 ].SetCodeDescription;
+    this.Attribute1Setcodes = this.Attribute1List[LineNumber - 1 ].SetCode;
 
-    this.Attribute2   = this.Attribute2List[LineNumber - 1 ].SetCodeDescription;
-    this.Attribute2Setcodes  = this.Attribute2List[LineNumber - 1 ].SetCode;
+    this.Attribute2 = this.Attribute2List[LineNumber - 1 ].SetCodeDescription;
+    this.Attribute2Setcodes = this.Attribute2List[LineNumber - 1 ].SetCode;
 
     this.selectedGenericIndex = this.OrderItemList[LineNumber - 1 ].GenericItemIndex;
     this.selectedAtt1Index = this.OrderItemList[LineNumber - 1 ].Attribute1Index;
@@ -930,7 +939,8 @@ console.log(textfield);*/
 
   }
 
-    private makePostRequest() { // The main request which sumbits the Order
+
+  private makePostRequest() { // The main request which sumbits the Order
 
      this.submitOrderLine();
 
@@ -956,6 +966,9 @@ console.log(textfield);*/
           ShipPostCode:this.ShipPostCode,
           ArEntity: this.appComponent.ArEntity,
           InEntity: this.appComponent.InEntity} ];
+
+          console.log(this.OrderItemList);
+          return;
 
         this.myPostService
                         
@@ -1001,7 +1014,6 @@ console.log(textfield);*/
 
     }
 
-    
 }
 
 

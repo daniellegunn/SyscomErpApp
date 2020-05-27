@@ -1,3 +1,4 @@
+<Page loaded="pageLoaded" class="page" xmlns="http://www.nativescript.org/tns.xsd">
 <ActionBar class="action-bar">
     <Image class="img-circle m-b-10 Syscom-Plc-logo-small" src="~/images/Syscom-Plc-logo.jpg" width="150"  loadMode="async"> </Image>
 
@@ -117,7 +118,7 @@
         <Label row="0"  col = "1"  class="boxlabel"  text="Quantity" textWrap="true"></Label>
 
         <Button row="1" col = "0" height = "100%" [isEnabled]="minusQtyEnabled"  text="&#xf068; " fontFamily="FontAwesome" class="btn btn-primary btn-active"  (tap)="minusQty()"></Button>
-    <TextField row = "1" col = "1" class="input input-border" keyboardType ="number" hint="Quantity" [(ngModel)]="Quantity" editable="true" ) ></TextField>
+    <TextField row = "1" col = "1" class="input input-border" keyboardType ="number" id="quantityfield" hint="Quantity" [(ngModel)]="Quantity" editable="true" ) ></TextField>
     <Button row="1" col = "2" text="&#xf067; " fontFamily="FontAwesome" height = "100%" class="btn btn-primary btn-active"  (tap)="addQty()"> </Button>
 
     <Label row="2"  col = "0"  class="boxlabel"  text="Price" textWrap="true"></Label>
@@ -233,20 +234,19 @@
             <StackLayout   class="form window" height = "3300px">
   <!--  <StackLayout  [style.visibility]="SummaryVisbilty" > // Summary  start-->
         <RadListView  [style.visibility]="SummaryVisbilty"  isUserInteractionEnabled ="false" [items]="OrderItemList" height="360" >
-          
+
             <ng-template   let-item="item">
        
                 <GridLayout  columns="170,*" rows="*,*,*,*,*,*" style="padding:20;width: 100%;font-size: 20px;">
-            <Label class="cell" row="0" col="0" text="Line Number:"></Label>
+              <Label class="cell" row="0" col="0" text="Line Number:"></Label>
               <Label class="cell" row="0" col="1"  [text]="item.LineNumber"></Label>
-        
-              
 
               <Label class="cell" row="1" col="0" text="Item Code:"></Label>
               <Label class="cell" row="1" col="1" [text]="item.ItemCode"></Label>
 
               <Label class="cell"   row="2" col="0"  text="Quantity:"></Label>
-              <Label class="cell"  row="2" col="1"   textWrap="true" [text]="item.Quantity"></Label>
+              <!--<Label class="cell"  row="2" col="1"   textWrap="true" [text]="item.Quantity" editable="true"></Label>-->
+              <TextField class="cell" keyboardType="number" [(ngModel)]="Quantity"  row="2" col="1" [text]="item.Quantity" editable="true" min="0"></TextField>
 
               
               <Label class="cell"   row="3" col="0"  text="Price:"></Label>
@@ -256,8 +256,6 @@
               <Label class="cell"  row="4" col="1"   textWrap="true" [text]="item.Currency"></Label>
 
               <Button  row="6" col="0" colspan = "2"  class="btn btn-primary btn-ruby btn-active "  text="Delete Line" (tap)="deleteOrderLine(item.LineNumber)"></Button>
-
-
               
            </GridLayout>
 
@@ -290,3 +288,4 @@
 
  </StackLayout>
 </StackLayout>
+</Page>
