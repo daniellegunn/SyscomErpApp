@@ -58,7 +58,7 @@ export class CustomerPostService {
             data  =  data.append('pcArEntity', body.ArEntity);
             this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getCustomerCode";
          
-       // console.log(httpOptions);
+        console.log(this.serverUrl);
           this.testdata =  this.http.post(this.serverUrl,data, httpOptions )  ;
           this.response =  this.testdata;
           return this.testdata;

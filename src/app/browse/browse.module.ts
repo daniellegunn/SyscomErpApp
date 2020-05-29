@@ -4,6 +4,7 @@ import { NativeScriptHttpClientModule } from "nativescript-angular/http-client";
 import { NativeScriptFormsModule } from "nativescript-angular/forms";
 import { DropDownModule } from "nativescript-drop-down/angular"
 import { NativeScriptUIListViewModule } from "nativescript-ui-listview/angular";
+import { NativeScriptUIAutoCompleteTextViewModule } from "nativescript-ui-autocomplete/angular";
 
 import { BrowseRoutingModule } from "./browse-routing.module";
 import { BrowseComponent } from "./browse.component";
@@ -15,7 +16,11 @@ import { BrowseComponent } from "./browse.component";
         NativeScriptHttpClientModule,
         NativeScriptFormsModule,
         DropDownModule,
-        NativeScriptUIListViewModule
+        NativeScriptUIListViewModule,
+        NativeScriptUIListViewModule,
+        NativeScriptUIAutoCompleteTextViewModule,
+        NativeScriptCommonModule,
+        NativeScriptFormsModule
         
         
     ],

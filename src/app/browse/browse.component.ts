@@ -12,6 +12,10 @@ import { ScrollView, ScrollEventData } from "tns-core-modules/ui/scroll-view";
 import { SelectedIndexChangedEventData } from "nativescript-drop-down";
 import * as dialogs from "tns-core-modules/ui/dialogs";
 //import {ui/core/view};
+import { ObservableArray } from "tns-core-modules/data/observable-array";
+import { TokenModel } from "nativescript-ui-autocomplete";
+
+const countries = [];
 
 @Component({
     moduleId: module.id,
@@ -118,6 +122,7 @@ export class BrowseComponent implements OnInit     {
     public SummaryVisbilty:String = "collapse";
     public ChargeVisbilty:String = "collapse";
     public scrollYPos: number;
+    autocompleteCustomer: ObservableArray<TokenModel>;
     constructor(private myPostService: MyHttpPostService,
       private GenericItemPostService: GenericItemPostService,
       private Attribute1ItemPostService:Attribute1ItemPostService,
@@ -127,12 +132,20 @@ export class BrowseComponent implements OnInit     {
       private AdditionalChargesPostService:AdditionalChargesPostService,
       private AdditionalChargeCodePostService:AdditionalChargeCodePostService,
       private AdditionalChargeValuePostService:AdditionalChargeValuePostService,
-      private appComponent: AppComponent) { }
-  
+      private appComponent: AppComponent,
+      ) {  
+        this.autocompleteCustomer = new ObservableArray<TokenModel>();   
+        countries.forEach((country) => {
+          this.autocompleteCustomer.push(new TokenModel(country, undefined));
+      });  
+       }
+
 
     ngOnInit(): void {
         // Use the "ngOnInit" handler to initialize data for the view.
         
+          //console.log(this.appComponent.CustomerCodes);
+    
         this.OrderItemList = [];
         this.LineNumber = 1;
        
@@ -160,8 +173,9 @@ public onCustomerOpen(){ //Sets the customer code dropdown which is grabbed from
 
 }
 
-public onCustomerCodeChange(args:SelectedIndexChangedEventData){
-  this.CustomerCode = this.CustomerCodes[args.newIndex];
+//public onCustomerCodeChange(args:SelectedIndexChangedEventData){
+  public onCustomerCodeChange(){
+  //this.CustomerCode = this.CustomerCodes[args.newIndex];
   //This.CustomerCode is the variable that is sent on the OrderPackage request. Must Update this value
   //console.log("Customer Code is: " + this.CustomerCode );
 
@@ -450,7 +464,8 @@ public showAddCharges(){
       dialogs.confirm("Do you want to recalculate the additional charges?").then(result => {
        
         if (result == true){
-          this.AddChargeRecalc = true;
+          this.reclacAddCharges();
+        /*  this.AddChargeRecalc = true;
           this.AdditionalChargesPostService
           .postData({ArEntity: this.appComponent.ArEntity,
                     InEntity: this.appComponent.InEntity,
@@ -467,7 +482,7 @@ public showAddCharges(){
            item.AddChargeValue,
            item.AddChargeDesc)); 
           
-          });      
+          });      */
         }
         else {}
     });  
@@ -475,6 +490,27 @@ public showAddCharges(){
     this.ChargeVisbilty = "visible";
     this.OrderVisbilty = "collapse";
     this.AddressVisbilty = "collapse";
+}
+
+public reclacAddCharges(){
+  this.AddChargeRecalc = true;
+  this.AdditionalChargesPostService
+  .postData({ArEntity: this.appComponent.ArEntity,
+            InEntity: this.appComponent.InEntity,
+            CustomerCode: this.CustomerCode,
+            OpenValue: this.OpenValue,
+            url:this.appComponent.cUrl})
+        
+  .subscribe(response => { 
+ 
+ this.AddCharges = [];
+ this.AddCharges = response.body.ttAddCharge.map(item => new AddChargesClass(
+   item.iIndex,
+   item.AddChargeCode,
+   item.AddChargeValue,
+   item.AddChargeDesc)); 
+  
+  });      
 }
 
 public hideAddCharges(){
@@ -488,12 +524,12 @@ public hideAddCharges(){
 
 public showOrderSummary(){
 
-        
-  
-        if(this.OrderItemList.length == 0){
+       /* if(this.OrderItemList.length == 0){
           alert("Please enter Order Lines");
           return;
-        }
+        }*/
+
+        this.reclacAddCharges();
         
         this.TotalPrice = 0;
         this.OpenValue = 0;
@@ -555,6 +591,8 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
         this.previousLineEnabled = false;
         this.minusQtyEnabled = false;
 
+        this.showOrderSummary();
+
         return;
   }
  //Need to get rid of Attribute lists as well as the OrderItemList record
@@ -583,6 +621,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
   }
 
   this.showOrderLines();
+  this.showOrderSummary();
 
 }
 
@@ -847,7 +886,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
     alert(this.Quantity);
    }
 
-   public addQty(){ // Code for + button on the Quanity 
+   public addQty(LineNumber:number){ // Code for + button on the Quanity 
    if(this.Quantity == undefined){ // Always Set to 1 on create but user can delete 1 and then press +. This code resets it to 1
     this.Quantity = "1";
     return;
@@ -855,6 +894,10 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
 
     this.Quantity = String(Number(this.Quantity) + 1);
     this.minusQtyEnabled = true
+
+    //if the record has been changed on the summary then change the array record
+    this.OrderItemList[LineNumber - 1].Quantity = this.Quantity;
+
    }
 
    public deleteChargeCode(LineNumber:string) {
@@ -939,6 +982,28 @@ console.log(textfield);*/
 
   }
 
+  public fillCustomers() {
+  
+   if (this.autocompleteCustomer.length == 0){
+    {
+      this.autocompleteCustomer = new ObservableArray<TokenModel>();
+      this.appComponent.CustomerCodes.forEach((CustomerCode) => {
+      
+          this.autocompleteCustomer.push(new TokenModel(CustomerCode, undefined));
+      });
+    }
+   }
+
+  }
+
+    //alert(args.token.text);
+  public onCustomerSelected(args){
+    this.CustomerCode = args.token.text;
+    this.onCustomerCodeChange();
+    //figure out a way of only letting one token through 
+    //but still using the name of the selected token
+  }
+
 
   private makePostRequest() { // The main request which sumbits the Order
 
@@ -966,9 +1031,6 @@ console.log(textfield);*/
           ShipPostCode:this.ShipPostCode,
           ArEntity: this.appComponent.ArEntity,
           InEntity: this.appComponent.InEntity} ];
-
-          console.log(this.OrderItemList);
-          return;
 
         this.myPostService
                         

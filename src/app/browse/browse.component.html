@@ -1,4 +1,4 @@
-<Page loaded="pageLoaded" class="page" xmlns="http://www.nativescript.org/tns.xsd">
+
 <ActionBar class="action-bar">
     <Image class="img-circle m-b-10 Syscom-Plc-logo-small" src="~/images/Syscom-Plc-logo.jpg" width="150"  loadMode="async"> </Image>
 
@@ -19,10 +19,24 @@
     <StackLayout class="page page-content">
     <StackLayout [style.visibility]="OrderVisbilty" class=" form window m-t-9 m-b-5">
 
-        <Label class="boxlabel" text="Customer Code" textWrap="true"></Label>
+        <!--<Label class="boxlabel" text="Customer Code" textWrap="true"></Label>-->
     <!--    <TextField class="input input-border m-t-9 m-b-5" hint="Customer Code" [(ngModel)]="CustomerCode" editable="true" ></TextField> -->
-    
-    <DropDown
+   
+    <StackLayout class="input-field">
+		<Label class="boxlabel" text="Customer Code" textWrap="true"></Label>
+        <RadAutoCompleteTextView  style="font-size:20" [items]="autocompleteCustomer" (tokenAdded)="onCustomerSelected($event)" hint="Enter Customer Code" (textChanged)="fillCustomers()" suggestMode="Suggest" displayMode="Tokens" >
+			<SuggestionView tkAutoCompleteSuggestionView>
+				<ng-template tkSuggestionItemTemplate let-item="item">
+					<GridLayout columns="auto, *">
+						<!--<Image height="40" col="0" [src]="getImageName(item.text)"></Image>-->
+						<Label col="1" [text]="item.text" class="p-l-5"></Label>
+					</GridLayout>
+				</ng-template>
+			</SuggestionView>
+		</RadAutoCompleteTextView>
+		<StackLayout class="hr-light"></StackLayout>
+	</StackLayout>
+   <!-- <DropDown
     class="input input-border m-t-9 m-b-5"
     backroundColor="red"
     itemsTextAlignment="center"
@@ -33,10 +47,10 @@
     (closed)="onclose()"
     hint = "Select Customer Code"
  
-    ></DropDown>
+    ></DropDown>--->
 
 
-        <Label class="boxlabel" text="Customer Purchase Order" textWrap="true"></Label>
+     <Label class="boxlabel" text="Customer Purchase Order" textWrap="true"></Label>
         <TextField class="input input-border" hint="Customer Purchase Order" [(ngModel)]="CustomerPurchaseOrder" editable="true" ></TextField>
 
 
@@ -46,7 +60,7 @@
 
         <Button  class="btn btn-primary btn-purple btn-active" [isEnabled]="orderLinesEnabled"    text="Show Order Lines" (tap)="showOrderLines()"></Button>
 
-        <Button  class="btn btn-primary btn-sky btn-active"  [isEnabled]="deliveryAddressEnabled"   text="Change Delivery Address" (tap)="showDeliveryAddress()"></Button>
+        <Button  class="btn btn-primary btn-sky btn-active"  [isEnabled]="deliveryAddressEnabled"   text="View Delivery Address" (tap)="showDeliveryAddress()"></Button>
       
         <Button  class="btn btn-primary btn-sky btn-active"  [isEnabled]="AddChargesEnabled"   text="Change Additional Charges" (tap)="showAddCharges()"></Button>
 
@@ -118,7 +132,7 @@
         <Label row="0"  col = "1"  class="boxlabel"  text="Quantity" textWrap="true"></Label>
 
         <Button row="1" col = "0" height = "100%" [isEnabled]="minusQtyEnabled"  text="&#xf068; " fontFamily="FontAwesome" class="btn btn-primary btn-active"  (tap)="minusQty()"></Button>
-    <TextField row = "1" col = "1" class="input input-border" keyboardType ="number" id="quantityfield" hint="Quantity" [(ngModel)]="Quantity" editable="true" ) ></TextField>
+    <TextField row = "1" col = "1" class="input input-border" keyboardType ="number" id="quantityfield" hint="Quantity" [(ngModel)]="Quantity" editable="true"  ) ></TextField>
     <Button row="1" col = "2" text="&#xf067; " fontFamily="FontAwesome" height = "100%" class="btn btn-primary btn-active"  (tap)="addQty()"> </Button>
 
     <Label row="2"  col = "0"  class="boxlabel"  text="Price" textWrap="true"></Label>
@@ -140,7 +154,7 @@
 
         <!--<Button row="1" col = "0" class="btn btn-primary btn-active" text="Previous Line" [isEnabled]="previousLineEnabled" (tap)="previousOrderLine()"></Button>-->
         <!--<Button row="1" col = "1"  class="btn btn-primary btn-active" text="Next Line" [isEnabled]="nextLineEnabled" text="Next Line" (tap)="nextOrderLine()"></Button>-->
-        <Button row="2"  col = "0" class="btn btn-primary btn-ruby btn-active "  text="Delete Order Line" (tap)="deleteOrderLine(LineNumber)"></Button>
+        <Button row="2"  col = "0" class="btn btn-primary btn-ruby btn-active "  text="Cancel Order Line" (tap)="deleteOrderLine(LineNumber)"></Button>
         <Button row="2"  col = "1" class="btn btn-primary btn-forest btn-active "  text="Confirm" (tap)="hideOrderLines()"></Button>
         <Label row="3" style="font-size: 20%;" colSpan = "2" class="text-center " [text]="message" verticalAligment="center" colSpan="2" textWrap="true"></Label>
 
@@ -236,43 +250,43 @@
         <RadListView  [style.visibility]="SummaryVisbilty"  isUserInteractionEnabled ="false" [items]="OrderItemList" height="360" >
 
             <ng-template   let-item="item">
-       
-                <GridLayout  columns="170,*" rows="*,*,*,*,*,*" style="padding:20;width: 100%;font-size: 20px;">
+       <!--style="padding:20;width: 100%;font-size: 20px;"-->
+                <GridLayout style="font-size: 15px;text-align: center;"  columns="*,*,*" rows="*,*,*,*,*,*,*,*,*,*.*" >
               <Label class="cell" row="0" col="0" text="Line Number:"></Label>
-              <Label class="cell" row="0" col="1"  [text]="item.LineNumber"></Label>
+              <Label class="cell" row="0" col="1" colspan = "2"  [text]="item.LineNumber"></Label>
 
               <Label class="cell" row="1" col="0" text="Item Code:"></Label>
-              <Label class="cell" row="1" col="1" [text]="item.ItemCode"></Label>
+              <Label class="cell" row="1" col="1" colspan = "2" [text]="item.ItemCode"></Label>
 
-              <Label class="cell"   row="2" col="0"  text="Quantity:"></Label>
+              <1--<Label class="cell"   row="2" col="0"  text="Quantity:"></Label>-->
               <!--<Label class="cell"  row="2" col="1"   textWrap="true" [text]="item.Quantity" editable="true"></Label>-->
-              <TextField class="cell" keyboardType="number" [(ngModel)]="Quantity"  row="2" col="1" [text]="item.Quantity" editable="true" min="0"></TextField>
+              <!--<TextField class="cell" keyboardType="number" [(ngModel)]="Quantity"  row="2" col="1" [text]="item.Quantity" editable="true" min="0"></TextField>-->
 
               
               <Label class="cell"   row="3" col="0"  text="Price:"></Label>
-              <Label class="cell"  row="3" col="1"   textWrap="true" [text]="item.Price"></Label>
+              <Label class="cell"  row="3" col="1" colspan = "2"  textWrap="true" [text]="item.Price"></Label>
 
               <Label class="cell"   row="4" col="0"  text="Currency:"></Label>
-              <Label class="cell"  row="4" col="1"   textWrap="true" [text]="item.Currency"></Label>
+              <Label class="cell"  row="4" col="1"  colspan = "2" textWrap="true" [text]="item.Currency"></Label>
 
-              <Button  row="6" col="0" colspan = "2"  class="btn btn-primary btn-ruby btn-active "  text="Delete Line" (tap)="deleteOrderLine(item.LineNumber)"></Button>
-              
+              <Button row="7" col="0" height = "100%" [isEnabled]="minusQtyEnabled"  text="&#xf068; " fontFamily="FontAwesome" class="btn btn-primary btn-active"  (tap)="minusQty()"></Button>
+              <TextField row="7" col="1" class="input input-border" keyboardType ="number" id="quantityfield" hint="Quantity" [(ngModel)]="Quantity" editable="true" [text]="item.Quantity" ></TextField>
+              <Button row="7" col="2" text="&#xf067; " fontFamily="FontAwesome" height = "100%" class="btn btn-primary btn-active"  (tap)="addQty(item.LineNumbe)"> </Button>
+
+              <Button  row="8" col="0" colspan = "2"  class="btn btn-primary btn-ruby btn-active "  text="Delete Line" (tap)="deleteOrderLine(item.LineNumber)"></Button>
+              <!--<Label row="9" col="0" colspan = "3" class="line" style="font-size: 19;padding: 5 18;border-color:blue;border-width: 0 0 2 0;"></Label>
+              <Label row="10" col="0" colspan = "3" class="line"></Label>-->
+
            </GridLayout>
 
            </ng-template>
 
         </RadListView>
-        <Label class="cell"   text="Open Value:"></Label>
-        <Label class="cell"   [text]="OpenValue"></Label>
-
-        <Label class="cell"   text="Total Vat:"></Label>
-        <Label class="cell"   [text]="TotalVat"></Label>
-
-        <Label class="cell"   text="Total Add Charges:"></Label>
-        <Label class="cell"   [text]="TotalAddCharges"></Label>                
         
-        <Label class="cell"   text="Total Price:"></Label>
-        <Label class="cell"   [text]="TotalPrice"></Label>        
+        <Label class="cell" text="Open Value: {{ OpenValue }}" ></Label>
+        <Label class="cell" text="Total Vat: {{ TotalVat }}"></Label>
+        <Label class="cell" text="Total Add Charges: {{ TotalAddCharges }}"></Label>
+        <Label class="cell" text="Total Price: {{ TotalPrice }}"></Label>     
 
         <Button   class="btn btn-primary btn-active"   style="background-color:red;color: white;" text="Back" (tap)="hideOrderSummary()"></Button>
         <Button row="3"  colSpan="2"  class="btn btn-primary  btn-forest btn-active" text="Submit Order" (tap)="submit()"></Button>
@@ -288,4 +302,3 @@
 
  </StackLayout>
 </StackLayout>
-</Page>

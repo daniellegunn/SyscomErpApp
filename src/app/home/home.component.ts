@@ -11,29 +11,25 @@ import { environment } from '~/app/environment/environment';
 import { AppComponent } from '~/app/app.component';
 
 
-
-
-
-
 @Component({
     selector: "Home",
     templateUrl: "./home.component.html",
     providers: [MyHttpPostService ,CustomerPostService]
-
-    
 })
+
 export class HomeComponent implements OnInit {
 
     public Username: string;
     public Password: string;
-    SignInVisbilty  = "visible";
-    LogOffVisbilty  =  "collapse"; 
-    PasswordVisbilty  = "visible";
-    UserNotLoggedIn     = "true";
+    SignInVisbilty = "visible";
+    LogOffVisbilty = "collapse"; 
+    PasswordVisbilty = "visible";
+    UserNotLoggedIn = "true";
     
     constructor(private myPostService: MyHttpPostService,
          private appComponent: AppComponent,
-         private CustomerPostService:CustomerPostService,) {   
+         private CustomerPostService:CustomerPostService
+         ) {   
         this.Username = "radmin";
         this.Password = "syscom";
       }
@@ -44,17 +40,11 @@ export class HomeComponent implements OnInit {
 
 
     public submit() {
-     
-          
-    
          utils.ad.dismissSoftInput();
-
          this.PocketERPAuthentication();
-    
-    
      }
     
-      public LogOff(){
+    public LogOff(){
 
         this.appComponent.Navvisible = "collapse";
         this.Password = "";
@@ -66,23 +56,18 @@ export class HomeComponent implements OnInit {
         /* Buttons Visbilty - Log off button and Sign in button    */
         this.LogOffVisbilty  =  "collapse"; 
         this.UserNotLoggedIn     = "true";
-      }
+    }
 
     private makePostRequest() {
-      
 
         this.myPostService
                     
-
-
             .postData({Username: this.Username , Password : this.Password,url:this.appComponent.cUrl})
              
             .subscribe(response => {
                
-               
-    
                 //this.message = (<any>response).json.data;
-               // console.log(response);
+              // console.log(response);
                 if (response.body.UserLogin[0].LoginSuccess === "Y"){
                 this.appComponent.Navvisible = "visible";
                 this.SignInVisbilty  = "collapse";
@@ -97,36 +82,28 @@ export class HomeComponent implements OnInit {
                  this.appComponent.iYear = response.body.UserLogin[0].iYear;
                  this.appComponent.iPeriod = response.body.UserLogin[0].iPeriod;
                  this.fetchCustomerCodes();
- 
-                  
-               
                 }
                 if (response.body.UserLogin[0].LoginSuccess === "N"){
                     alert("Wrong Username/Password");
                     this.Password = "";
                     
                      return;
-                    }
-
-
-                
-
-
+                }
             });
-            
-        
-        
+ 
     }
 
     private fetchCustomerCodes(){
         this.CustomerPostService
         .postData({ArEntity: this.appComponent.ArEntity,url:this.appComponent.cUrl})
         .subscribe(response => {
-  console.log(response);
+ // console.log(response);
          this.appComponent.CustomerCodes = response.body.ttCustomer.map(item => new String(
               item.CustomerCode
         ));
-        //console.log(  this.appComponent.CustomerCodes);
+       
+        //this.appComponent.fillCustomers();
+        //con
 
     });
     }
