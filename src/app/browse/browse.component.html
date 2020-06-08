@@ -251,14 +251,14 @@
 
             <ng-template   let-item="item">
        <!--style="padding:20;width: 100%;font-size: 20px;"-->
-                <GridLayout style="font-size: 15px;text-align: center;"  columns="*,*,*" rows="*,*,*,*,*,*,*,*,*,*.*" >
+                <GridLayout style="font-size: 15px;text-align: center;"  columns="*,*,*" rows="*,*,*,*,*,*,*,*,*,*,*,*" >
               <Label class="cell" row="0" col="0" text="Line Number:"></Label>
               <Label class="cell" row="0" col="1" colspan = "2"  [text]="item.LineNumber"></Label>
 
               <Label class="cell" row="1" col="0" text="Item Code:"></Label>
               <Label class="cell" row="1" col="1" colspan = "2" [text]="item.ItemCode"></Label>
 
-              <1--<Label class="cell"   row="2" col="0"  text="Quantity:"></Label>-->
+              <!--<Label class="cell"   row="2" col="0"  text="Quantity:"></Label>-->
               <!--<Label class="cell"  row="2" col="1"   textWrap="true" [text]="item.Quantity" editable="true"></Label>-->
               <!--<TextField class="cell" keyboardType="number" [(ngModel)]="Quantity"  row="2" col="1" [text]="item.Quantity" editable="true" min="0"></TextField>-->
 
@@ -269,13 +269,16 @@
               <Label class="cell"   row="4" col="0"  text="Currency:"></Label>
               <Label class="cell"  row="4" col="1"  colspan = "2" textWrap="true" [text]="item.Currency"></Label>
 
-              <Button row="7" col="0" height = "100%" [isEnabled]="minusQtyEnabled"  text="&#xf068; " fontFamily="FontAwesome" class="btn btn-primary btn-active"  (tap)="minusQty()"></Button>
-              <TextField row="7" col="1" class="input input-border" keyboardType ="number" id="quantityfield" hint="Quantity" [(ngModel)]="Quantity" editable="true" [text]="item.Quantity" ></TextField>
-              <Button row="7" col="2" text="&#xf067; " fontFamily="FontAwesome" height = "100%" class="btn btn-primary btn-active"  (tap)="addQty(item.LineNumbe)"> </Button>
+              <Button row="7" col="0" height = "100%" [isEnabled]="minusQtyEnabled"  text="&#xf068; " fontFamily="FontAwesome" class="btn btn-primary btn-active"  (tap)="minusQty(item.LineNumber)"></Button>
+              <TextField row="7" col="1" class="input input-border" keyboardType ="number" id="quantityfield" hint="Quantity" editable="true" [text]="item.Quantity" ></TextField>
+              <Button row="7" col="2" text="&#xf067; " fontFamily="FontAwesome" height = "100%" class="btn btn-primary btn-active"  (tap)="addQty(item.LineNumber)"> </Button>
 
               <Button  row="8" col="0" colspan = "2"  class="btn btn-primary btn-ruby btn-active "  text="Delete Line" (tap)="deleteOrderLine(item.LineNumber)"></Button>
-              <!--<Label row="9" col="0" colspan = "3" class="line" style="font-size: 19;padding: 5 18;border-color:blue;border-width: 0 0 2 0;"></Label>
-              <Label row="10" col="0" colspan = "3" class="line"></Label>-->
+              <Label row="9" col="0" colspan = "3" class="line" style="font-size: 19;padding: 5 18;border-color:black;border-width: 0 0 2 0;"></Label>
+              <Label row="10" col="0" colspan = "3" class="line"></Label>
+
+              <Label row="10" col="0" colspan = "3" class="line" style="font-size: 19;padding: 5 18;border-color:white;border-width: 0 0 2 0;"></Label>
+              <Label row="11" col="0" colspan = "3" class="line"></Label>              
 
            </GridLayout>
 
@@ -283,10 +286,11 @@
 
         </RadListView>
         
-        <Label class="cell" text="Open Value: {{ OpenValue }}" ></Label>
-        <Label class="cell" text="Total Vat: {{ TotalVat }}"></Label>
-        <Label class="cell" text="Total Add Charges: {{ TotalAddCharges }}"></Label>
-        <Label class="cell" text="Total Price: {{ TotalPrice }}"></Label>     
+        <Label class="cell" style="font-weight: 800;text-align: center;" text="Order Totals" ></Label>
+        <Label class="cell" style="text-align: center;"text="Open Value: {{ OpenValue }}" ></Label>
+        <Label class="cell" style="text-align: center;"text="Total Vat: {{ TotalVat }}"></Label>
+        <Label class="cell" style="text-align: center;"text="Total Add Charges: {{ TotalAddCharges }}"></Label>
+        <Label class="cell" style="text-align: center;"text="Total Price: {{ TotalPrice }}"></Label>     
 
         <Button   class="btn btn-primary btn-active"   style="background-color:red;color: white;" text="Back" (tap)="hideOrderSummary()"></Button>
         <Button row="3"  colSpan="2"  class="btn btn-primary  btn-forest btn-active" text="Submit Order" (tap)="submit()"></Button>

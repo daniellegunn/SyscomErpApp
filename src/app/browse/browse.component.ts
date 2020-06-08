@@ -211,11 +211,15 @@ public onCustomerOpen(){ //Sets the customer code dropdown which is grabbed from
  .subscribe(response => { 
 
 this.AddCharges = [];
+if (response.body.ttAddCharge[0].AddChargeCode = "none"){
+}
+else{
 this.AddCharges = response.body.ttAddCharge.map(item => new AddChargesClass(
   item.iIndex,
   item.AddChargeCode,
   item.AddChargeValue,
   item.AddChargeDesc));
+}
  });
 
 this.orderLinesEnabled = true;
@@ -327,11 +331,17 @@ public onAttribute2change(event: SelectedIndexChangedEventData) { // On change o
     url:this.appComponent.cUrl})
   .subscribe(response => { 
 
-    this.Price = response.body.ttItem[0].Price1;
-    this.VatAmount = response.body.ttItem[0].vatamount;
-    this.Currency = response.body.ttItem[0].CurrencyCode;
-    this.NetPrice = response.body.ttItem[0].NetPrice;
-    this.GrossPrice = response.body.ttItem[0].GrossPrice;
+    if (response.body.ttItem[0].ErrorMsg != ""){
+        alert(response.body.ttItem[0].ErrorMsg);
+        this.deleteOrderLine(this.LineNumber);
+    }
+    {
+      this.Price = response.body.ttItem[0].Price1;
+      this.VatAmount = response.body.ttItem[0].vatamount;
+      this.Currency = response.body.ttItem[0].CurrencyCode;
+      this.NetPrice = response.body.ttItem[0].NetPrice;
+      this.GrossPrice = response.body.ttItem[0].GrossPrice;
+    }
 
    //console.log("gross" + response.body.ttItem[0].GrossPrice);
    //console.log("net" + response.body.ttItem[0].NetPrice);
@@ -503,14 +513,22 @@ public reclacAddCharges(){
         
   .subscribe(response => { 
  
- this.AddCharges = [];
+
+ if (response.body.ttAddCharge[0].AddChargeCode = "none"){
+console.log("none");
+ }
+ else{
+
+ //this.AddCharges = [];
+ console.log("else");
  this.AddCharges = response.body.ttAddCharge.map(item => new AddChargesClass(
    item.iIndex,
    item.AddChargeCode,
    item.AddChargeValue,
    item.AddChargeDesc)); 
+ }
   
-  });      
+  });     
 }
 
 public hideAddCharges(){
@@ -522,6 +540,38 @@ public hideAddCharges(){
     this.AddressVisbilty = "collapse";
 }
 
+public totalcalcs(){
+
+  this.reclacAddCharges();
+        
+  this.TotalPrice = 0;
+  this.OpenValue = 0;
+  this.TotalVat = 0;
+  this.TotalAddCharges = 0;
+  
+  this.OrderItemList.forEach(element => {
+
+    this.OpenValue = this.OpenValue + (Number(element.Price) * Number(element.Quantity));
+    this.TotalVat = this.TotalVat + (Number(element.VatAmount) * Number(element.Quantity));
+
+    //this.TotalPrice = this.TotalPrice + (Number(element.Price) * Number(element.Quantity));
+    this.TotalPrice = this.TotalPrice + (Number(element.Price) + Number(element.VatAmount)) * Number(element.Quantity);   
+           
+  });
+
+  this.AddCharges.forEach(element => {
+
+    this.TotalAddCharges = this.TotalAddCharges +  (Number(element.AddChargeValue));
+
+  });
+
+  this.TotalPrice  = this.TotalPrice  + this.TotalAddCharges;
+
+  this.TotalVat = parseFloat(this.TotalVat.toFixed(2));
+  this.TotalPrice = parseFloat(this.TotalPrice.toFixed(2));
+
+}
+
 public showOrderSummary(){
 
        /* if(this.OrderItemList.length == 0){
@@ -529,30 +579,7 @@ public showOrderSummary(){
           return;
         }*/
 
-        this.reclacAddCharges();
-        
-        this.TotalPrice = 0;
-        this.OpenValue = 0;
-        this.TotalVat = 0;
-        this.TotalAddCharges = 0;
-        
-        this.OrderItemList.forEach(element => {
-
-          this.OpenValue = this.OpenValue + (Number(element.Price) * Number(element.Quantity));
-          this.TotalVat = this.TotalVat + (Number(element.VatAmount) * Number(element.Quantity));
-
-          //this.TotalPrice = this.TotalPrice + (Number(element.Price) * Number(element.Quantity));
-          this.TotalPrice = this.TotalPrice + (Number(element.Price) + Number(element.VatAmount)) * Number(element.Quantity);   
-                 
-        });
-
-        this.AddCharges.forEach(element => {
-
-          this.TotalAddCharges = this.TotalAddCharges +  (Number(element.AddChargeValue));
-
-        });
-
-        this.TotalPrice  = this.TotalPrice  + this.TotalAddCharges;
+        this.totalcalcs();
 
   this.OrderVisbilty = "collapse";
   this.SummaryVisbilty   ="visible";
@@ -622,6 +649,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
 
   this.showOrderLines();
   this.showOrderSummary();
+  this.totalcalcs();
 
 }
 
@@ -840,8 +868,9 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
     }
 
     public nextOrderLine(){ // No Push required as next is disabled at the last order line. Only way to add on the last one is to press "Add new order line" 
-      if (this.OrderItemList.length !=0 && this.LineNumber  < this.OrderItemList.length )
-   {  
+    this.totalcalcs();  
+    if (this.OrderItemList.length !=0 && this.LineNumber  < this.OrderItemList.length )
+      {  
        this.updateOrderLine(this.LineNumber);
 
 
@@ -872,14 +901,20 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
 
 
 
-   public minusQty(){ // Code for minus button on the Quanity 
-   
+   public minusQty(LineNumber:number){ // Code for minus button on the Quanity 
+   console.log("minus");
 
     this.Quantity = String(Number(this.Quantity) - 1);
+
+    this.minusQtyEnabled = true
+
+    //if the record has been changed on the summary then change the array record
+    this.OrderItemList[LineNumber - 1].Quantity = this.Quantity;    
 
     if (Number(this.Quantity) == 1 ){
       this.minusQtyEnabled = false
     }
+    this.totalcalcs();
    }
 
    public checkqty() {
@@ -895,8 +930,9 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
     this.Quantity = String(Number(this.Quantity) + 1);
     this.minusQtyEnabled = true
 
-    //if the record has been changed on the summary then change the array record
     this.OrderItemList[LineNumber - 1].Quantity = this.Quantity;
+
+    this.totalcalcs();
 
    }
 
