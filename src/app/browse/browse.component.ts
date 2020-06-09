@@ -16,6 +16,7 @@ import { ObservableArray } from "tns-core-modules/data/observable-array";
 import { TokenModel } from "nativescript-ui-autocomplete";
 
 const countries = [];
+const items = [];
 
 @Component({
     moduleId: module.id,
@@ -123,6 +124,7 @@ export class BrowseComponent implements OnInit     {
     public ChargeVisbilty:String = "collapse";
     public scrollYPos: number;
     autocompleteCustomer: ObservableArray<TokenModel>;
+    autocompleteItem: ObservableArray<TokenModel>;
     constructor(private myPostService: MyHttpPostService,
       private GenericItemPostService: GenericItemPostService,
       private Attribute1ItemPostService:Attribute1ItemPostService,
@@ -137,7 +139,11 @@ export class BrowseComponent implements OnInit     {
         this.autocompleteCustomer = new ObservableArray<TokenModel>();   
         countries.forEach((country) => {
           this.autocompleteCustomer.push(new TokenModel(country, undefined));
-      });  
+        });  
+        this.autocompleteItem = new ObservableArray<TokenModel>();   
+        countries.forEach((items) => {
+          this.autocompleteItem.push(new TokenModel(items, undefined));
+        });        
        }
 
 
@@ -228,13 +234,12 @@ this.AddChargesEnabled = true;
 
 }
 
-public onchange(args: SelectedIndexChangedEventData) { // On change of Generic Item fetch Attributes(Only Supports 2)
+public onchange(item:string) { // On change of Generic Item fetch Attributes(Only Supports 2)
   //console.log(`Drop Down selected index changed from ${args.oldIndex} to ${args.newIndex}`);
-  //console.log("Drop Down text " + this.GenericItems[args.newIndex]);
-   this.SelectedGenericItemCode = this.GenericItems[args.newIndex];
+   this.SelectedGenericItemCode = item;
   this.Attribute1ItemPostService
   .postData({InEntity: this.appComponent.InEntity,
-             GenericItemCode: this.GenericItems[args.newIndex],
+             GenericItemCode: item,
              url:this.appComponent.cUrl})
        
   .subscribe(response => { 
@@ -254,7 +259,7 @@ public onchange(args: SelectedIndexChangedEventData) { // On change of Generic I
   });
   this.Attribute2ItemPostService
   .postData({InEntity: this.appComponent.InEntity,
-             GenericItemCode: this.GenericItems[args.newIndex],
+             GenericItemCode: item,
              url:this.appComponent.cUrl})
        
   .subscribe(response => { 
@@ -332,7 +337,7 @@ public onAttribute2change(event: SelectedIndexChangedEventData) { // On change o
   .subscribe(response => { 
 
     if (response.body.ttItem[0].ErrorMsg != ""){
-        alert(response.body.ttItem[0].ErrorMsg);
+       
         this.deleteOrderLine(this.LineNumber);
     }
     {
@@ -1040,6 +1045,26 @@ console.log(textfield);*/
     //but still using the name of the selected token
   }
 
+  public fillItems() {
+  
+    if (this.autocompleteItem.length == 0){
+     {
+       this.autocompleteItem = new ObservableArray<TokenModel>();
+       this.GenericItems.forEach((Itemcode) => {
+       
+           this.autocompleteItem.push(new TokenModel(Itemcode, undefined));
+       });
+     }
+    }
+ 
+   }  
+
+   public onItemSelected(args){
+   // this.CustomerCode = args.token.text;
+    this.onchange(args.token.text);
+    //figure out a way of only letting one token through 
+    //but still using the name of the selected token
+  }   
 
   private makePostRequest() { // The main request which sumbits the Order
 

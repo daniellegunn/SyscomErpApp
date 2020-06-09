@@ -76,7 +76,23 @@
 
         <Label  class="boxlabel"  text="Generic Item Code" textWrap="true"></Label>
       <!--  <TextField   class="input input-border" hint="Item Code" [(ngModel)]="ItemCode" editable="true" ></TextField> -->
-      <DropDown
+   
+      <StackLayout class="input-field">
+		<Label class="boxlabel" text="Item Code" textWrap="true"></Label>
+        <RadAutoCompleteTextView  style="font-size:20" [items]="autocompleteItem" (tokenAdded)="onItemSelected($event)" hint="Enter Item Code" (textChanged)="fillItems()" suggestMode="Suggest" displayMode="Tokens" >
+			<SuggestionView tkAutoCompleteSuggestionView>
+				<ng-template tkSuggestionItemTemplate let-item="item">
+					<GridLayout columns="auto, *">
+						<!--<Image height="40" col="0" [src]="getImageName(item.text)"></Image>-->
+						<Label col="1" [text]="item.text" class="p-l-5"></Label>
+					</GridLayout>
+				</ng-template>
+			</SuggestionView>
+		</RadAutoCompleteTextView>
+		<StackLayout class="hr-light"></StackLayout>
+	</StackLayout>
+   
+      <!--<DropDown
       class="input input-border"
       backroundColor="red"
       itemsTextAlignment="center"
@@ -87,7 +103,7 @@
       (opened)="onopen()"
       (closed)="onclose()"
       hint = "Select Item code"
-      ></DropDown>
+      ></DropDown>-->
         
         </StackLayout> 
      <StackLayout  >

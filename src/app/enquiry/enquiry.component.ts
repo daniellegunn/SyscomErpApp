@@ -12,6 +12,10 @@ import { GestureEventData } from "tns-core-modules/ui/gestures";
 //import {Http, Response} from '@angular/common/http';
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { DatePipe } from '@angular/common';
+import { ObservableArray } from "tns-core-modules/data/observable-array";
+import { TokenModel } from "nativescript-ui-autocomplete";
+
+const countries = [];
 
 @Component({
     moduleId: module.id,
@@ -66,13 +70,16 @@ export class EnquiryComponent implements OnInit {
 
 
 
-        
+  autocompleteCustomer: ObservableArray<TokenModel>;    
     constructor(private myPostService: MyHttpPostService, 
       private appComponent: AppComponent,
       private cdref: ChangeDetectorRef,
       private datePipe: DatePipe ) { 
         this.LoadingVisbilty  = "collapse";
-       
+        this.autocompleteCustomer = new ObservableArray<TokenModel>();   
+        countries.forEach((country) => {
+          this.autocompleteCustomer.push(new TokenModel(country, undefined));
+      }); 
     }
 
     ngOnInit() {
@@ -123,7 +130,26 @@ export class EnquiryComponent implements OnInit {
        }
      }
 
+     public fillCustomers() {
+  
+      if (this.autocompleteCustomer.length == 0){
+       {
+         this.autocompleteCustomer = new ObservableArray<TokenModel>();
+         this.appComponent.CustomerCodes.forEach((CustomerCode) => {
+         
+             this.autocompleteCustomer.push(new TokenModel(CustomerCode, undefined));
+         });
+       }
+      }
+   
+     }
 
+     public onCustomerSelected(args){
+      this.CustomerCode = args.token.text;
+     // this.onCustomerCodeChange();
+      //figure out a way of only letting one token through 
+      //but still using the name of the selected token
+    }     
 
      private makePostRequest() {
       

@@ -8,9 +8,23 @@
         <Label [style.visibility]="OrderNumberSearch" class="boxlabel" text="Order Number" textWrap="true"></Label>
         <TextField [style.visibility]="OrderNumberSearch" keyboardType ="number" class="input input-border"  hint="OrderNumber" [(ngModel)]="OrderNumber" editable="true" ></TextField>
         
-      
-        <Label class="boxlabel" [style.visibility]="CustomerCodeSearch" text="Customer Code" textWrap="true"></Label>
-        <TextField class="input input-border"  hint="CustomerCode" [(ngModel)]="CustomerCode" [style.visibility]="CustomerCodeSearch" ></TextField>
+       <StackLayout class="input-field">
+          <Label class="boxlabel" text="Customer Code" textWrap="true"></Label>
+              <RadAutoCompleteTextView [style.visibility]="CustomerCodeSearch" style="font-size:20" [items]="autocompleteCustomer" [(ngModel)]="CustomerCode" (tokenAdded)="onCustomerSelected($event)" hint="Enter Customer Code" (textChanged)="fillCustomers()" suggestMode="Suggest" displayMode="Tokens" >
+            <SuggestionView tkAutoCompleteSuggestionView>
+              <ng-template tkSuggestionItemTemplate let-item="item">
+                <GridLayout columns="auto, *">
+              
+                  <Label col="1" [text]="item.text" class="p-l-5"></Label>
+                </GridLayout>
+              </ng-template>
+            </SuggestionView>
+          </RadAutoCompleteTextView>
+          <StackLayout class="hr-light"></StackLayout>
+        </StackLayout>  
+
+        <!--<Label class="boxlabel" [style.visibility]="CustomerCodeSearch" text="Customer Code" textWrap="true"></Label>
+        <TextField class="input input-border"  hint="CustomerCode" [(ngModel)]="CustomerCode" [style.visibility]="CustomerCodeSearch" ></TextField>-->
          
         <GridLayout rows="auto" columns="*,*">
         <Label row="0" col="0" class="label" text="Search via Customer Code:" textWrap="true"></Label>
