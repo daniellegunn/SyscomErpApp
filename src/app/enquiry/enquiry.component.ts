@@ -1,4 +1,4 @@
-import { Component, OnInit ,Input, ChangeDetectionStrategy,ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit ,Input, ChangeDetectionStrategy,ChangeDetectorRef,ViewChild  } from "@angular/core";
 import { MyHttpPostService, Order, OrderLine, OrderList } from "~/app/Enquiry/Enquiry.service";
 import {NgForm} from '@angular/forms';
 import { getInterpolationArgsLength } from "@angular/compiler/src/render3/view/util";
@@ -14,6 +14,7 @@ import * as dialogs from "tns-core-modules/ui/dialogs";
 import { DatePipe } from '@angular/common';
 import { ObservableArray } from "tns-core-modules/data/observable-array";
 import { TokenModel } from "nativescript-ui-autocomplete";
+import { RadAutoCompleteTextViewComponent } from "nativescript-ui-autocomplete/angular";
 
 const countries = [];
 
@@ -45,7 +46,7 @@ export class EnquiryComponent implements OnInit {
     public isErrorVisible = false;
     public errormessage: string;
     public index : number;
-     
+         
     onOrderNumberTap(args) {
      // console.log("Tap");
       //console.log(args.object.text);
@@ -66,11 +67,8 @@ export class EnquiryComponent implements OnInit {
       okButtonText: "Close" });*/
   }
  
-  
-
-
-
-  autocompleteCustomer: ObservableArray<TokenModel>;    
+  autocompleteCustomer: ObservableArray<TokenModel>;  
+  @ViewChild("autocomplete", {static:true}) autocomplete: RadAutoCompleteTextViewComponent;  
     constructor(private myPostService: MyHttpPostService, 
       private appComponent: AppComponent,
       private cdref: ChangeDetectorRef,
@@ -94,15 +92,15 @@ export class EnquiryComponent implements OnInit {
        }
     
     onCheckedChange(){
-     if(this.CustomerCodeSearch == "collapse"){
 
+     if(this.CustomerCodeSearch == "collapse"){
       this.CustomerCodeSearch = "visible";
       this.OrderNumberSearch = "collapse";
       this.OrderNumber = null;
      }else{
       this.CustomerCodeSearch = "collapse";
       this.OrderNumberSearch = "visible";
-      this.CustomerCode = "";
+      this.autocomplete.autoCompleteTextView.text = "";
      }
      
     }
@@ -203,7 +201,7 @@ export class EnquiryComponent implements OnInit {
 
             },
             error => {
-              this.message = "ERROR: Not a vaild order number!";
+              this.message = "ERROR: No orders found";
               this.MessageVisbilty =  "visible";
               this.LoadingVisbilty  = "collapse";
 
@@ -217,9 +215,6 @@ export class EnquiryComponent implements OnInit {
   private CustomerCodePostRequest() {
     this.OrderVisbilty="visible";
     this.LoadingVisbilty  = "visible";
-
-
-
 
     //  console.log(this.entityComponent.InEntity);        
       this.myPostService
@@ -248,7 +243,7 @@ export class EnquiryComponent implements OnInit {
                this.LoadingVisbilty  = "collapse";
           },
           error => {
-            this.message = "ERROR: Not a vaild customer code!";
+            this.message = "ERROR: No orders found for customer";
             this.MessageVisbilty =  "visible";
             this.LoadingVisbilty  = "collapse";
         //    console.log(error);

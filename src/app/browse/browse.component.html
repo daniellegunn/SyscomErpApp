@@ -24,7 +24,7 @@
    
     <StackLayout class="input-field">
 		<Label class="boxlabel" text="Customer Code" textWrap="true"></Label>
-        <RadAutoCompleteTextView  style="font-size:20" [items]="autocompleteCustomer" (tokenAdded)="onCustomerSelected($event)" hint="Enter Customer Code" (textChanged)="fillCustomers()" suggestMode="Suggest" displayMode="Tokens" >
+        <RadAutoCompleteTextView  #autocomplete style="font-size:20" [items]="autocompleteCustomer" (didAutoComplete)="onCustomerDidAutoComplete($event)" (tokenAdded)="onCustomerSelected($event)" hint="Enter Customer Code" (textChanged)="fillCustomers()" suggestMode="Suggest" displayMode="Plain" >
 			<SuggestionView tkAutoCompleteSuggestionView>
 				<ng-template tkSuggestionItemTemplate let-item="item">
 					<GridLayout columns="auto, *">
@@ -79,7 +79,7 @@
    
       <StackLayout class="input-field">
 		<Label class="boxlabel" text="Item Code" textWrap="true"></Label>
-        <RadAutoCompleteTextView  style="font-size:20" [items]="autocompleteItem" (tokenAdded)="onItemSelected($event)" hint="Enter Item Code" (textChanged)="fillItems()" suggestMode="Suggest" displayMode="Tokens" >
+        <RadAutoCompleteTextView #autoItemcomplete style="font-size:20" [items]="autocompleteItem" (didAutoComplete)="onItemDidAutoComplete($event)" (tokenAdded)="onItemSelected($event)" hint="Enter Item Code" (textChanged)="fillItems()" suggestMode="Suggest" displayMode="Plain" >
 			<SuggestionView tkAutoCompleteSuggestionView>
 				<ng-template tkSuggestionItemTemplate let-item="item">
 					<GridLayout columns="auto, *">

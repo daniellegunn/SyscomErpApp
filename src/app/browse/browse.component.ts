@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit   } from "@angular/core";
+import { Component, OnInit, AfterViewInit,ViewChild   } from "@angular/core";
 import { MyHttpPostService , OrderPackageRequest , OrderItemList ,
    GenericItemPostService,Attribute1, Attribute2,
    Attribute1ItemPostService ,Attribute2ItemPostService , DeliveryAddressPostService ,ItemDetailsPostService, AdditionalChargesPostService, AddChargesClass,AdditionalChargeCodePostService,AdditionalChargeValuePostService} from "~/app/browse/browse.service";
@@ -14,6 +14,7 @@ import * as dialogs from "tns-core-modules/ui/dialogs";
 //import {ui/core/view};
 import { ObservableArray } from "tns-core-modules/data/observable-array";
 import { TokenModel } from "nativescript-ui-autocomplete";
+import { RadAutoCompleteTextViewComponent } from "nativescript-ui-autocomplete/angular";
 
 const countries = [];
 const items = [];
@@ -46,7 +47,7 @@ export class BrowseComponent implements OnInit     {
     public AddChargesList: Array<AddChargesClass>;
     public message: string = "";
     public hintforfirst: string = "";
-   
+   public selectedOption:string;
     public selectedAtt1Index:number;
     public GenericItems:Array <string>;
     public selectedGenericIndex:number;
@@ -125,6 +126,8 @@ export class BrowseComponent implements OnInit     {
     public scrollYPos: number;
     autocompleteCustomer: ObservableArray<TokenModel>;
     autocompleteItem: ObservableArray<TokenModel>;
+    @ViewChild("autocomplete", {static:true}) autocomplete: RadAutoCompleteTextViewComponent;
+    @ViewChild("autoItemcomplete", {static:true}) autoItemcomplete: RadAutoCompleteTextViewComponent;
     constructor(private myPostService: MyHttpPostService,
       private GenericItemPostService: GenericItemPostService,
       private Attribute1ItemPostService:Attribute1ItemPostService,
@@ -151,7 +154,7 @@ export class BrowseComponent implements OnInit     {
         // Use the "ngOnInit" handler to initialize data for the view.
         
           //console.log(this.appComponent.CustomerCodes);
-    
+          
         this.OrderItemList = [];
         this.LineNumber = 1;
        
@@ -388,6 +391,7 @@ public submit() { // Submit the Order checking all data is filled in before vali
        this.SummaryVisbilty   ="collapse";
       
         this.makePostRequest();
+        this.autocomplete.autoCompleteTextView.text = "";
 }
 
   public hideOrderLines(){ // Hides the Order Lines from view
@@ -623,6 +627,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
         this.previousLineEnabled = false;
         this.minusQtyEnabled = false;
 
+        this.autoItemcomplete.autoCompleteTextView.text = "";
         this.showOrderSummary();
 
         return;
@@ -652,7 +657,8 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
     //this.showOrderLines();
   }
 
-  this.showOrderLines();
+  this.autoItemcomplete.autoCompleteTextView.text = "";
+  //this.showOrderLines();
   this.showOrderSummary();
   this.totalcalcs();
 
@@ -697,6 +703,8 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
       this.previousLineEnabled = true;
       this.nextLineEnabled = false;
       this.minusQtyEnabled = false;
+      //console.log(this.autoItemcomplete.autoCompleteTextView.text);
+      this.autoItemcomplete.autoCompleteTextView.text = "";
 
   }
   
@@ -719,6 +727,7 @@ public  deleteOrderLine(LineNumber:number){// Deletes Line then changes all line
       
     }
 
+    this.autoItemcomplete.autoCompleteTextView.text = "";
       
   }
    
@@ -1022,7 +1031,7 @@ console.log(textfield);*/
 
 
   }
-
+ 
   public fillCustomers() {
   
    if (this.autocompleteCustomer.length == 0){
@@ -1037,12 +1046,11 @@ console.log(textfield);*/
 
   }
 
-    //alert(args.token.text);
-  public onCustomerSelected(args){
+
+  public onCustomerDidAutoComplete(args){
+    //console.log(this.autocomplete.autoCompleteTextView.text);
     this.CustomerCode = args.token.text;
     this.onCustomerCodeChange();
-    //figure out a way of only letting one token through 
-    //but still using the name of the selected token
   }
 
   public fillItems() {
@@ -1059,11 +1067,12 @@ console.log(textfield);*/
  
    }  
 
-   public onItemSelected(args){
-   // this.CustomerCode = args.token.text;
+   public onItemDidAutoComplete(args){
     this.onchange(args.token.text);
-    //figure out a way of only letting one token through 
-    //but still using the name of the selected token
+  }   
+
+   public onItemSelected(args){
+    this.onchange(args.token.text);
   }   
 
   private makePostRequest() { // The main request which sumbits the Order

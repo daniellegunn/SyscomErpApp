@@ -10,7 +10,7 @@
         
        <StackLayout class="input-field">
           <Label class="boxlabel" text="Customer Code" textWrap="true"></Label>
-              <RadAutoCompleteTextView [style.visibility]="CustomerCodeSearch" style="font-size:20" [items]="autocompleteCustomer" [(ngModel)]="CustomerCode" (tokenAdded)="onCustomerSelected($event)" hint="Enter Customer Code" (textChanged)="fillCustomers()" suggestMode="Suggest" displayMode="Tokens" >
+              <RadAutoCompleteTextView #autocomplete [style.visibility]="CustomerCodeSearch" style="font-size:20" [items]="autocompleteCustomer" [(ngModel)]="CustomerCode" (didAutoComplete)="onCustomerSelected($event)" hint="Enter Customer Code" (textChanged)="fillCustomers()" suggestMode="Suggest" displayMode="Plain" >
             <SuggestionView tkAutoCompleteSuggestionView>
               <ng-template tkSuggestionItemTemplate let-item="item">
                 <GridLayout columns="auto, *">
