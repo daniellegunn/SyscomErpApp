@@ -303,10 +303,10 @@
         </RadListView>
         
         <Label class="cell" style="font-weight: 800;text-align: center;" text="Order Totals" ></Label>
-        <Label class="cell" style="text-align: center;"text="Open Value: {{ OpenValue }}" ></Label>
-        <Label class="cell" style="text-align: center;"text="Total Vat: {{ TotalVat }}"></Label>
-        <Label class="cell" style="text-align: center;"text="Total Add Charges: {{ TotalAddCharges }}"></Label>
-        <Label class="cell" style="text-align: center;"text="Total Price: {{ TotalPrice }}"></Label>     
+        <Label class="cell" style="text-align: center;"text="Open Value: {{ OpenValue | number : '1.2-2' }}" ></Label>
+        <Label class="cell" style="text-align: center;"text="Total Vat: {{ TotalVat | number : '1.2-2' }}" ></Label>
+        <Label class="cell" style="text-align: center;"text="Total Add Charges: {{ TotalAddCharges | number : '1.2-2' }}"></Label>
+        <Label class="cell" style="text-align: center;"text="Total Price: {{ TotalPrice | number : '1.2-2' }}"></Label>     
 
         <Button   class="btn btn-primary btn-active"   style="background-color:red;color: white;" text="Back" (tap)="hideOrderSummary()"></Button>
         <Button row="3"  colSpan="2"  class="btn btn-primary  btn-forest btn-active" text="Submit Order" (tap)="submit()"></Button>

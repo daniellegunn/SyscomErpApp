@@ -220,7 +220,7 @@ public onCustomerOpen(){ //Sets the customer code dropdown which is grabbed from
  .subscribe(response => { 
 
 this.AddCharges = [];
-if (response.body.ttAddCharge[0].AddChargeCode = "none"){
+if (response.body.ttAddCharge[0].AddChargeCode == "none"){
 }
 else{
 this.AddCharges = response.body.ttAddCharge.map(item => new AddChargesClass(
@@ -340,7 +340,8 @@ public onAttribute2change(event: SelectedIndexChangedEventData) { // On change o
   .subscribe(response => { 
 
     if (response.body.ttItem[0].ErrorMsg != ""){
-       
+       //console.log(response.body.ttItem[0].ErrorMsg);
+       alert(response.body.ttItem[0].ErrorMsg);
         this.deleteOrderLine(this.LineNumber);
     }
     {
@@ -480,11 +481,11 @@ public showAddCharges(){
     //ask if they want to recalculate the add charges like order entry
    
 
-      dialogs.confirm("Do you want to recalculate the additional charges?").then(result => {
+      /*dialogs.confirm("Do you want to recalculate the additional charges?").then(result => {
        
         if (result == true){
           this.reclacAddCharges();
-        /*  this.AddChargeRecalc = true;
+          this.AddChargeRecalc = true;
           this.AdditionalChargesPostService
           .postData({ArEntity: this.appComponent.ArEntity,
                     InEntity: this.appComponent.InEntity,
@@ -501,10 +502,10 @@ public showAddCharges(){
            item.AddChargeValue,
            item.AddChargeDesc)); 
           
-          });      */
+          });      
         }
         else {}
-    });  
+    });*/  
 
     this.ChargeVisbilty = "visible";
     this.OrderVisbilty = "collapse";
@@ -576,8 +577,11 @@ public totalcalcs(){
 
   this.TotalPrice  = this.TotalPrice  + this.TotalAddCharges;
 
-  this.TotalVat = parseFloat(this.TotalVat.toFixed(2));
-  this.TotalPrice = parseFloat(this.TotalPrice.toFixed(2));
+  //this.TotalVat = parseFloat(this.TotalVat.toFixed(2));
+  //this.TotalPrice = parseFloat(this.TotalPrice.toFixed(2));
+
+  //console.log((Number(this.TotalVat)).toLocaleString('en-us', {minimumFractionDigits: 2}));
+  
 
 }
 

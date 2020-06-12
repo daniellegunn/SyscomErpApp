@@ -44,17 +44,12 @@ export class MyHttpPostService {
             observe: 'response'
           };
           
-         
-         
-      // console.log(body.WarehouseCode);
-        //console.log(data);
         if (body.WarehouseCode == undefined || body.WarehouseCode == ""){
           this.serverUrl = body.url + "/ErpApp/rest/ErpApp/WarehouseEnquiry";
           let data: HttpParams = new HttpParams();
 
           data  = data.append('pcInEntity', body.InEntity);
           data = data.append('pcItemCode', body.ItemCode);
-
           this.testdata =  this.http.post(this.serverUrl,   data , httpOptions )  ;
           return this.testdata;
         }
@@ -67,7 +62,6 @@ export class MyHttpPostService {
         data = data.append('pcWarehouseCode', body.WarehouseCode);
         this.serverUrl = body.url + "/ErpApp/rest/ErpApp/StockEnquiry";
           this.testdata =  this.http.post(this.serverUrl,   data , httpOptions )  ;
-         
           return this.testdata;
        }
        

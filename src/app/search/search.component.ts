@@ -156,13 +156,10 @@ export class SearchComponent implements OnInit {
               this.LoadingVisbilty  = "collapse";
             });
             
-         
-        
     }
 
     private makeStockPostRequest() {
-     
-
+    console.log();
         this.myPostService
                
             .postData({InEntity: this.appComponent.InEntity,
@@ -176,14 +173,14 @@ export class SearchComponent implements OnInit {
                 this.ItemStock = data.body.ttItemStockData.map(item => new ItemStock(
                   item.iIndex,
                   item.ItemCode,
-                   item.WarehouseCode,
-                   item.cQuantityOnHand,
-                   item.cQuantityOnPps,
-                   item.cQuantityAlloc,
-                   item.Cost,
-                   item.QuantityCustomerOrder,
-                   item.cQuantityOnPo,
-                   item.cQuantityAvailable,
+                  item.WarehouseCode,
+                  item.cQuantityOnHand,
+                  item.cQuantityOnPps,
+                  item.cQuantityAlloc,
+                  item.Cost,
+                  item.QuantityCustomerOrder,
+                  item.cQuantityOnPo,
+                  item.cQuantityAvailable,
                    item.cDespatchNoteQty));
              //   console.log(this.ItemStock);
                 //console.log(this.JsonFormat(response.ttItemStockData));
@@ -199,7 +196,6 @@ export class SearchComponent implements OnInit {
               this.LoadingVisbilty  = "collapse";
             });
             
-         
         
     }
 
