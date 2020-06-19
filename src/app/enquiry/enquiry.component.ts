@@ -15,6 +15,7 @@ import { DatePipe } from '@angular/common';
 import { ObservableArray } from "tns-core-modules/data/observable-array";
 import { TokenModel } from "nativescript-ui-autocomplete";
 import { RadAutoCompleteTextViewComponent } from "nativescript-ui-autocomplete/angular";
+import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 
 const countries = [];
 
@@ -46,211 +47,216 @@ export class EnquiryComponent implements OnInit {
     public isErrorVisible = false;
     public errormessage: string;
     public index : number;
+    public submitEnabled:boolean = true;
+    public checkEnable:boolean = false;
          
-    onOrderNumberTap(args) {
-     // console.log("Tap");
-      //console.log(args.object.text);
-      
-
-      this.OrderNumber = args.object.text;
-
-      this.isErrorVisible = false;
-
-      this.OrderRecord = [];
-       this.OrderLineRecord = [];
-       this.OrderRecordList = [];
-
-       this.makePostRequest();
-    /*  dialogs.alert({ title: "Order Number Info",
-       message: "Item Code: " + this.OrderRecordList[this.index].OrderNumber   ,     
-       
-      okButtonText: "Close" });*/
-  }
- 
-  autocompleteCustomer: ObservableArray<TokenModel>;  
-  @ViewChild("autocomplete", {static:true}) autocomplete: RadAutoCompleteTextViewComponent;  
-    constructor(private myPostService: MyHttpPostService, 
-      private appComponent: AppComponent,
-      private cdref: ChangeDetectorRef,
-      private datePipe: DatePipe ) { 
-        this.LoadingVisbilty  = "collapse";
-        this.autocompleteCustomer = new ObservableArray<TokenModel>();   
-        countries.forEach((country) => {
-          this.autocompleteCustomer.push(new TokenModel(country, undefined));
-      }); 
-    }
-
-    ngOnInit() {
-        // Use the "ngOnInit" handler to initialize data for the view.
-    }
-   
-
-    ngAfterContentChecked() {
-
-      this.cdref.detectChanges();
-      
-       }
-    
-    onCheckedChange(){
-
-     if(this.CustomerCodeSearch == "collapse"){
-      this.CustomerCodeSearch = "visible";
-      this.OrderNumberSearch = "collapse";
-      this.OrderNumber = null;
-     }else{
-      this.CustomerCodeSearch = "collapse";
-      this.OrderNumberSearch = "visible";
-      this.autocomplete.autoCompleteTextView.text = "";
-     }
-     
-    }
-    
-    public submit() {
-      this.message ="";
-      this.errormessage = "";
-      
-      this.MessageVisbilty  ="collapse";
-
-      this.OrderRecord = [];
-       this.OrderLineRecord = [];
-       this.OrderRecordList = [];
-      
-
-       if(!this.CustomerCode){
-        utils.ad.dismissSoftInput();
-         this.makePostRequest();
-       
-
-       }else{
-        utils.ad.dismissSoftInput();
-         this.CustomerCodePostRequest();
-
-       }
-     }
-
-     public fillCustomers() {
+onOrderNumberTap(args) {
+  // console.log("Tap");
+  //console.log(args.object.text);
   
-      if (this.autocompleteCustomer.length == 0){
-       {
-         this.autocompleteCustomer = new ObservableArray<TokenModel>();
-         this.appComponent.CustomerCodes.forEach((CustomerCode) => {
-         
-             this.autocompleteCustomer.push(new TokenModel(CustomerCode, undefined));
-         });
-       }
-      }
-   
-     }
 
-     public onCustomerSelected(args){
-      this.CustomerCode = args.token.text;
-     // this.onCustomerCodeChange();
-      //figure out a way of only letting one token through 
-      //but still using the name of the selected token
-    }     
+  this.OrderNumber = args.object.text;
 
-     private makePostRequest() {
+  this.isErrorVisible = false;
+
+  this.OrderRecord = [];
+    this.OrderLineRecord = [];
+    this.OrderRecordList = [];
+
+    this.makePostRequest();
+/*  dialogs.alert({ title: "Order Number Info",
+    message: "Item Code: " + this.OrderRecordList[this.index].OrderNumber   ,     
+    
+  okButtonText: "Close" });*/
+}
+
+autocompleteCustomer: ObservableArray<TokenModel>;  
+@ViewChild("autocomplete", {static:true}) autocomplete: RadAutoCompleteTextViewComponent;  
+constructor(private myPostService: MyHttpPostService, 
+  private appComponent: AppComponent,
+  private cdref: ChangeDetectorRef,
+  private datePipe: DatePipe ) { 
+    this.LoadingVisbilty  = "collapse";
+    this.autocompleteCustomer = new ObservableArray<TokenModel>();   
+    countries.forEach((country) => {
+      this.autocompleteCustomer.push(new TokenModel(country, undefined));
+  }); 
+}
+
+ngOnInit() {
+    // Use the "ngOnInit" handler to initialize data for the view.
+}
+
+ngAfterContentChecked() {
+
+  this.cdref.detectChanges();
+  
+    }
+    
+onCheckedChange(){
+
+if(this.CustomerCodeSearch == "collapse"){
+this.CustomerCodeSearch = "visible";
+this.OrderNumberSearch = "collapse";
+this.submitEnabled = false;
+this.OrderNumber = null;
+}else{
+this.CustomerCodeSearch = "collapse";
+this.OrderNumberSearch = "visible";
+this.submitEnabled = true;
+this.autocomplete.autoCompleteTextView.text = "";
+}
+
+}
+
+public submit() {
+  this.message ="";
+  this.errormessage = "";
+
+  this.MessageVisbilty  ="collapse";
+
+  this.OrderRecord = [];
+  this.OrderLineRecord = [];
+  this.OrderRecordList = [];
+
+  if(!this.CustomerCode){
+    utils.ad.dismissSoftInput();
+    this.makePostRequest();
+  }else{
+    utils.ad.dismissSoftInput();
+    this.CustomerCodePostRequest();
+  }
+}
+
+public fillCustomers() {
+
+  if (this.autocompleteCustomer.length == 0){
+    {
+      this.autocompleteCustomer = new ObservableArray<TokenModel>();
+      this.appComponent.CustomerCodes.forEach((CustomerCode) => {
       
-          this.OrderVisbilty="collapse";
-          this.LoadingVisbilty  = "visible";
-
-      //  console.log(this.entityComponent.InEntity);        
-        this.myPostService
-        
-            .postData({ArEntity: this.appComponent.ArEntity,
-                       OrderNumber: this.OrderNumber,
-                      url:this.appComponent.cUrl})
-                 
-
-            .subscribe(data => {
-              //  console.log(data.body.ttItemClassStockData);
-                //this.message = (<any>response).json.data;
-                //const usersJson: any[] = Array.of(res.json());
-               
-               if (data.body.dsOrderLog.gttOrderV1 == undefined){
-                this.message = "ERROR: No Order Found!";
-
-               } else{
-
-                this.OrderRecord = data.body.dsOrderLog.gttOrderV1.map(item => new Order(
-                  item.OrderNumber,
-                  item.OrderDate,
-                  item.CustomerPurchaseOrder
-                  ))
-                 
-               this.OrderLineRecord = data.body.dsOrderLog.gttOrderV1[0].gttOrderLineV1.map(item => new OrderLine(
-                  item.OrderNumber,
-                  item.LineNumber,                  
-                  item.ItemCode,
-                  item.Description,
-                  item.UomCode,
-                  item.GrossPrice,
-                  item.NetPrice,
-                  item.WarehouseCode,
-                  item.QuantityOpenOrdered,
-                  item.QuantityAllocated,
-                  item.QuantityOnPps,
-                  item.QuantityReserved,
-                  this.datePipe.transform(item.RequestDate,"dd-MM-yyyy") ,
-                  item.WoNumber,
-               
-               
-                 )) 
-                 }
-                 this.LoadingVisbilty  = "collapse";
-
-            },
-            error => {
-              this.message = "ERROR: No orders found";
-              this.MessageVisbilty =  "visible";
-              this.LoadingVisbilty  = "collapse";
-
-            //  console.log(error);
-            });
-            
-         
-        
+          this.autocompleteCustomer.push(new TokenModel(CustomerCode, undefined));
+      });
+    }
   }
 
-  private CustomerCodePostRequest() {
-    this.OrderVisbilty="visible";
-    this.LoadingVisbilty  = "visible";
+  /*if(this.checkEnable == true){
+    this.submitEnabled = true;
+    this.checkEnable = false;
+  }
+  else{ 
+    this.submitEnabled = false;
+    console.log("put to false");
+  }*/
 
-    //  console.log(this.entityComponent.InEntity);        
-      this.myPostService
-      
-          .postCustomerData({ArEntity: this.appComponent.ArEntity,
-                            CustomerCode: this.CustomerCode,
-                            url:this.appComponent.cUrl})
-               
+}
 
-          .subscribe(data => {
-            //  console.log(data.body.ttItemClassStockData);
-              //this.message = (<any>response).json.data;
-              //const usersJson: any[] = Array.of(res.json());
-           //   console.log(data);
-             if (data.body.gttOrderListv1.length == 0){
-              this.message = "ERROR: No Customer Orders Found!";
-              this.MessageVisbilty =  "visible";
-             } else{
+public onCustomerSelected(args){
+  this.CustomerCode = args.token.text;
+  this.submitEnabled = true;
+  //this.checkEnable = true;
+} 
 
-              this.OrderRecordList = data.body.gttOrderListv1.map(item => new OrderList(
-                item.OrderNumber,
-                item.OrderStatus
-                ))
-              
-               }
-               this.LoadingVisbilty  = "collapse";
-          },
-          error => {
-            this.message = "ERROR: No orders found for customer";
-            this.MessageVisbilty =  "visible";
-            this.LoadingVisbilty  = "collapse";
-        //    console.log(error);
-          });
+private makePostRequest() {
+
+    this.OrderVisbilty="collapse";
+    this.LoadingVisbilty = "visible";
+
+//  console.log(this.entityComponent.InEntity);        
+  this.myPostService
+      .postData({ArEntity: this.appComponent.ArEntity,
+                  OrderNumber: this.OrderNumber,
+                url:this.appComponent.cUrl})
+            
+      .subscribe(data => {
+        //  console.log(data.body.ttItemClassStockData);
+          //this.message = (<any>response).json.data;
+          //const usersJson: any[] = Array.of(res.json());
           
-       
+          if (data.body.dsOrderLog.gttOrderV1 == undefined){
+          this.message = "ERROR: No Order Found!";
+
+          } else{
+
+          this.OrderRecord = data.body.dsOrderLog.gttOrderV1.map(item => new Order(
+            item.OrderNumber,
+            item.OrderDate,
+            item.CustomerPurchaseOrder
+            ))
+            
+          this.OrderLineRecord = data.body.dsOrderLog.gttOrderV1[0].gttOrderLineV1.map(item => new OrderLine(
+            item.OrderNumber,
+            item.LineNumber,                  
+            item.ItemCode,
+            item.Description,
+            item.UomCode,
+            item.GrossPrice,
+            item.NetPrice,
+            item.WarehouseCode,
+            item.QuantityOpenOrdered,
+            item.QuantityAllocated,
+            item.QuantityOnPps,
+            item.QuantityReserved,
+            this.datePipe.transform(item.RequestDate,"dd-MM-yyyy") ,
+            item.WoNumber,
+          
+          
+            )) 
+            }
+            this.LoadingVisbilty  = "collapse";
+
+      },
+      error => {
+        this.message = "ERROR: No orders found";
+        this.MessageVisbilty =  "visible";
+        this.LoadingVisbilty  = "collapse";
+
+      //  console.log(error);
+      });
       
+    
+  
+}
+
+private CustomerCodePostRequest() {
+this.OrderVisbilty="visible";
+this.LoadingVisbilty  = "visible";
+
+//  console.log(this.entityComponent.InEntity);        
+this.myPostService
+
+    .postCustomerData({ArEntity: this.appComponent.ArEntity,
+                      CustomerCode: this.CustomerCode,
+                      url:this.appComponent.cUrl})
+          
+
+    .subscribe(data => {
+      //  console.log(data.body.ttItemClassStockData);
+        //this.message = (<any>response).json.data;
+        //const usersJson: any[] = Array.of(res.json());
+      //   console.log(data);
+        if (data.body.gttOrderListv1.length == 0){
+        this.message = "ERROR: No Customer Orders Found!";
+        this.MessageVisbilty =  "visible";
+        } else{
+
+        this.OrderRecordList = data.body.gttOrderListv1.map(item => new OrderList(
+          item.OrderNumber,
+          item.OrderStatus
+          ))
+        
+          }
+          this.LoadingVisbilty  = "collapse";
+    },
+    error => {
+      this.message = "ERROR: No orders found for customer";
+      this.MessageVisbilty =  "visible";
+      this.LoadingVisbilty  = "collapse";
+  //    console.log(error);
+    });
+    
+  
+
 }
 
 

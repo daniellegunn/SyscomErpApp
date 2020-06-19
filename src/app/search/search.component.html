@@ -12,7 +12,19 @@
 
         <!--<Label class="boxlabel" text="Warehouse Code (optional) " textWrap="true"></Label>-->
         <TextField class="input input-border"  hint="WarehouseCode(optional)" [(ngModel)]="WarehouseCode" editable="true" ></TextField>
-        
+    <DropDown
+    class="input input-border m-t-9 m-b-5"
+    backroundColor="red"
+    itemsTextAlignment="center"
+    [items]="WarehouseCodes"
+    [(ngModel)]="selectedCustomerIndex"
+    (selectedIndexChanged)="onCustomerCodeChange($event)"
+    (opened)="onCustomerOpen()"
+    (closed)="onclose()"
+    hint = "Select Warehouse Code"
+ 
+    ></DropDown>        
+
         
         <Button class="btn btn-primary btn-active" text="Submit" (tap)="submit()"></Button>
         <Label row="1" class="text-center " [text]="message" verticalAligment="center" colSpan="2" textWrap="true"></Label>
@@ -57,16 +69,16 @@
              
                 <ng-template   let-item="item">
                    <GridLayout  columns="100,*,*,*" rows="*,*,*,*" style="width: 100%">
-                       <Label row="0" col="0" style="margin: 4;" text="Warehouse"></Label>
+                       <Label row="0" col="0" style="margin: 4;font-weight: bold;text-align: center;" text="Warehouse"></Label>
                         <Label (tap)="onItemStockTap($event)" [index]= "item.iIndex"    style="color: white;background-color: rgb(19, 88, 5); margin: 5;" row="1" col="0" [text]="item.WarehouseCode"></Label>
    
-                            <Label row="0" col="1" style="margin: 2;" text="On Hand"></Label>
+                            <Label row="0" col="1" style="margin: 2;font-weight: bold;text-align: center;" text="On Hand"></Label>
                             <Label (tap)="onItemStockTap($event)" [index]= "item.iIndex"  style="color: white;background-color: rgb(16, 28, 136); margin: 5;" row="1" col="1" [text]="item.cQuantityOnHand"></Label>
    
-                            <Label row="0" col="2" style="margin: 2;" text="On PPS"></Label>
+                            <Label row="0" col="2" style="margin: 2;font-weight: bold;text-align: center;" text="On PPS"></Label>
                             <Label (tap)="onItemStockTap($event)" [index]= "item.iIndex"   style="color: white;background-color: #e00505; margin: 5;" row="1" col="2" [text]="item.cQuantityOnPps"></Label>
                             
-                            <Label row="0" col="3" style="margin: 2;" text="On Alloc"></Label>
+                            <Label row="0" col="3" style="margin: 2;font-weight: bold;text-align: center;" text="On Alloc"></Label>
                             <Label (tap)="onItemStockTap($event)" [index]= "item.iIndex"  style="color: white;background-color: #a74107; margin: 5;" row="1" col="3" [text]="item.cQuantityAlloc"></Label>
    
    

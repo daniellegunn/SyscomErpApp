@@ -90,6 +90,7 @@ export class GenericItemPostService { //Request for the List Of Generic Items on
           
           let data: HttpParams = new HttpParams();
           data  = data.append('pcInEntity', body.InEntity);
+          data  = data.append('pcArEntity', body.ArEntity);
           this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getGenericItems";
        
         //console.log(data);
@@ -362,8 +363,36 @@ export class ItemDetailsPostService { //Gets Item record for the selected Item. 
         //console.log(this.testdata);
         return this.testdata;
 
-  }
-
-  
+  } 
  
+}
+export class ItemCodeCheckService { //Gets Item record for the selected Item. Is used for Price1 and CurrencyCode currently which doesnt come from the Item table 
+  private serverUrl;
+  private response;
+  private testdata;
+
+  constructor(private http: HttpClient) { }
+
+  postData(body: any) {
+    const httpOptions: { headers; observe; } = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/x-www-form-urlencoded'
+      }),
+      observe: 'response'
+    };
+      
+        let data: HttpParams = new HttpParams();
+        data  = data.append('pcInEntity', body.InEntity);
+        data  = data.append('pcArEntity', body.ArEntity);
+        data  = data.append('pcItemCode', body.ItemCode);
+   
+        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/CheckItemCode";
+      //console.log(data);
+      
+     // console.log(httpOptions);
+        this.testdata =  this.http.post(this.serverUrl,   data , httpOptions );
+        //console.log(this.testdata);
+        return this.testdata;
+
+  }
 }

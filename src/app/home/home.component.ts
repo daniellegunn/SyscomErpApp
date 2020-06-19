@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { DataService, IDataItem } from "../shared/data.service";
 import * as utils from "tns-core-modules/utils/utils";
-import { MyHttpPostService, CustomerPostService } from "~/app/home/home.service";
+import { MyHttpPostService, CustomerPostService, WarehousePostService } from "~/app/home/home.service";
 import {NgForm} from '@angular/forms';
 import { getInterpolationArgsLength } from "@angular/compiler/src/render3/view/util";
 import { TextField } from "tns-core-modules/ui/text-field";
@@ -14,7 +14,7 @@ import { AppComponent } from '~/app/app.component';
 @Component({
     selector: "Home",
     templateUrl: "./home.component.html",
-    providers: [MyHttpPostService ,CustomerPostService]
+    providers: [MyHttpPostService ,CustomerPostService,WarehousePostService]
 })
 
 export class HomeComponent implements OnInit {
@@ -28,7 +28,8 @@ export class HomeComponent implements OnInit {
     
     constructor(private myPostService: MyHttpPostService,
          private appComponent: AppComponent,
-         private CustomerPostService:CustomerPostService
+         private CustomerPostService:CustomerPostService,
+         private WarehousePostService:WarehousePostService
          ) {   
         this.Username = "radmin";
         this.Password = "syscom";
@@ -74,14 +75,15 @@ export class HomeComponent implements OnInit {
                 this.LogOffVisbilty  = "visible";
                 this.PasswordVisbilty = "collapse";
                 this.UserNotLoggedIn     = "false";
-                 this.appComponent.InEntity = response.body.UserLogin[0].InEntity; 
-                 this.appComponent.ArEntity = response.body.UserLogin[0].ArEntity; 
-                 this.appComponent.ApEntity = response.body.UserLogin[0].ApEntity;
-                 this.appComponent.GlEntity = response.body.UserLogin[0].GlEntity;
-                 this.appComponent.EntityWip = response.body.UserLogin[0].EntityWip;
-                 this.appComponent.iYear = response.body.UserLogin[0].iYear;
-                 this.appComponent.iPeriod = response.body.UserLogin[0].iPeriod;
-                 this.fetchCustomerCodes();
+                this.appComponent.InEntity = response.body.UserLogin[0].InEntity; 
+                this.appComponent.ArEntity = response.body.UserLogin[0].ArEntity; 
+                this.appComponent.ApEntity = response.body.UserLogin[0].ApEntity;
+                this.appComponent.GlEntity = response.body.UserLogin[0].GlEntity;
+                this.appComponent.EntityWip = response.body.UserLogin[0].EntityWip;
+                this.appComponent.iYear = response.body.UserLogin[0].iYear;
+                this.appComponent.iPeriod = response.body.UserLogin[0].iPeriod;
+                this.fetchCustomerCodes();
+                this.fetchWarehouseCode();
                 }
                 if (response.body.UserLogin[0].LoginSuccess === "N"){
                     alert("Wrong Username/Password");
@@ -102,12 +104,25 @@ export class HomeComponent implements OnInit {
               item.CustomerCode
         ));
        
-        //this.appComponent.fillCustomers();
-        //con
 
     });
     }
     
+    private fetchWarehouseCode(){
+        this.WarehousePostService
+        .postData({InEntity: this.appComponent.InEntity,
+                   GlEntity: this.appComponent.GlEntity,
+                  url:this.appComponent.cUrl})
+        .subscribe(response => {
+  console.log(response);
+         this.appComponent.WarehouseCodes = response.body.ttWarehouse.map(item => new String(
+              item.WarehouseCode
+        ));
+       
+
+    });
+    }    
+
    private PocketERPAuthentication() {   
 
         var enteredusername    = this.Username;

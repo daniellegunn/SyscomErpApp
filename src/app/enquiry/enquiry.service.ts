@@ -68,22 +68,15 @@ export class MyHttpPostService {
             observe: 'response'
           };
           
-         
-      // console.log(body.WarehouseCode);
-        //console.log(data)
         this.serverUrl = body.url + "/ErpApp/rest/ErpApp/OrderEnquiry";
         let OrderData: HttpParams = new HttpParams();
         OrderData  = OrderData.append('pcArEntity', body.ArEntity);
         OrderData = OrderData.append('piOrderNumber', body.OrderNumber);
-        
-        this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getGenericAttribute2";
-          this.OrderDetailsData =  this.http.post(this.serverUrl,   OrderData , httpOptions );
-         
-          //console.log(this.OrderDetailsData);
 
-          return this.OrderDetailsData;
-       
-       
+        this.OrderDetailsData =  this.http.post(this.serverUrl,   OrderData , httpOptions );
+      
+        return this.OrderDetailsData;
+
     }
 
     postCustomerData(body: any) {
