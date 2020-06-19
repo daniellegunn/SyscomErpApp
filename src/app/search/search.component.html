@@ -11,15 +11,15 @@
            <!-- <Image src="~/images/castlelogo.png" width="20" height="20" class="action-image" ></Image>-->
 
         <!--<Label class="boxlabel" text="Warehouse Code (optional) " textWrap="true"></Label>-->
-        <TextField class="input input-border"  hint="WarehouseCode(optional)" [(ngModel)]="WarehouseCode" editable="true" ></TextField>
+        <!--<TextField class="input input-border"  hint="WarehouseCode(optional)" [(ngModel)]="WarehouseCode" editable="true" ></TextField>-->
     <DropDown
     class="input input-border m-t-9 m-b-5"
     backroundColor="red"
     itemsTextAlignment="center"
     [items]="WarehouseCodes"
-    [(ngModel)]="selectedCustomerIndex"
-    (selectedIndexChanged)="onCustomerCodeChange($event)"
-    (opened)="onCustomerOpen()"
+    [(ngModel)]="selectedWarehouseIndex"
+    (selectedIndexChanged)="onWarehouseCodeChange($event)"
+    (opened)="onWarehouseOpen()"
     (closed)="onclose()"
     hint = "Select Warehouse Code"
  

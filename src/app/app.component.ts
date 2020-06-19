@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
     ApEntity = "";
     iYear    ="";
     iPeriod  ="";
+    cRestrict = "";
     CustomerCodes = [];
     WarehouseCodes = [];
     cUrl = "http://192.168.250.65:8980";

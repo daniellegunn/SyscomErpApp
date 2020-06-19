@@ -67,8 +67,6 @@ export class HomeComponent implements OnInit {
              
             .subscribe(response => {
                
-                //this.message = (<any>response).json.data;
-              // console.log(response);
                 if (response.body.UserLogin[0].LoginSuccess === "Y"){
                 this.appComponent.Navvisible = "visible";
                 this.SignInVisbilty  = "collapse";
@@ -82,6 +80,8 @@ export class HomeComponent implements OnInit {
                 this.appComponent.EntityWip = response.body.UserLogin[0].EntityWip;
                 this.appComponent.iYear = response.body.UserLogin[0].iYear;
                 this.appComponent.iPeriod = response.body.UserLogin[0].iPeriod;
+                this.appComponent.cRestrict = response.body.UserLogin[0].RestrictedUser;
+    
                 this.fetchCustomerCodes();
                 this.fetchWarehouseCode();
                 }
@@ -99,7 +99,6 @@ export class HomeComponent implements OnInit {
         this.CustomerPostService
         .postData({ArEntity: this.appComponent.ArEntity,url:this.appComponent.cUrl})
         .subscribe(response => {
- // console.log(response);
          this.appComponent.CustomerCodes = response.body.ttCustomer.map(item => new String(
               item.CustomerCode
         ));
@@ -109,16 +108,17 @@ export class HomeComponent implements OnInit {
     }
     
     private fetchWarehouseCode(){
+
         this.WarehousePostService
         .postData({InEntity: this.appComponent.InEntity,
                    GlEntity: this.appComponent.GlEntity,
+                   Restricted: this.appComponent.cRestrict,
                   url:this.appComponent.cUrl})
         .subscribe(response => {
-  console.log(response);
+
          this.appComponent.WarehouseCodes = response.body.ttWarehouse.map(item => new String(
-              item.WarehouseCode
-        ));
-       
+              item.Warehousecode
+        ));       
 
     });
     }    

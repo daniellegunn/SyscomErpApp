@@ -222,14 +222,14 @@
             <RadListView [items]="AddCharges" style="width: 100%;">
                 <ng-template   let-item="item">
                    <GridLayout  columns="100,*,*,*" rows="*,*,*,*" style="width: 100%">
-                       <Label row="0" col="0" style="margin: 4;" text="Add Charge"></Label>
+                       <Label row="0" col="0" style="margin: 4;font-weight: bold;" text="Add Charge"></Label>
                       
                         <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="0" [text]="item.AddChargeCode" editable="false" ></TextField>
 
-                           <Label row="0" col="1" style="margin: 2;" text="Charge Value"></Label>
+                           <Label row="0" col="1" style="margin: 2;font-weight: bold;" text="Charge Value"></Label>
                             <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="1" [text]="item.AddChargeValue" editable="true" keyboardType ="number" (returnPress)="onReturnPressChargeValue"></TextField>
 
-                            <Label row="0" col="2" style="margin: 2;" text="Charge Desc"></Label>
+                            <Label row="0" col="2" style="margin: 2;font-weight: bold;" text="Charge Desc"></Label>
                             <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="2" [text]="item.AddChargeDesc" editable="false" ></TextField>
                             <Button row="1" col = "3"  colSpan="1" [index]= "item.iIndex" class="btn btn-primary btn-active"   style="background-color:red;color: white;" text="Delete" (tap)="deleteChargeCode(item.AddChargeCode)"></Button>
 

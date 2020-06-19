@@ -61,11 +61,8 @@ export class CustomerPostService {
           this.testdata = this.http.post(this.serverUrl,data, httpOptions )  ;
           this.response = this.testdata;
           return this.testdata;
-        
-       
     }
 
-   
 }
 
 export class WarehousePostService {
@@ -87,13 +84,12 @@ export class WarehousePostService {
         let data: HttpParams = new HttpParams();
         data = data.append('pcInEntity', body.ArEntity);
         data = data.append('pcGlEntity', body.GlEntity);
-        data = data.append('plRestricted', "false");
+        data = data.append('plRestricted', body.Restricted);
         this.serverUrl = body.url + "/ErpApp/rest/ErpApp/GetWarehouseCodes";
          
         this.testdata = this.http.post(this.serverUrl,data, httpOptions )  ;
         this.response = this.testdata;
         return this.testdata;
         
-       
     }
 }

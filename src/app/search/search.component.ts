@@ -11,6 +11,7 @@ import { AppComponent } from '~/app/app.component';
 import { GestureEventData } from "tns-core-modules/ui/gestures";
 //import {Http, Response} from '@angular/common/http';
 import * as dialogs from "tns-core-modules/ui/dialogs";
+import { SelectedIndexChangedEventData } from "nativescript-drop-down";
 
 
 @Component({
@@ -29,11 +30,13 @@ export class SearchComponent implements OnInit {
     ItemClassStock: Array<ItemClass> = [];
     ItemStock:Array<ItemStock> = [];
     public LoadingVisbilty:string;
+    public WarehouseCodes:Array<string> = [];
     
     public isErrorVisible = false;
     public errormessage: string;
     public index : number;
     public imagesrc: string;
+    public selectedIndex:number;
 
    
     onTap(args) {
@@ -75,140 +78,146 @@ export class SearchComponent implements OnInit {
 
     }
 
-    ngOnInit() {
-        // Use the "ngOnInit" handler to initialize data for the view.
-    }
+ngOnInit() {
+    // Use the "ngOnInit" handler to initialize data for the view.
+}
 
     
-    public submit() {
-      this.message ="";
-      this.errormessage = "";
-      this.isErrorVisible = false;
+public submit() {
+  this.message ="";
+  this.errormessage = "";
+  this.isErrorVisible = false;
 
-       this.ItemClassStock  = [];
-    this.ItemStock = [];
-     
-        if (!this.ItemCode){
-         this.message = "Please Enter a item code";
-         return;
-        }
-        if (!this.WarehouseCode){
-            this.LoadingVisbilty  = "visible";
-            utils.ad.dismissSoftInput();
-            this.makeStockPostRequest();
+  this.ItemClassStock  = [];
+  this.ItemStock = [];
+  
+    if (!this.ItemCode){
+      this.message = "Please Enter a item code";
+      return;
+    }
+    if (!this.WarehouseCode){
+        this.LoadingVisbilty  = "visible";
+        utils.ad.dismissSoftInput();
+        this.makeStockPostRequest();
 
-         } else{
-           this.LoadingVisbilty  = "visible";
-         utils.ad.dismissSoftInput();
- 
-         this.makePostRequest();
-        }
-     }
+      } else{
+        this.LoadingVisbilty  = "visible";
+      utils.ad.dismissSoftInput();
 
+      this.makePostRequest();
+    }
+}
 
+public onWarehouseOpen(){
+    this.WarehouseCodes = this.appComponent.WarehouseCodes;
+} 
 
-     private makePostRequest() {
+public onWarehouseCodeChange(event: SelectedIndexChangedEventData){
+  this.selectedIndex = event.newIndex;
+  this.WarehouseCode = this.WarehouseCodes[event.newIndex];
+}
+
+private makePostRequest() {
+
+//  console.log(this.entityComponent.InEntity);        
+  this.myPostService
+  
+      .postData({InEntity: this.appComponent.InEntity,
+                ItemCode: this.ItemCode,
+                  WarehouseCode: this.WarehouseCode,
+                  url:this.appComponent.cUrl})
+            
+
+      .subscribe(data => {
+        //  console.log(data.body.ttItemClassStockData);
+          //this.message = (<any>response).json.data;
+          //const usersJson: any[] = Array.of(res.json());
+          if (data.body.ttItemClassStockData.length == 0){
+
+            this.errormessage = "Item Not Found in Warehouse";
+            this.isErrorVisible = true;
+            this.LoadingVisbilty  = "collapse";
+            return;
+            }
+
+            
+          this.ItemClassStock = data.body.ttItemClassStockData.map(item => new ItemClass(
+            item.iIndex,
+            item.ItemCode,
+              item.Storage,
+              item.QuantityOnHand,
+              item.QuantityOnPps,
+              item.QuantityAlloc,
+              item.QuantityOriginal,
+              item.Cost));
+          // console.log(this.ItemClassStock);
+          //this.imagesrc = data.body.ttItemClassStockData[0].cmedia);
+          this.imagesrc = "~/images/option.jpg";
+          //console.log(this.JsonFormat(response.ttItemStockData));
+          this.LoadingVisbilty  = "collapse";
+          this.errormessage = "";
+          this.isErrorVisible = false;
+          this.message = "Tap a Record to see more info";
+
+      },
+      error => {
+        this.errormessage = "Item Not Found";
+        this.isErrorVisible = true;
+        this.LoadingVisbilty  = "collapse";
+      });
       
-      //  console.log(this.entityComponent.InEntity);        
-        this.myPostService
-        
-            .postData({InEntity: this.appComponent.InEntity,
-                      ItemCode: this.ItemCode,
-                        WarehouseCode: this.WarehouseCode,
-                        url:this.appComponent.cUrl})
-                 
+}
 
-            .subscribe(data => {
-              //  console.log(data.body.ttItemClassStockData);
-                //this.message = (<any>response).json.data;
-                //const usersJson: any[] = Array.of(res.json());
-                if (data.body.ttItemClassStockData.length == 0){
+private makeStockPostRequest() {
+console.log();
+  this.myPostService
+          
+      .postData({InEntity: this.appComponent.InEntity,
+                ItemCode: this.ItemCode,
+                  WarehouseCode: this.WarehouseCode,
+                  url:this.appComponent.cUrl})
+      .subscribe(data => {
+          // console.log(data.body.ttItemStockData);
+          //this.message = (<any>response).json.data;
+          //const usersJson: any[] = Array.of(res.json());
+          this.ItemStock = data.body.ttItemStockData.map(item => new ItemStock(
+            item.iIndex,
+            item.ItemCode,
+            item.WarehouseCode,
+            item.cQuantityOnHand,
+            item.cQuantityOnPps,
+            item.cQuantityAlloc,
+            item.Cost,
+            item.QuantityCustomerOrder,
+            item.cQuantityOnPo,
+            item.cQuantityAvailable,
+              item.cDespatchNoteQty));
+        //   console.log(this.ItemStock);
+          //console.log(this.JsonFormat(response.ttItemStockData));
+          this.LoadingVisbilty  = "collapse";
+          this.errormessage = "";
+          this.isErrorVisible = false;
+          this.message = "Tap a Record to see more info";
 
-                  this.errormessage = "Item Not Found in Warehouse";
-                  this.isErrorVisible = true;
-                  this.LoadingVisbilty  = "collapse";
-                  return;
-                 }
+      },
+      error => {
+        this.errormessage = "Item Not Found";
+        this.isErrorVisible = true;
+        this.LoadingVisbilty  = "collapse";
+      });
+      
+  
+}
 
-                 
-                this.ItemClassStock = data.body.ttItemClassStockData.map(item => new ItemClass(
-                  item.iIndex,
-                  item.ItemCode,
-                   item.Storage,
-                   item.QuantityOnHand,
-                   item.QuantityOnPps,
-                   item.QuantityAlloc,
-                   item.QuantityOriginal,
-                   item.Cost));
-               // console.log(this.ItemClassStock);
-               //this.imagesrc = data.body.ttItemClassStockData[0].cmedia);
-               this.imagesrc = "~/images/option.jpg";
-                //console.log(this.JsonFormat(response.ttItemStockData));
-                this.LoadingVisbilty  = "collapse";
-                this.errormessage = "";
-                this.isErrorVisible = false;
-                this.message = "Tap a Record to see more info";
+private JsonFormat(json : any){
+    json = JSON.stringify(json).replace("[","");
+    json  = json.replace("]","");
+    json  = json.replace("{","");
+    json  = json.replace("}",""); 
+    json  = json.replace(/\"/g,""); 
+    this.message =json; 
 
-            },
-            error => {
-              this.errormessage = "Item Not Found";
-              this.isErrorVisible = true;
-              this.LoadingVisbilty  = "collapse";
-            });
-            
-    }
-
-    private makeStockPostRequest() {
-    console.log();
-        this.myPostService
-               
-            .postData({InEntity: this.appComponent.InEntity,
-                      ItemCode: this.ItemCode,
-                        WarehouseCode: this.WarehouseCode,
-                        url:this.appComponent.cUrl})
-            .subscribe(data => {
-               // console.log(data.body.ttItemStockData);
-                //this.message = (<any>response).json.data;
-                //const usersJson: any[] = Array.of(res.json());
-                this.ItemStock = data.body.ttItemStockData.map(item => new ItemStock(
-                  item.iIndex,
-                  item.ItemCode,
-                  item.WarehouseCode,
-                  item.cQuantityOnHand,
-                  item.cQuantityOnPps,
-                  item.cQuantityAlloc,
-                  item.Cost,
-                  item.QuantityCustomerOrder,
-                  item.cQuantityOnPo,
-                  item.cQuantityAvailable,
-                   item.cDespatchNoteQty));
-             //   console.log(this.ItemStock);
-                //console.log(this.JsonFormat(response.ttItemStockData));
-                this.LoadingVisbilty  = "collapse";
-                this.errormessage = "";
-                this.isErrorVisible = false;
-                this.message = "Tap a Record to see more info";
-
-            },
-            error => {
-              this.errormessage = "Item Not Found";
-              this.isErrorVisible = true;
-              this.LoadingVisbilty  = "collapse";
-            });
-            
-        
-    }
-
-
-    private JsonFormat(json : any){
-       json = JSON.stringify(json).replace("[","");
-       json  = json.replace("]","");
-       json  = json.replace("{","");
-       json  = json.replace("}",""); 
-       json  = json.replace(/\"/g,""); 
-       this.message =json; 
-
-    }
+}
 
 
 }
