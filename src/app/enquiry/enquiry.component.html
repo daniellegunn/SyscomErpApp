@@ -8,7 +8,22 @@
         <Label [style.visibility]="OrderNumberSearch" class="boxlabel" text="Order Number" textWrap="true"></Label>
         <TextField [style.visibility]="OrderNumberSearch" keyboardType ="number" class="input input-border"  hint="OrderNumber" [(ngModel)]="OrderNumber" editable="true" ></TextField>
         
-       <StackLayout class="input-field">
+        <StackLayout class="input-field">
+          <Label class="boxlabel" text="Customer Code" textWrap="true"></Label>
+              <RadAutoCompleteTextView  #autocomplete style="font-size:20" [items]="autocompleteCustomer" (didAutoComplete)="onCustomerDidAutoComplete($event)" (tokenAdded)="onCustomerSelected($event)" hint="Enter Customer Code" (textChanged)="fillCustomers()" suggestMode="Suggest" displayMode="Plain" >
+            <SuggestionView tkAutoCompleteSuggestionView>
+              <ng-template tkSuggestionItemTemplate let-item="item">
+                <GridLayout columns="auto, *">
+                  <!--<Image height="40" col="0" [src]="getImageName(item.text)"></Image>-->
+                  <Label col="1" [text]="item.text" class="p-l-5"></Label>
+                </GridLayout>
+              </ng-template>
+            </SuggestionView>
+          </RadAutoCompleteTextView>
+          <StackLayout class="hr-light"></StackLayout>
+        </StackLayout>        
+
+       <!--<StackLayout class="input-field">
           <Label class="boxlabel" text="Customer Code" textWrap="true"></Label>
             <RadAutoCompleteTextView #autocomplete [style.visibility]="CustomerCodeSearch"  style="font-size:20" [items]="autocompleteCustomer" [(ngModel)]="CustomerCode" (didAutoComplete)="onCustomerSelected($event)" hint="Enter Customer Code" (textChanged)="fillCustomers()" suggestMode="Suggest" displayMode="Plain" >
             <SuggestionView tkAutoCompleteSuggestionView>
@@ -21,7 +36,7 @@
             </SuggestionView>
           </RadAutoCompleteTextView>
           <StackLayout class="hr-light"></StackLayout>
-        </StackLayout>  
+        </StackLayout>  -->
 
         <!--<Label class="boxlabel" [style.visibility]="CustomerCodeSearch" text="Customer Code" textWrap="true"></Label>
         <TextField class="input input-border"  hint="CustomerCode" [(ngModel)]="CustomerCode" [style.visibility]="CustomerCodeSearch" ></TextField>-->

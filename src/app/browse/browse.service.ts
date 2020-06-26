@@ -125,6 +125,7 @@ export class Attribute1ItemPostService { // Fetches Attribute 1 for selected Gen
         let data: HttpParams = new HttpParams();
         data  = data.append('pcInEntity', body.InEntity);
         data  = data.append('pcGenericItemCode', body.GenericItemCode);
+        data  = data.append('pcAtt', body.Att);
         this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getGenericAttribute1";
       //console.log(data);
       
@@ -154,10 +155,11 @@ export class Attribute2ItemPostService { // Fetches Attribute 2 for selected Gen
       }),
       observe: 'response'
     };
-        
+
         let data: HttpParams = new HttpParams();
         data  = data.append('pcInEntity', body.InEntity);
         data  = data.append('pcGenericItemCode', body.GenericItemCode);
+        data  = data.append('pcStartItem', body.StartItem);
         this.serverUrl = body.url + "/ErpApp/rest/ErpApp/getGenericAttribute2";
 
       //console.log(data);

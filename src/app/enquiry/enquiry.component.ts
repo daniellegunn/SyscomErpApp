@@ -1,4 +1,4 @@
-import { Component, OnInit ,Input, ChangeDetectionStrategy,ChangeDetectorRef,ViewChild  } from "@angular/core";
+import { Component, OnInit ,Input, ChangeDetectionStrategy,ChangeDetectorRef,AfterViewInit,ViewChild  } from "@angular/core";
 import { MyHttpPostService, Order, OrderLine, OrderList } from "~/app/Enquiry/Enquiry.service";
 import {NgForm} from '@angular/forms';
 import { getInterpolationArgsLength } from "@angular/compiler/src/render3/view/util";
@@ -15,7 +15,9 @@ import { DatePipe } from '@angular/common';
 import { ObservableArray } from "tns-core-modules/data/observable-array";
 import { TokenModel } from "nativescript-ui-autocomplete";
 import { RadAutoCompleteTextViewComponent } from "nativescript-ui-autocomplete/angular";
+import { Page } from "tns-core-modules/ui/page";
 import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
+import { ScrollView, ScrollEventData } from "tns-core-modules/ui/scroll-view";
 
 const countries = [];
 
@@ -24,9 +26,6 @@ const countries = [];
     selector: "Enquiry",
     templateUrl: "./enquiry.component.html",
     providers: [MyHttpPostService]
-
-  
-
 })
 export class EnquiryComponent implements OnInit {
 
@@ -50,29 +49,11 @@ export class EnquiryComponent implements OnInit {
     public submitEnabled:boolean = true;
     public checkEnable:boolean = false;
          
-onOrderNumberTap(args) {
-  // console.log("Tap");
-  //console.log(args.object.text);
-  
 
-  this.OrderNumber = args.object.text;
-
-  this.isErrorVisible = false;
-
-  this.OrderRecord = [];
-    this.OrderLineRecord = [];
-    this.OrderRecordList = [];
-
-    this.makePostRequest();
-/*  dialogs.alert({ title: "Order Number Info",
-    message: "Item Code: " + this.OrderRecordList[this.index].OrderNumber   ,     
-    
-  okButtonText: "Close" });*/
-}
 
 autocompleteCustomer: ObservableArray<TokenModel>;  
-@ViewChild("autocomplete", {static:true}) autocomplete: RadAutoCompleteTextViewComponent;  
-constructor(private myPostService: MyHttpPostService, 
+@ViewChild("autocomplete", {static:false}) autocomplete: RadAutoCompleteTextViewComponent;
+constructor(private myPostService: MyHttpPostService, private page: Page,
   private appComponent: AppComponent,
   private cdref: ChangeDetectorRef,
   private datePipe: DatePipe ) { 
@@ -87,25 +68,57 @@ ngOnInit() {
     // Use the "ngOnInit" handler to initialize data for the view.
 }
 
+onScroll(args: ScrollEventData) {
+  const scrollView = args.object as ScrollView;
+
+// console.log("scrollX: " + args.scrollX);
+ //console.log("scrollY: " + args.scrollY);
+
+}
+ 
+onFocus(args) {
+// focus event will be triggered when the users enters the TextField
+let textField = <TextField>args.object;
+//this.scrollYPos = this.scrollYPos + 100;
+}
+
 ngAfterContentChecked() {
 
   this.cdref.detectChanges();
   
     }
+
+    onOrderNumberTap(args) {
+      // console.log("Tap");
+      //console.log(args.object.text);
+      this.OrderNumber = args.object.text;
+    
+      this.isErrorVisible = false;
+    
+      this.OrderRecord = [];
+        this.OrderLineRecord = [];
+        this.OrderRecordList = [];
+    
+        this.makePostRequest();
+    /*  dialogs.alert({ title: "Order Number Info",
+        message: "Item Code: " + this.OrderRecordList[this.index].OrderNumber   ,     
+        
+      okButtonText: "Close" });*/
+    }
     
 onCheckedChange(){
 
-if(this.CustomerCodeSearch == "collapse"){
-this.CustomerCodeSearch = "visible";
-this.OrderNumberSearch = "collapse";
-this.submitEnabled = false;
-this.OrderNumber = null;
-}else{
-this.CustomerCodeSearch = "collapse";
-this.OrderNumberSearch = "visible";
-this.submitEnabled = true;
-this.autocomplete.autoCompleteTextView.text = "";
-}
+  if(this.CustomerCodeSearch == "collapse"){
+    this.CustomerCodeSearch = "visible";
+    this.OrderNumberSearch = "collapse";
+    this.submitEnabled = false;
+    this.OrderNumber = null;
+  }else{
+    this.CustomerCodeSearch = "collapse";
+    this.OrderNumberSearch = "visible";
+    this.submitEnabled = true;
+    //this.autocomplete.autoCompleteTextView.text = "";
+  }
 
 }
 
@@ -152,10 +165,17 @@ public fillCustomers() {
 }
 
 public onCustomerSelected(args){
+  
   this.CustomerCode = args.token.text;
   this.submitEnabled = true;
   //this.checkEnable = true;
+
 } 
+
+public onCustomerDidAutoComplete(args){
+  
+  
+}
 
 private makePostRequest() {
 

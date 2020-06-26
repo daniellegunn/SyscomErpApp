@@ -118,7 +118,9 @@ export class BrowseComponent implements OnInit     {
     public clearEnabled:boolean = true;
     public AddChargeRecalc:boolean = false;
     public custCodeEnabled:boolean = false;
+    public itemCodeEnabled:boolean = false;    
     public iRowNum:number = 0;
+    public StartItem:string = "";
 
     public AddressVisbilty:string = "collapse";
     public ItemVisbilty:string = "collapse";
@@ -249,6 +251,7 @@ public onchange(item:string) { // On change of Generic Item fetch Attributes(Onl
 this.Attribute1ItemPostService
 .postData({InEntity: this.appComponent.InEntity,
             GenericItemCode: item,
+            Att: "",
             url:this.appComponent.cUrl})
       
 .subscribe(response => { 
@@ -270,6 +273,7 @@ this.Attribute1ItemPostService
 this.Attribute2ItemPostService
 .postData({InEntity: this.appComponent.InEntity,
             GenericItemCode: item,
+            StartItem: "",
             url:this.appComponent.cUrl})
       
 .subscribe(response => { 
@@ -290,6 +294,7 @@ this.Attribute2Setcodes = response.body.ttAttribute.map(item => new String(
 });
 
   this.AttributeVisbilty ="visible";
+  this.itemCodeEnabled = true;
 
 }
 
@@ -299,7 +304,8 @@ public onAttribute1change(event: SelectedIndexChangedEventData) {  // On change 
 this.selectedAtt1Index = event.newIndex;
 this.SelectedAttribute1  = this.Attribute1Setcodes[event.newIndex];
 this.ItemCode = this.SelectedGenericItemCode + this.SelectedAttribute1 + this.SelectedAttribute2 ;
-  
+this.StartItem = this.SelectedGenericItemCode + this.SelectedAttribute1;
+
   if(this.SelectedGenericItemCode != undefined && this.SelectedAttribute1 != undefined &&  this.SelectedAttribute2 != undefined ){
     
 this.ItemDetailsPostService
@@ -318,12 +324,35 @@ this.ItemDetailsPostService
   this.NetPrice = response.body.ttItem[0].NetPrice;
   this.GrossPrice = response.body.ttItem[0].GrossPrice;
 
-
-
   });
-
-
   }
+  setTimeout(() => {
+
+  this.Attribute2ItemPostService
+  .postData({InEntity: this.appComponent.InEntity,
+              GenericItemCode: this.SelectedGenericItemCode,
+              StartItem: this.StartItem,
+              url:this.appComponent.cUrl})
+        
+  .subscribe(response => { 
+  
+    this.Attribute2 = [];
+    this.Attribute2 = response.body.ttAttribute.map(item => new String(
+      item.SetCodeDescription
+      
+      ))
+  
+  this.Attribute2Setcodes = response.body.ttAttribute.map(item => new String(
+      item.SetCode
+      
+      ))
+      this.selectedAtt2Index = null;
+      this.Att2Enabled = true;
+  
+  });  
+
+}, 600);
+  
 }
 
 public onAttribute2change(event: SelectedIndexChangedEventData) { // On change of Attribute: Build Item Code and check for price if full item is entered
@@ -344,9 +373,14 @@ this.ItemDetailsPostService
 .subscribe(response => { 
 
   if (response.body.ttItem[0].ErrorMsg != ""){
-      console.log(response.body.ttItem[0].ErrorMsg);
+    if (response.body.ttItem[0].ErrorMsg == "PriceNotFoundCancel"){
+      alert("A default price for this item does not exist. The line will be cancelled");
+      this.deleteOrderLine(this.LineNumber);
+    }
+    else{
       alert(response.body.ttItem[0].ErrorMsg);
       this.deleteOrderLine(this.LineNumber);
+    }
   }
   {
     this.Price = response.body.ttItem[0].Price1;
@@ -363,6 +397,7 @@ this.ItemDetailsPostService
 
 
   }
+
 
 }
 
@@ -645,6 +680,7 @@ if ((this.OrderItemList.length == 0 || this.OrderItemList.length == 1)  && LineN
       this.summaryEnabled = false;
       this.SummaryVisbilty = "collaspe";
       this.OrderVisbilty = "visible";
+      this.itemCodeEnabled = false;
       return;
 }
 //Need to get rid of Attribute lists as well as the OrderItemList record
@@ -672,6 +708,7 @@ else{
 }
 
 this.autoItemcomplete.autoCompleteTextView.text = "";
+this.itemCodeEnabled = false;
 //this.showOrderLines();
 this.showOrderSummary();
 this.totalcalcs();
@@ -721,6 +758,7 @@ public addOrderLine(){ // Code for Adding order line if the length is at max the
     this.autoItemcomplete.autoCompleteTextView.text = "";
     this.Att1Enabled = false;
     this.Att2Enabled = false;
+    this.itemCodeEnabled = false;
 
 }
 
@@ -749,6 +787,8 @@ public submitOrderLine(){ //This will trigger on show  Order Summary as new line
     }
   
   });
+
+  this.itemCodeEnabled = false;
       
 }
 
@@ -798,6 +838,8 @@ public updateOrderLine(LineNumber:number){ //Index is always LineNumber - 1 as 0
   this.OrderItemList[LineNumber - 1].Attribute1Index = this.selectedAtt1Index;
   this.OrderItemList[LineNumber - 1].Attribute2Index = this.selectedAtt2Index;
   this.OrderItemList[LineNumber - 1].GenericItemIndex = this.selectedGenericIndex;
+
+  this.itemCodeEnabled = false;
 
 }
 
@@ -870,8 +912,9 @@ public reset(){ //Mass reset is currently triggred on Order Submit
 
   this.autocomplete.autoCompleteTextView.text = "";
   this.custCodeEnabled = false;
+  this.itemCodeEnabled = false;
 
-  let focusTextField: TextField = <TextField> this.page.getViewById("autocmp");
+  let focusTextField: TextField = <TextField> this.page.getViewById("autocomp");
   focusTextField.focus();
 
 }
@@ -886,6 +929,7 @@ public resetLines(){  //Dan wants this changed to delete order Line instead of r
     this.Att2Enabled = false;
 
     this.LineNumber = 1;
+    this.itemCodeEnabled = false;
 
 }
 
@@ -1041,18 +1085,36 @@ public GetChargeValue(args: SelectedIndexChangedEventData){
     this.AddCharges.forEach(element => {
       this.AddChargesIndex = this.AddChargesIndex + 1;  
     });
-  }       
+  }     
+  
+  console.log(this.AddChargesIndex);
 
     this.AddCharges.push({iIndex: this.AddChargesIndex, 
                           AddChargeCode: this.AdditionalCharges[args.newIndex], 
                           AddChargeValue: response.body.ttChargeValue[0].Amount, 
-                          AddChargeDesc: "cardesc" });
+                          AddChargeDesc: response.body.ttChargeValue[0].ChargeDesc });
 
     });
 
 }
 
-public onReturnPressChargeValue(args){
+public onReturnPressChargeValue(ChargeCode:string){
+
+  let focusTextField: TextField = <TextField> this.page.getViewById("addchargecodevalue");
+
+ this.AddCharges.forEach(element => {
+
+  console.log("each add charge");
+
+    if (element.AddChargeCode === ChargeCode) {
+
+      console.log("change value " + focusTextField.text);
+
+      element.AddChargeValue = focusTextField.text;
+     
+  }
+  
+  });
 
   /* var view = require("ui/core/view");
 
