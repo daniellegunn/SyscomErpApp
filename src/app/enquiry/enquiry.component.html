@@ -9,8 +9,8 @@
         <TextField [style.visibility]="OrderNumberSearch" keyboardType ="number" class="input input-border"  hint="OrderNumber" [(ngModel)]="OrderNumber" editable="true" ></TextField>
         
         <StackLayout class="input-field">
-          <Label class="boxlabel" text="Customer Code" textWrap="true"></Label>
-              <RadAutoCompleteTextView  #autocomplete style="font-size:20" [items]="autocompleteCustomer" (didAutoComplete)="onCustomerDidAutoComplete($event)" (tokenAdded)="onCustomerSelected($event)" hint="Enter Customer Code" (textChanged)="fillCustomers()" suggestMode="Suggest" displayMode="Plain" >
+          <Label class="boxlabel" [style.visibility]="CustomerCodeSearch" text="Customer Code" textWrap="true"></Label>
+              <RadAutoCompleteTextView [style.visibility]="CustomerCodeSearch" id="autocomp"  #autocomplete style="font-size:20" [items]="autocompleteCustomer" (didAutoComplete)="onCustomerDidAutoComplete($event)" (tokenAdded)="onCustomerSelected($event)" hint="Enter Customer Code" (textChanged)="fillCustomers()" suggestMode="Suggest" displayMode="Plain" >
             <SuggestionView tkAutoCompleteSuggestionView>
               <ng-template tkSuggestionItemTemplate let-item="item">
                 <GridLayout columns="auto, *">

@@ -116,7 +116,7 @@ export class HomeComponent implements OnInit {
                   url:this.appComponent.cUrl})
         .subscribe(response => {
 
-         this.appComponent.WarehouseCodes = response.body.ttWarehouse.map(item => new String(
+        this.appComponent.WarehouseCodes = response.body.ttWarehouse.map(item => new String(
               item.Warehousecode
         ));       
 

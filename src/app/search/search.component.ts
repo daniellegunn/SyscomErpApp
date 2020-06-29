@@ -39,49 +39,45 @@ export class SearchComponent implements OnInit {
     public selectedIndex:number;
 
    
-    onTap(args) {
-      this.index = args.object.index;
-      
-      dialogs.alert({ title: "ItemClassStock Info",
-       message: "Item Code: " + this.ItemClassStock[this.index].ItemCode + "\n" +        
-      "Storage: " + this.ItemClassStock[this.index].Storage  + "\n" +   
-      "Quantity On Hand: " + this.ItemClassStock[this.index].QuantityOnHand + "\n" +   
-      "Quantity On Pps: " + this.ItemClassStock[this.index].QuantityOnPps + "\n" +   
-      "Quantity Allocated : " + this.ItemClassStock[this.index].QuantityAlloc + "\n" +   
-      "Quantity Original : " + this.ItemClassStock[this.index].QuantityOriginal + "\n" +   
-      "Cost: " + this.ItemClassStock[this.index].Cost, 
-      okButtonText: "Close" });
-  }
+onTap(args) {
+  this.index = args.object.index;
+  
+  dialogs.alert({ title: "ItemClassStock Info",
+    message: "Item Code: " + this.ItemClassStock[this.index].ItemCode + "\n" +        
+  "Storage: " + this.ItemClassStock[this.index].Storage  + "\n" +   
+  "Quantity On Hand: " + this.ItemClassStock[this.index].QuantityOnHand + "\n" +   
+  "Quantity On Pps: " + this.ItemClassStock[this.index].QuantityOnPps + "\n" +   
+  "Quantity Allocated : " + this.ItemClassStock[this.index].QuantityAlloc + "\n" +   
+  "Quantity Original : " + this.ItemClassStock[this.index].QuantityOriginal + "\n" +   
+  "Cost: " + this.ItemClassStock[this.index].Cost, 
+  okButtonText: "Close" });
+}
  
-  onItemStockTap(args) {
-    this.index = args.object.index;
+onItemStockTap(args) {
+  this.index = args.object.index;
 
-    dialogs.alert({ title: "ItemStock Info",
-     message: "Item Code: " + this.ItemStock[this.index].ItemCode + "\n" +        
-    "Warehouse: " +  this.ItemStock[this.index]. WarehouseCode + "\n" +
-    "Quantity Available: " +  this.ItemStock[this.index].cQuantityAvailable  + "\n" + "\n"+
-    "Quantity On Hand: " + this.ItemStock[this.index].cQuantityOnHand + "\n" +   
-    "Quantity On Pps: " + this.ItemStock[this.index].cQuantityOnPps + "\n" +   
-   "Quantity Allocated : " + this.ItemStock[this.index].cQuantityAlloc + "\n" +
-   "Despatch Note Qty :"  + this.ItemStock[this.index].cDespatchNoteQty + "\n" +
-   "Cost: " + this.ItemStock[this.index].Cost + "\n" + 
-   "QuantityCustomerOrder : " + this.ItemStock[this.index].QuantityCustomerOrder + "\n" + 
-   "QuantityOnPo : " +  this.ItemStock[this.index].cQuantityOnPo ,
-    okButtonText: "Close" }); 
+  dialogs.alert({ title: "ItemStock Info",
+    message: "Item Code: " + this.ItemStock[this.index].ItemCode + "\n" +        
+  "Warehouse: " +  this.ItemStock[this.index]. WarehouseCode + "\n" +
+  "Quantity Available: " +  this.ItemStock[this.index].cQuantityAvailable  + "\n" + "\n"+
+  "Quantity On Hand: " + this.ItemStock[this.index].cQuantityOnHand + "\n" +   
+  "Quantity On Pps: " + this.ItemStock[this.index].cQuantityOnPps + "\n" +   
+  "Quantity Allocated : " + this.ItemStock[this.index].cQuantityAlloc + "\n" +
+  "Despatch Note Qty :"  + this.ItemStock[this.index].cDespatchNoteQty + "\n" +
+  "Cost: " + this.ItemStock[this.index].Cost + "\n" + 
+  "QuantityCustomerOrder : " + this.ItemStock[this.index].QuantityCustomerOrder + "\n" + 
+  "QuantityOnPo : " +  this.ItemStock[this.index].cQuantityOnPo ,
+  okButtonText: "Close" }); 
 }
 
+constructor(private myPostService: MyHttpPostService, private appComponent: AppComponent) { 
+    this.LoadingVisbilty  = "collapse";
 
-
-        
-    constructor(private myPostService: MyHttpPostService, private appComponent: AppComponent) { 
-        this.LoadingVisbilty  = "collapse";
-
-    }
+}
 
 ngOnInit() {
     // Use the "ngOnInit" handler to initialize data for the view.
 }
-
     
 public submit() {
   this.message ="";
@@ -109,7 +105,7 @@ public submit() {
 }
 
 public onWarehouseOpen(){
-    this.WarehouseCodes = this.appComponent.WarehouseCodes;
+  this.WarehouseCodes = this.appComponent.WarehouseCodes;
 } 
 
 public onWarehouseCodeChange(event: SelectedIndexChangedEventData){
@@ -157,7 +153,9 @@ private makePostRequest() {
           this.LoadingVisbilty  = "collapse";
           this.errormessage = "";
           this.isErrorVisible = false;
-          this.message = "Tap a Record to see more info";
+          this.message = "Warehouse " + this.WarehouseCode + " - Tap a Record to see more info";
+          this.WarehouseCode = "";
+          this.WarehouseCodes = [];          
 
       },
       error => {
@@ -165,7 +163,7 @@ private makePostRequest() {
         this.isErrorVisible = true;
         this.LoadingVisbilty  = "collapse";
       });
-      
+
 }
 
 private makeStockPostRequest() {
@@ -197,7 +195,7 @@ console.log();
           this.LoadingVisbilty  = "collapse";
           this.errormessage = "";
           this.isErrorVisible = false;
-          this.message = "Tap a Record to see more info";
+          this.message = "All warehouses - Tap a Record to see more info";
 
       },
       error => {

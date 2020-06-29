@@ -52,16 +52,13 @@ export class EnquiryComponent implements OnInit {
 
 
 autocompleteCustomer: ObservableArray<TokenModel>;  
-@ViewChild("autocomplete", {static:false}) autocomplete: RadAutoCompleteTextViewComponent;
+@ViewChild("autocomplete", {static:true}) autocomplete: RadAutoCompleteTextViewComponent;
 constructor(private myPostService: MyHttpPostService, private page: Page,
   private appComponent: AppComponent,
   private cdref: ChangeDetectorRef,
   private datePipe: DatePipe ) { 
     this.LoadingVisbilty  = "collapse";
     this.autocompleteCustomer = new ObservableArray<TokenModel>();   
-    countries.forEach((country) => {
-      this.autocompleteCustomer.push(new TokenModel(country, undefined));
-  }); 
 }
 
 ngOnInit() {
@@ -113,12 +110,20 @@ onCheckedChange(){
     this.OrderNumberSearch = "collapse";
     this.submitEnabled = false;
     this.OrderNumber = null;
+    this.CustomerCode = null;
   }else{
     this.CustomerCodeSearch = "collapse";
     this.OrderNumberSearch = "visible";
     this.submitEnabled = true;
-    //this.autocomplete.autoCompleteTextView.text = "";
+    this.OrderNumber = null;
+    this.CustomerCode = null;    
   }
+
+  this.OrderRecord = [];
+  this.OrderLineRecord = [];
+  this.OrderRecordList = [];  
+  let focusTextField: TextField = <TextField> this.page.getViewById("autocomp");
+  focusTextField.text = "";
 
 }
 
@@ -135,9 +140,13 @@ public submit() {
   if(!this.CustomerCode){
     utils.ad.dismissSoftInput();
     this.makePostRequest();
+    //this.CustomerCode = null;
+    this.submitEnabled = false;
   }else{
     utils.ad.dismissSoftInput();
     this.CustomerCodePostRequest();
+    //this.CustomerCode = null;
+    this.submitEnabled = false;
   }
 }
 
@@ -164,17 +173,9 @@ public fillCustomers() {
 
 }
 
-public onCustomerSelected(args){
-  
+public onCustomerDidAutoComplete(args){
   this.CustomerCode = args.token.text;
   this.submitEnabled = true;
-  //this.checkEnable = true;
-
-} 
-
-public onCustomerDidAutoComplete(args){
-  
-  
 }
 
 private makePostRequest() {

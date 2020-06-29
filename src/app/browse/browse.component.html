@@ -229,7 +229,7 @@
                         <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="0" [text]="item.AddChargeCode" editable="false" ></TextField>
 
                            <Label row="0" col="1" style="margin: 2;font-weight: bold;" text="Charge Value"></Label>
-                            <TextField id="addchargecodevalue"  [index]= "item.iIndex" style="margin: 5;"  row="1" col="1" [text]="item.AddChargeValue" editable="true" keyboardType ="number" (returnPress)="onReturnPressChargeValue(item.AddChargeCode)"></TextField>
+                            <TextField id="addchargecodevalue"  [index]= "item.iIndex" style="margin: 5;"  row="1" col="1" [text]="item.AddChargeValue" editable="true" keyboardType ="number" (textChange)="chargeCodeChange(item.AddChargeCode)" (returnPress)="onReturnPressChargeValue(item.AddChargeCode)"></TextField>
 
                             <Label row="0" col="2" style="margin: 2;font-weight: bold;" text="Charge Desc"></Label>
                             <TextField  [index]= "item.iIndex" style="margin: 5;"  row="1" col="2" [text]="item.AddChargeDesc" editable="false" ></TextField>

@@ -156,28 +156,28 @@ export class BrowseComponent implements OnInit     {
        }
 
 
-    ngOnInit(): void {
-        // Use the "ngOnInit" handler to initialize data for the view.
-        
-          //console.log(this.appComponent.CustomerCodes);
-          
-        this.OrderItemList = [];
-        this.LineNumber = 1;
-       
-    }
+ngOnInit(): void {
+    // Use the "ngOnInit" handler to initialize data for the view.
+    
+      //console.log(this.appComponent.CustomerCodes);
+      
+    this.OrderItemList = [];
+    this.LineNumber = 1;
+    
+}
 
-    onScroll(args: ScrollEventData) {
-      const scrollView = args.object as ScrollView;
+onScroll(args: ScrollEventData) {
+  const scrollView = args.object as ScrollView;
 
-    // console.log("scrollX: " + args.scrollX);
-     //console.log("scrollY: " + args.scrollY);
+// console.log("scrollX: " + args.scrollX);
+  //console.log("scrollY: " + args.scrollY);
 
-  }
-     
-  onFocus(args) {
-    // focus event will be triggered when the users enters the TextField
-    let textField = <TextField>args.object;
-    //this.scrollYPos = this.scrollYPos + 100;
+}
+  
+onFocus(args) {
+// focus event will be triggered when the users enters the TextField
+let textField = <TextField>args.object;
+//this.scrollYPos = this.scrollYPos + 100;
 }
 
 public onCustomerOpen(){ //Sets the customer code dropdown which is grabbed from appComponent request soon afer login
@@ -252,6 +252,7 @@ this.Attribute1ItemPostService
 .postData({InEntity: this.appComponent.InEntity,
             GenericItemCode: item,
             Att: "",
+            ArEntity:this.appComponent.ArEntity,
             url:this.appComponent.cUrl})
       
 .subscribe(response => { 
@@ -274,6 +275,7 @@ this.Attribute2ItemPostService
 .postData({InEntity: this.appComponent.InEntity,
             GenericItemCode: item,
             StartItem: "",
+            ArEntity:this.appComponent.ArEntity,
             url:this.appComponent.cUrl})
       
 .subscribe(response => { 
@@ -332,6 +334,7 @@ this.ItemDetailsPostService
   .postData({InEntity: this.appComponent.InEntity,
               GenericItemCode: this.SelectedGenericItemCode,
               StartItem: this.StartItem,
+              ArEntity:this.appComponent.ArEntity,
               url:this.appComponent.cUrl})
         
   .subscribe(response => { 
@@ -1010,11 +1013,14 @@ if (this.OrderItemList.length !=0 && this.LineNumber  < this.OrderItemList.lengt
 }
 
 public minusQty(LineNumber:number){ // Code for minus button on the Quanity 
-console.log("minus");
+
+  console.log("LineNumber " + LineNumber);
 
 this.Quantity = String(Number(this.Quantity) - 1);
 
-this.minusQtyEnabled = true
+this.minusQtyEnabled = true;
+
+console.log(this.Quantity);
 
 //if the record has been changed on the summary then change the array record
 this.OrderItemList[LineNumber - 1].Quantity = this.Quantity;    
@@ -1051,6 +1057,11 @@ public deleteChargeCode(LineNumber:string) {
 
   this.AddCharges.splice(this.iRowNum,1);
 
+}
+
+public chargeCodeChange(ChargeCode:string){
+  let focusTextField: TextField = <TextField> this.page.getViewById("addchargecodevalue");
+  this.onReturnPressChargeValue(ChargeCode);
 }
 
 public AddChargeCodes() {
@@ -1104,14 +1115,8 @@ public onReturnPressChargeValue(ChargeCode:string){
 
  this.AddCharges.forEach(element => {
 
-  console.log("each add charge");
-
     if (element.AddChargeCode === ChargeCode) {
-
-      console.log("change value " + focusTextField.text);
-
       element.AddChargeValue = focusTextField.text;
-     
   }
   
   });
