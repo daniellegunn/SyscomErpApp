@@ -103,6 +103,7 @@ export class BrowseComponent implements OnInit     {
     public minusQtyEnabled:boolean = false;
     public nextLineEnabled:boolean = false;
     public previousLineEnabled:boolean = false;
+    public QtyEnabled:boolean = false;
     public selectedIndex:number;
     public CustomerPoMand:string = "";
     public result:boolean = false;
@@ -297,6 +298,7 @@ this.Attribute2Setcodes = response.body.ttAttribute.map(item => new String(
 
   this.AttributeVisbilty ="visible";
   this.itemCodeEnabled = true;
+  this.QtyEnabled = true;
 
 }
 
@@ -434,6 +436,16 @@ public submit() { // Submit the Order checking all data is filled in before vali
     
       this.makePostRequest();
       this.autocomplete.autoCompleteTextView.text = "";
+}
+
+public CancelOrderLine(LineNumber:number){
+  this.deleteOrderLine(LineNumber);
+}
+
+public BackHomeScreen(LineNumber:number){
+  this.deleteOrderLine(LineNumber);
+  this.ItemVisbilty = "collaspe";
+  this.OrderVisbilty = "visible";
 }
 
 public hideOrderLines(){ // Hides the Order Lines from view
@@ -652,69 +664,25 @@ this.SummaryVisbilty   ="collapse";
 
 public deleteOrderLine(LineNumber:number){// Deletes Line then changes all line numbers after it by - 1
 
-if ((this.OrderItemList.length == 0 || this.OrderItemList.length == 1)  && LineNumber == 1){ //Code resets line number 1
-      this.OrderItemList=[];
-      this.ItemCode = "";
-      this.Quantity = "1";
-      this.Price = null;
-      this.Currency = "";
-
-      this.Attribute1= []
-      this.Attribute1Setcodes =[]
-      this.selectedAtt1Index= null;
-      this.SelectedAttribute1 = undefined;
-      
-      this.Attribute2 = []
-      this.Attribute2Setcodes= []
-      this.selectedAtt2Index= null;
-      this.SelectedAttribute2 = undefined;
-
-      this.SelectedGenericItemCode= ""
-      this.selectedGenericIndex = null;
-
-      //this.LineNumber = 1;
-      this.previousLineEnabled = false;
-      this.minusQtyEnabled = false;
-
-      this.autoItemcomplete.autoCompleteTextView.text = "";
-      this.Att1Enabled = false;
-      this.Att2Enabled = false;
-      this.showOrderSummary();
-      this.summaryEnabled = false;
-      this.SummaryVisbilty = "collaspe";
-      this.OrderVisbilty = "visible";
-      this.itemCodeEnabled = false;
-      return;
-}
-//Need to get rid of Attribute lists as well as the OrderItemList record
-this.OrderItemList.splice(LineNumber - 1,1);
-this.Attribute1List.splice(LineNumber - 1,1);
-this.Attribute2List.splice(LineNumber - 1,1);
-
-this.OrderItemList.forEach(element => {
-  if(element.LineNumber > LineNumber){ //Bigger item numbers need their Line numbers reduced
-  element.LineNumber = element.LineNumber - 1;
-  }
-
-  if(this.LineNumber == this.OrderItemList.length ){ // This would be line 1
-    this.nextLineEnabled = false;
-    }
-
-  
-});
-if(LineNumber > this.OrderItemList.length){
-  //this.showOrderLine(LineNumber - 1);
-}
-else{
-  //this.showOrderLine(LineNumber);
-  //this.showOrderLines();
-}
-
-this.autoItemcomplete.autoCompleteTextView.text = "";
-this.itemCodeEnabled = false;
-//this.showOrderLines();
-this.showOrderSummary();
-this.totalcalcs();
+  this.ItemCode = "";
+  this.Quantity = "1";
+  this.Price = null;
+  this.Currency = "";
+  this.Attribute1= []
+  this.Attribute1Setcodes =[]
+  this.selectedAtt1Index= null;
+  this.SelectedAttribute1 = undefined;
+  this.Attribute2 = []
+  this.Attribute2Setcodes= []
+  this.selectedAtt2Index= null;
+  this.SelectedAttribute2 = undefined;
+  this.SelectedGenericItemCode= ""
+  this.selectedGenericIndex = null;
+  this.previousLineEnabled = false;
+  this.minusQtyEnabled = false;  
+  this.autoItemcomplete.autoCompleteTextView.text = "";
+  this.itemCodeEnabled = false;  
+  this.QtyEnabled = false;
 
 }
 
@@ -762,13 +730,13 @@ public addOrderLine(){ // Code for Adding order line if the length is at max the
     this.Att1Enabled = false;
     this.Att2Enabled = false;
     this.itemCodeEnabled = false;
+    this.summaryEnabled = true;
 
 }
 
 public submitOrderLine(){ //This will trigger on show  Order Summary as new line might not have been submitted (Look into moving it to hideOrderLines)
   
   //first check to see if the item code exists
-  console.log(this.ItemCode);
   this.ItemCodeCheckService
   .postData({InEntity: this.appComponent.InEntity,
             ArEntity: this.appComponent.ArEntity,
@@ -776,16 +744,12 @@ public submitOrderLine(){ //This will trigger on show  Order Summary as new line
             url:this.appComponent.cUrl})
         
   .subscribe(response => { 
-
-    console.log(response.body.ttItemCheck[0].ErrorMsg);
-
     if(response.body.ttItemCheck[0].ErrorMsg != ""){
       alert(response.body.ttItemCheck[0].ErrorMsg);
 
       return;
     }
     else{
-      console.log("create");
       this.createOrderItemList();
     }
   
@@ -814,13 +778,28 @@ public createOrderItemList() {
     
   }
 
+  this.ItemCode = "";
+  this.Quantity = "1";
+  this.Price = null;
+  this.Currency = "";
+  this.Attribute1= []
+  this.Attribute1Setcodes =[]
+  this.selectedAtt1Index= null;
+  this.SelectedAttribute1 = undefined;
+  this.Attribute2 = []
+  this.Attribute2Setcodes= []
+  this.selectedAtt2Index= null;
+  this.SelectedAttribute2 = undefined;
+  this.SelectedGenericItemCode= ""
+  this.selectedGenericIndex = null;
   this.autoItemcomplete.autoCompleteTextView.text = "";
   this.summaryEnabled = true;
   this.Att1Enabled = false;
   this.Att2Enabled = false;
+  this.LineNumber = this.LineNumber + 1;
 
-  this.ItemVisbilty = "collapse";
-  this.OrderVisbilty =  "visible";
+  //this.ItemVisbilty = "collapse";
+  //this.OrderVisbilty =  "visible";
   this.message = "";  
 }
   
@@ -1012,23 +991,29 @@ if (this.OrderItemList.length !=0 && this.LineNumber  < this.OrderItemList.lengt
     this.previousLineEnabled = true;
 }
 
-public minusQty(LineNumber:number){ // Code for minus button on the Quanity 
+public quantityChange(LineNumber:number){
 
-  console.log("LineNumber " + LineNumber);
+  let focusTextField: TextField = <TextField> this.page.getViewById("linequantity");
 
-this.Quantity = String(Number(this.Quantity) - 1);
+ this.OrderItemList.forEach(element => {
 
-this.minusQtyEnabled = true;
-
-console.log(this.Quantity);
-
-//if the record has been changed on the summary then change the array record
-this.OrderItemList[LineNumber - 1].Quantity = this.Quantity;    
-
-if (Number(this.Quantity) == 1 ){
-  this.minusQtyEnabled = false
+    if (element.LineNumber === LineNumber) {
+      element.Quantity = focusTextField.text;
+  }
+  this.totalcalcs();
+  
+  });
 }
-this.totalcalcs();
+
+public minusQty(LineNumber:number){ // Code for minus button on the Quanity 
+  this.Quantity = String(Number(this.Quantity) - 1);
+  this.minusQtyEnabled = true;
+  //if the record has been changed on the summary then change the array record
+  this.OrderItemList[LineNumber - 1].Quantity = this.Quantity;    
+  if (Number(this.Quantity) == 1 ){
+    this.minusQtyEnabled = false
+  }
+  this.totalcalcs();
 }
 
 public checkqty() {
