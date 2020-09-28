@@ -150,7 +150,7 @@
 
         <Button row="1" col = "0" height = "100%" [isEnabled]="minusQtyEnabled"  text="&#xf068; " fontFamily="FontAwesome" class="btn btn-primary btn-active"  (tap)="minusQty()"></Button>
     <TextField row = "1" col = "1" class="input input-border" [isEnabled]="QtyEnabled" keyboardType ="number" id="quantityfield" hint="Quantity" [(ngModel)]="Quantity" editable="true"  ) ></TextField>
-    <Button row="1" col = "2" text="&#xf067; " fontFamily="FontAwesome" height = "100%" class="btn btn-primary btn-active"  (tap)="addQty()"> </Button>
+    <Button row="1" col = "2" text="&#xf067; " fontFamily="FontAwesome" height = "100%" [isEnabled]="addEnabled" class="btn btn-primary btn-active"  (tap)="addQty()"> </Button>
 
     <Label row="2"  col = "0"  class="boxlabel"  text="Price" textWrap="true"></Label>
     <TextField row = "3" col = "0" class="input input-border" keyboardType ="number" hint="Price" [(ngModel)]="Price" editable="false" ></TextField>
@@ -231,7 +231,7 @@
                         <TextField  [index]= "item.iIndex" row="1" col="0" [text]="item.AddChargeCode" editable="false" ></TextField>
 
                            <Label row="0" col="1" style="margin: 2;font-weight: bold;" text="Charge Value"></Label>
-                            <TextField id="addchargecodevalue"  [index]= "item.iIndex"   row="1" col="1" [text]="item.AddChargeValue" editable="true" keyboardType ="number" (textChange)="chargeCodeChange(item.AddChargeCode)" (returnPress)="onReturnPressChargeValue(item.AddChargeCode)"></TextField>
+                            <TextField id="addchargecodevalue"  [index]= "item.iIndex" style="margin: -5;" row="1" col="1" [text]="item.AddChargeValue" editable="true" keyboardType ="number" (textChange)="chargeCodeChange(item.AddChargeCode)" (returnPress)="onReturnPressChargeValue(item.AddChargeCode)"></TextField>
 
                             <Label row="0" col="2" style="margin: 2;font-weight: bold;" text="Charge Desc"></Label>
                             <TextField  [index]= "item.iIndex"   row="1" col="2" [text]="item.AddChargeDesc" editable="false" ></TextField>
@@ -277,22 +277,23 @@
               <Label class="cell" row="1" col="0" text="Item Code:"></Label>
               <Label class="cell" row="1" col="1" colspan = "2" [text]="item.ItemCode"></Label>
 
-              <Label class="cell"   row="2" col="0"  text="Quantity:"></Label>-->
+              <Label class="cell"   row="2" col="0"  text="Quantity:"></Label>
               <!--<Label class="cell"  row="2" col="1"   textWrap="true" [text]="item.Quantity" editable="true"></Label>-->
-              <TextField class="cell" id="linequantity" keyboardType="number" [(ngModel)]="Quantity"  row="2" col="1" colspan = "2" [text]="item.Quantity" editable="true" min="0" (textChange)="quantityChange(item.LineNumber)"></TextField>
+              <TextField class="cell" id="linequantity" keyboardType="number"  [(ngModel)]="Quantity"  row="2" col="1" colspan = "2" [text]="item.Quantity" editable="true" min="1" (textChange)="quantityChange(item.LineNumber)"></TextField>
 
               
               <Label class="cell"   row="3" col="0"  text="Price:"></Label>
-              <Label class="cell"  row="3" col="1" colspan = "2"  textWrap="true" [text]="item.Price"></Label>
+             <!--<Label class="cell"  row="3" col="1" colspan = "2"  textWrap="true" style="text-align: left;" [text]="item.Price"></Label>-->
+              <Label class="cell"  row="3" col="1"  colspan = "2" textWrap="true"  [text]="item.Price"></Label>
 
               <Label class="cell"   row="4" col="0"  text="Currency:"></Label>
-              <Label class="cell"  row="4" col="1"  colspan = "2" textWrap="true" [text]="item.Currency"></Label>
+              <Label class="cell"  row="4" col="1"  colspan = "2" textWrap="true"  [text]="item.Currency"></Label>
 
               <!--<Button row="7" col="0" height = "100%" [isEnabled]="minusQtyEnabled"  text="&#xf068; " fontFamily="FontAwesome" class="btn btn-primary btn-active"  (tap)="minusQty(item.LineNumber)"></Button>
               <TextField row="7" col="1" class="input input-border" keyboardType ="number" id="quantityfield" hint="Quantity" editable="true" [text]="item.Quantity" ></TextField>
               <Button row="7" col="2" text="&#xf067; " fontFamily="FontAwesome" height = "100%" class="btn btn-primary btn-active"  (tap)="addQty(item.LineNumber)"> </Button>-->
 
-              <Button  row="8" col="0" colspan = "2"  class="btn btn-primary btn-ruby btn-active "  text="Delete Line" (tap)="deleteOrderLine(item.LineNumber)"></Button>
+              <Button  row="8" col="0" colspan = "3"  class="btn btn-primary btn-ruby btn-active "  text="Delete Line" (tap)="deleteFromSummary(item.LineNumber)"></Button>
               <Label row="9" col="0" colspan = "3" class="line" style="font-size: 19;padding: 5 18;border-color:black;border-width: 0 0 2 0;"></Label>
               <Label row="10" col="0" colspan = "3" class="line"></Label>
 

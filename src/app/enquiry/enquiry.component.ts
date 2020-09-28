@@ -48,6 +48,8 @@ export class EnquiryComponent implements OnInit {
     public index : number;
     public submitEnabled:boolean = true;
     public checkEnable:boolean = false;
+    public iRowNum:number;
+    public cText:String;
          
 
 
@@ -83,25 +85,25 @@ ngAfterContentChecked() {
 
   this.cdref.detectChanges();
   
-    }
+}
 
-    onOrderNumberTap(args) {
-      // console.log("Tap");
-      //console.log(args.object.text);
-      this.OrderNumber = args.object.text;
+onOrderNumberTap(args) {
+  // console.log("Tap");
+  //console.log(args.object.text);
+  this.OrderNumber = args.object.text;
+
+  this.isErrorVisible = false;
+
+  this.OrderRecord = [];
+    this.OrderLineRecord = [];
+    this.OrderRecordList = [];
+
+    this.makePostRequest();
+/*  dialogs.alert({ title: "Order Number Info",
+    message: "Item Code: " + this.OrderRecordList[this.index].OrderNumber   ,     
     
-      this.isErrorVisible = false;
-    
-      this.OrderRecord = [];
-        this.OrderLineRecord = [];
-        this.OrderRecordList = [];
-    
-        this.makePostRequest();
-    /*  dialogs.alert({ title: "Order Number Info",
-        message: "Item Code: " + this.OrderRecordList[this.index].OrderNumber   ,     
-        
-      okButtonText: "Close" });*/
-    }
+  okButtonText: "Close" });*/
+}
     
 onCheckedChange(){
 
@@ -141,7 +143,7 @@ public submit() {
     utils.ad.dismissSoftInput();
     this.makePostRequest();
     //this.CustomerCode = null;
-    this.submitEnabled = false;
+    this.submitEnabled = true;
   }else{
     utils.ad.dismissSoftInput();
     this.CustomerCodePostRequest();
@@ -151,7 +153,7 @@ public submit() {
 }
 
 public fillCustomers() {
-
+  //this.submitEnabled = false;
   if (this.autocompleteCustomer.length == 0){
     {
       this.autocompleteCustomer = new ObservableArray<TokenModel>();
@@ -161,16 +163,24 @@ public fillCustomers() {
       });
     }
   }
+  else {
 
-  /*if(this.checkEnable == true){
-    this.submitEnabled = true;
-    this.checkEnable = false;
-  }
-  else{ 
-    this.submitEnabled = false;
-    console.log("put to false");
-  }*/
+    let focusTextField: TextField = <TextField> this.page.getViewById("autocomp");
+    this.cText = focusTextField.text;
+    /*console.log("ctext " + this.cText);
+    const filteredElement = this.appComponent.CustomerCodes.find(el => el.CustomerCode = focusTextField.text);
+    console.log("filteredElement " + filteredElement);
+    this.iRowNum = this.appComponent.CustomerCodes.indexOf(filteredElement);
 
+    console.log(this.iRowNum);*/
+
+    this.appComponent.CustomerCodes.forEach(element => {
+      if(element.CustomerCode === this.cText){
+        console.log(this.cText);
+      }
+    });
+
+}
 }
 
 public onCustomerDidAutoComplete(args){

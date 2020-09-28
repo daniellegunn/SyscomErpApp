@@ -196,7 +196,7 @@ export class MyHttpPostService {  // Main Request. Submits the Order to EDI Entr
         };
         
      
-      //console.log(data);
+
       this.serverUrl = data.url + "/ErpApp/rest/ErpApp/OrderEntry";
 
      // console.log(httpOptions);

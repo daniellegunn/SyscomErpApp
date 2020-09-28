@@ -16,6 +16,7 @@ import { ObservableArray } from "tns-core-modules/data/observable-array";
 import { TokenModel } from "nativescript-ui-autocomplete";
 import { RadAutoCompleteTextViewComponent } from "nativescript-ui-autocomplete/angular";
 import { Page } from "tns-core-modules/ui/page";
+import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 
 const countries = [];
 const items = [];
@@ -52,6 +53,7 @@ export class BrowseComponent implements OnInit     {
     public selectedAtt1Index:number;
     public GenericItems:Array <string>;
     public selectedGenericIndex:number;
+    public cprice:string;
 
     public _chargevalue = "";
     public MaxOrderLine:number = 1;
@@ -104,6 +106,7 @@ export class BrowseComponent implements OnInit     {
     public nextLineEnabled:boolean = false;
     public previousLineEnabled:boolean = false;
     public QtyEnabled:boolean = false;
+    public addEnabled:boolean = false;
     public selectedIndex:number;
     public CustomerPoMand:string = "";
     public result:boolean = false;
@@ -393,6 +396,8 @@ this.ItemDetailsPostService
     this.Currency = response.body.ttItem[0].CurrencyCode;
     this.NetPrice = response.body.ttItem[0].NetPrice;
     this.GrossPrice = response.body.ttItem[0].GrossPrice;
+    this.addEnabled = true;
+
   }
 
   //console.log("gross" + response.body.ttItem[0].GrossPrice);
@@ -440,11 +445,13 @@ public submit() { // Submit the Order checking all data is filled in before vali
 
 public CancelOrderLine(LineNumber:number){
   this.deleteOrderLine(LineNumber);
+  this.LineNumber = this.LineNumber - 1;
+  this.addEnabled = false;
 }
 
 public BackHomeScreen(LineNumber:number){
   this.deleteOrderLine(LineNumber);
-  this.ItemVisbilty = "collaspe";
+  this.ItemVisbilty = "collapse";
   this.OrderVisbilty = "visible";
 }
 
@@ -516,12 +523,14 @@ if(this.CustomerCode == ""){
   this.AddressVisbilty = "visible";
   this.OrderVisbilty = "collapse";
   this.ChargeVisbilty = "collapse";
+  this.ItemVisbilty = "collapse";
 }
 
 public hideDeliveryAddress(){
   this.AddressVisbilty = "collapse";
   this.OrderVisbilty = "visible";
   this.ChargeVisbilty = "collapse";
+  this.ItemVisbilty = "collapse";
 }
 
 public showAddCharges(){
@@ -567,6 +576,7 @@ if(this.CustomerCode == ""){
   this.ChargeVisbilty = "visible";
   this.OrderVisbilty = "collapse";
   this.AddressVisbilty = "collapse";
+  this.ItemVisbilty = "collapse";
 }
 
 public reclacAddCharges(){
@@ -582,12 +592,10 @@ this.AdditionalChargesPostService
 
 
 if (response.body.ttAddCharge[0].AddChargeCode = "none"){
-console.log("none");
 }
 else{
 
 //this.AddCharges = [];
-console.log("else");
 this.AddCharges = response.body.ttAddCharge.map(item => new AddChargesClass(
   item.iIndex,
   item.AddChargeCode,
@@ -605,6 +613,7 @@ if(this.CustomerCode == ""){
   this.ChargeVisbilty = "collapse";
   this.OrderVisbilty = "visible";
   this.AddressVisbilty = "collapse";
+  this.ItemVisbilty = "collapse";
 }
 
 public totalcalcs(){
@@ -654,11 +663,31 @@ public showOrderSummary(){
 this.OrderVisbilty = "collapse";
 this.SummaryVisbilty   ="visible";
 this.ChargeVisbilty = "collapse";
+this.ItemVisbilty = "collapse";
 }
 
 public hideOrderSummary(){
 this.OrderVisbilty = "visible";
 this.SummaryVisbilty   ="collapse";
+
+}
+
+public deleteFromSummary(LineNumber:number){
+
+  const filteredElement = this.OrderItemList.find(el => el.LineNumber === LineNumber)
+  this.iRowNum = this.OrderItemList.indexOf(filteredElement);
+
+  this.OrderItemList.splice(this.iRowNum,1);
+
+  this.totalcalcs();
+
+  if (this.OrderItemList.length == 0){
+    this.OrderVisbilty = "visible";
+    this.SummaryVisbilty   ="collapse";
+    this.ChargeVisbilty = "collapse";
+    this.ItemVisbilty = "collapse";
+    this.summaryEnabled = false;   
+  }
 
 }
 
@@ -689,7 +718,7 @@ public deleteOrderLine(LineNumber:number){// Deletes Line then changes all line 
 public addOrderLine(){ // Code for Adding order line if the length is at max then current  record hasnt been added neds to be pushed in
   this.message = "";
 
-    if (this.OrderItemList.length == (this.LineNumber - 1)) {
+    /*if (this.OrderItemList.length == (this.LineNumber - 1)) {
     this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
       InEntity: this.appComponent.InEntity,   GenericItemIndex: this.selectedGenericIndex,
         Attribute1Index:this.selectedAtt1Index, Attribute2Index:this.selectedAtt2Index,Price:this.Price,Currency:this.Currency,VatAmount:this.VatAmount,GrossPrice:this.GrossPrice,NetPrice:this.NetPrice
@@ -705,7 +734,7 @@ public addOrderLine(){ // Code for Adding order line if the length is at max the
 
       this.LineNumber = this.OrderItemList.length + 1;
 
-    }
+    }*/
     
     
   // Reset everything for the new order line inculding the index's
@@ -735,7 +764,6 @@ public addOrderLine(){ // Code for Adding order line if the length is at max the
 }
 
 public submitOrderLine(){ //This will trigger on show  Order Summary as new line might not have been submitted (Look into moving it to hideOrderLines)
-  
   //first check to see if the item code exists
   this.ItemCodeCheckService
   .postData({InEntity: this.appComponent.InEntity,
@@ -761,6 +789,7 @@ public submitOrderLine(){ //This will trigger on show  Order Summary as new line
 
 public createOrderItemList() {
   this.message = "";
+
   if(this.ItemCode != "" && this.ItemCode != undefined){
     if (this.OrderItemList.length == (this.LineNumber - 1) ) {
     this.OrderItemList.push({LineNumber:this.LineNumber, ItemCode: this.ItemCode , Quantity: this.Quantity, ArEntity: this.appComponent.ArEntity,
@@ -998,11 +1027,18 @@ public quantityChange(LineNumber:number){
  this.OrderItemList.forEach(element => {
 
     if (element.LineNumber === LineNumber) {
+      if (focusTextField.text == "0"){
+        alert("cant be zero" + element.Quantity);
+        focusTextField.text = element.Quantity;
+      } 
+      else {
       element.Quantity = focusTextField.text;
+      }
   }
   this.totalcalcs();
   
   });
+
 }
 
 public minusQty(LineNumber:number){ // Code for minus button on the Quanity 
@@ -1082,8 +1118,6 @@ public GetChargeValue(args: SelectedIndexChangedEventData){
       this.AddChargesIndex = this.AddChargesIndex + 1;  
     });
   }     
-  
-  console.log(this.AddChargesIndex);
 
     this.AddCharges.push({iIndex: this.AddChargesIndex, 
                           AddChargeCode: this.AdditionalCharges[args.newIndex], 
@@ -1182,7 +1216,7 @@ public clearOrderDetails(){
 
 private makePostRequest() { // The main request which sumbits the Order
 
-    this.submitOrderLine();
+    //this.submitOrderLine();
 
     if(this.OrderItemList.length == 0){ //Code shouldnt trigger but this acts as a fail safe if the button is pressed with no order lines
     alert("Please Enter Order Lines");
@@ -1203,9 +1237,9 @@ private makePostRequest() { // The main request which sumbits the Order
           ShipAddress4: this.ShipAddress4,
           ShipAddress5: this.ShipAddress5,
           ShipCity:this.ShipCity,
-        ShipPostCode:this.ShipPostCode,
-        ArEntity: this.appComponent.ArEntity,
-        InEntity: this.appComponent.InEntity} ];
+          ShipPostCode:this.ShipPostCode,
+          ArEntity: this.appComponent.ArEntity,
+          InEntity: this.appComponent.InEntity} ];
 
       this.myPostService
                       
@@ -1216,6 +1250,8 @@ private makePostRequest() { // The main request which sumbits the Order
             
           .subscribe(response => {
 
+            console.log(response);
+
               //console.log(response.body.dsOrderPackageRequest.OrderPackageRequest[0].ErrorMessage);
             if (response.body.dsOrderPackageRequest.OrderPackageRequest[0].ErrorMessage != ""){
             alert(response.body.dsOrderPackageRequest.OrderPackageRequest[0].ErrorMessage);
@@ -1223,7 +1259,7 @@ private makePostRequest() { // The main request which sumbits the Order
 
               }        else{ 
 
-                alert("Order has been submitted!");
+                alert("Order has been submitted. Your order number is " + response.body.dsOrderPackageRequest.OrderPackageRequest[0].EdiSeq);
 
                 // alert("Order has been submitted! Your order reference is " + response.body.dsOrderPackageRequest.OrderPackageRequest[0].EdiSeq);
               // console.log(response.body.EdiSalesOrder);
