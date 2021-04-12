@@ -21,8 +21,7 @@ export class AppComponent implements OnInit {
     cRestrict = "";
     CustomerCodes = [];
     WarehouseCodes = [];
-    cUrl = "http://192.168.250.65:8980";
- 
+    cUrl = "http://192.168.250.80:8820";
     constructor() {
 
     }
